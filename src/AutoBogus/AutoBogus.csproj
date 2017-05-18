@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="temp\**" />
+    <EmbeddedResource Remove="temp\**" />
+    <None Remove="temp\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="AutoFaker`12.cs" />
+    <Compile Remove="AutoGeneratorFactory3.cs" />
+    <Compile Remove="AutoType.cs" />
+    <Compile Remove="AutoTypeGenerator.cs" />
+    <Compile Remove="DefaultAutoBinder.cs" />
+    <Compile Remove="TypeHelpers.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Bogus" Version="15.0.3" />
+  </ItemGroup>
+
+</Project>
