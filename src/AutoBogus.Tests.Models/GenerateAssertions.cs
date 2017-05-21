@@ -14,7 +14,7 @@ namespace AutoBogus.Tests.Models
     : ReferenceTypeAssertions<Order, GenerateAssertions>
   {
     private MethodInfo DefaultValueFactory;
-    private IDictionary<Func<Type, bool>, Func<Type, object, bool>> Assertions = new Dictionary<Func<Type, bool>, Func<Type, object, bool>>();
+    private IDictionary<Func<Type, bool>, Func<string, Type, object, string>> Assertions = new Dictionary<Func<Type, bool>, Func<string, Type, object, string>>();
 
     internal GenerateAssertions(Order order)
     {
@@ -35,9 +35,6 @@ namespace AutoBogus.Tests.Models
       Assertions.Add(IsArray, AssertArray);
       Assertions.Add(IsDictionary, AssertDictionary);
       Assertions.Add(IsEnumerable, AssertEnumerable);
-
-      Assertions.Add(IsInterface, AssertNull);
-      Assertions.Add(IsAbstract, AssertNull);    
     }
 
     private Order Order { get; }
@@ -45,16 +42,22 @@ namespace AutoBogus.Tests.Models
 
     protected override string Context => "order";
 
-    public AndConstraint<Order> BePopulated()
+    public AndConstraint<Order> BePopulatedWithMocks()
     {
-      var type = typeof(Order);
-      var assertion = GetAssertion(type);
+      // Ensure the mocked objects are asserted as null
+      Assertions.Add(IsInterface, AssertMock);
+      Assertions.Add(IsAbstract, AssertMock);
 
-      Scope = Execute.Assertion;
+      return BePopulated();
+    }
 
-      assertion.Invoke(type, Order);
+    public AndConstraint<Order> BePopulatedWithoutMocks()
+    {
+      // Ensure the mocked objects are asserted as null
+      Assertions.Add(IsInterface, AssertNull);
+      Assertions.Add(IsAbstract, AssertNull);
 
-      return new AndConstraint<Order>(Order);
+      return BePopulated();     
     }
 
     public AndConstraint<Order> BeNotPopulated()
@@ -70,6 +73,31 @@ namespace AutoBogus.Tests.Models
       }
 
       return new AndConstraint<Order>(Order);
+    }
+
+    private AndConstraint<Order> BePopulated()
+    {
+      var type = typeof(Order);
+      var assertion = GetAssertion(type);
+
+      Scope = Execute.Assertion;
+
+      assertion.Invoke(type.Name, type, Order);
+
+      return new AndConstraint<Order>(Order);
+    }
+
+    private string AssertType(string path, Type type, object instance)
+    {
+      // Iterate the members for the instance and assert their values
+      var members = GetMemberInfos(type);
+
+      foreach (var member in members)
+      {
+        AssertMember(path, member, instance);
+      }
+
+      return null;
     }
 
     private void AssertDefaultValue(MemberInfo memberInfo)
@@ -101,35 +129,6 @@ namespace AutoBogus.Tests.Models
         .Then;
     }
 
-    private bool AssertType(Type type, object instance)
-    {
-      // Iterate the members for the instance and assert their values
-      var members = GetMemberInfos(type);
-
-      foreach (var member in members)
-      {
-        AssertMember(member, instance);
-      }
-
-      return true;
-    }
-
-    private void AssertMember(MemberInfo memberInfo, object instance)
-    {
-      ExtractMemberInfo(memberInfo, out Type memberType, out Func<object, object> memberGetter);
-
-      // Resolve the assertion and value for the member type
-      var value = memberGetter.Invoke(instance);
-      var assertion = GetAssertion(memberType);
-      var result = assertion.Invoke(memberType, value);
-
-      // Register an assertion for each member
-      Scope = Scope
-        .ForCondition(result)
-        .FailWith($"Expected a value of type '{memberType.FullName}' for '{memberInfo.Name}'.")
-        .Then;
-    }
-
     private static bool IsInt(Type type) => type == typeof(int);
     private static bool IsDecimal(Type type) => type == typeof(decimal);
     private static bool IsGuid(Type type) => type == typeof(Guid);
@@ -143,53 +142,84 @@ namespace AutoBogus.Tests.Models
     private static bool IsAbstract(Type type) => type.GetTypeInfo().IsAbstract;
     private static bool IsInterface(Type type) => type.GetTypeInfo().IsInterface;
 
-    private static bool AssertInt(Type type, object value) => !value.Equals(0);
-    private static bool AssertDecimal(Type type, object value) => !value.Equals(0d);
-    private static bool AssertGuid(Type type, object value) => Guid.TryParse(value.ToString(), out Guid result);
-    private static bool AssertDateTime(Type type, object value) => DateTime.TryParse(value.ToString(), out DateTime result);
-    private static bool AssertEnum(Type type, object value) => Enum.IsDefined(type, value);
-    private static bool AssertNull(Type type, object value) => value == null;
+    private static string AssertInt(string path, Type type, object value) => value.Equals(0) ? GetAssertionMessage(path, type) : null;
+    private static string AssertDecimal(string path, Type type, object value) => value.Equals(0d) ? GetAssertionMessage(path, type) : null;
+    private static string AssertGuid(string path, Type type, object value) => Guid.TryParse(value.ToString(), out Guid result) ? null : GetAssertionMessage(path, type);
+    private static string AssertDateTime(string path, Type type, object value) => DateTime.TryParse(value.ToString(), out DateTime result) ? null : GetAssertionMessage(path, type);
+    private static string AssertEnum(string path, Type type, object value) => Enum.IsDefined(type, value) ? null : GetAssertionMessage(path, type);
+    private static string AssertNull(string path, Type type, object value) => value == null ? null : $"Expected value to be null for '{path}'.";
 
-    private static bool AssertString(Type type, object value)
+    private static string AssertString(string path, Type type, object value)
     {
       var str = value?.ToString();
-      return !string.IsNullOrWhiteSpace(str);
+      return string.IsNullOrWhiteSpace(str) ? GetAssertionMessage(path, type) : null ;
     }
 
-    private bool AssertNullable(Type type, object value)
+    private string AssertNullable(string path, Type type, object value)
     {
       var genericType = type.GenericTypeArguments.Single();
       var assertion = GetAssertion(genericType);
 
-      return assertion.Invoke(genericType, value);
+      return assertion.Invoke(path, genericType, value);
     }
 
-    private bool AssertArray(Type type, object value)
+    private string AssertMock(string path, Type type, object value)
+    {
+      if (value == null)
+      {
+        return $"Excepted value to not be null for '{path}'.";
+      }
+
+      // Assert via assignment rather than explicit checks (the actual instance could be a sub class)
+      var valueType = value.GetType();
+      return type.IsAssignableFrom(valueType) ? null : GetAssertionMessage(path, type);
+    }
+
+    private string AssertArray(string path, Type type, object value)
     {
       var itemType = type.GetElementType();
-      return AssertItems(itemType, value as Array);
+      return AssertItems(path, itemType, value as Array);
     }
 
-    private bool AssertDictionary(Type type, object value)
+    private string AssertDictionary(string path, Type type, object value)
     {
-      return true;
+      var typeInfo = type.GetTypeInfo();
+      var genericTypes = typeInfo.GetGenericArguments();
+      var keyType = genericTypes.ElementAt(0);
+      var valueType = genericTypes.ElementAt(1);
+      var dictionary = value as IDictionary;
+
+      if (dictionary == null)
+      {
+        return $"Excepted value to not be null for '{path}'.";
+      }
+
+      // Check the keys and values individually
+      var keysMessage = AssertItems(path, keyType, dictionary.Keys, "keys", ".Key");
+
+      if (keysMessage == null)
+      {
+        return AssertItems(path, valueType, dictionary.Values, "values", ".Value");
+      }
+
+      return keysMessage;      
     }
 
-    private bool AssertEnumerable(Type type, object value)
+    private string AssertEnumerable(string path, Type type, object value)
     {
       var typeInfo = type.GetTypeInfo();
       var genericTypes = typeInfo.GetGenericArguments();
       var itemType = genericTypes.Single();
 
-      return AssertItems(itemType, value as IEnumerable);
+      return AssertItems(path, itemType, value as IEnumerable);
     }
 
-    private bool AssertItems(Type type, IEnumerable items)
+    private string AssertItems(string path, Type type, IEnumerable items, string elementType = null, string suffix = null)
     {
       // Check the list of items is not null
       if (items == null)
       {
-        return false;
+        return $"Excepted value to not be null for '{path}'.";
       }
 
       // Check the count state of the items
@@ -204,13 +234,17 @@ namespace AutoBogus.Tests.Models
       if (count > 0)
       {
         // If we have any items, check each of them 
+        var index = 0;
         var assertion = GetAssertion(type);
 
         foreach (var item in items)
         {
-          if (!assertion.Invoke(type, item))
+          var element = string.Format("{0}[{1}]{2}", path, index++, suffix);
+          var message = assertion.Invoke(element, type, item);
+
+          if (message != null)
           {
-            return false;
+            return message;
           }
         }
       }
@@ -222,16 +256,57 @@ namespace AutoBogus.Tests.Models
 
         if (!typeInfo.IsInterface && !typeInfo.IsAbstract)
         {
-          return false;
+          elementType = elementType ?? "value";
+          return $"Excepted {elementType} to not be empty for '{path}'.";
         }
       }
 
-      return true;
+      return null;
+    }
+
+    private void AssertMember(string path, MemberInfo memberInfo, object instance)
+    {
+      ExtractMemberInfo(memberInfo, out Type memberType, out Func<object, object> memberGetter);
+
+      // Create a trace path for the current member
+      path = string.Concat(path, ".", memberInfo.Name);
+
+      // Resolve the assertion and value for the member type
+      var value = memberGetter.Invoke(instance);
+      var assertion = GetAssertion(memberType);
+      var message = assertion.Invoke(path, memberType, value);
+
+      // Register an assertion for each member
+      Scope = Scope
+        .ForCondition(message == null)
+        .FailWith(message)
+        .Then;
     }
 
     private object GetDefaultValue<TType>()
     {
       return default(TType);
+    }
+
+    private static string GetAssertionMessage(string path, Type type)
+    {
+      return $"Excepted a value of type '{type.FullName}' for '{path}'.";
+    }
+
+    private Func<string, Type, object, string> GetAssertion(Type type)
+    {
+      var assertion = (from k in Assertions.Keys
+                       where k.Invoke(type)
+                       select Assertions[k]).FirstOrDefault();
+
+      return assertion ?? AssertType;
+    }
+
+    private IEnumerable<MemberInfo> GetMemberInfos(Type type)
+    {
+      return (from m in type.GetMembers()
+              where m.MemberType == MemberTypes.Property || m.MemberType == MemberTypes.Field
+              select m);
     }
 
     private static bool IsType(Type type, Type baseType)
@@ -252,22 +327,6 @@ namespace AutoBogus.Tests.Models
       }
 
       return baseType.IsAssignableFrom(type);
-    }
-
-    private Func<Type, object, bool> GetAssertion(Type type)
-    {
-      var assertion = (from k in Assertions.Keys
-                       where k.Invoke(type)
-                       select Assertions[k]).FirstOrDefault();
-
-      return assertion ?? AssertType;
-    }
-
-    private IEnumerable<MemberInfo> GetMemberInfos(Type type)
-    {
-      return (from m in type.GetMembers()
-              where m.MemberType == MemberTypes.Property || m.MemberType == MemberTypes.Field
-              select m);
     }
 
     private static void ExtractMemberInfo(MemberInfo member, out Type memberType, out Func<object, object> memberGetter)

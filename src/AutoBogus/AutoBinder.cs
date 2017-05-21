@@ -13,7 +13,7 @@ namespace AutoBogus
     private static readonly Type EnumerableType = typeof(IEnumerable);
     private static readonly Type DictionaryType = typeof(IDictionary);
 
-    TType IAutoBinder.CreateInstance<TType>(AutoGenerateContext context)
+    public virtual TType CreateInstance<TType>(AutoGenerateContext context)
     {
       var constructor = GetConstructor<TType>();
 
@@ -30,7 +30,7 @@ namespace AutoBogus
       return default(TType);
     }
 
-    void IAutoBinder.PopulateInstance<TType>(object instance, AutoGenerateContext context, IEnumerable<MemberInfo> members)
+    public virtual void PopulateInstance<TType>(object instance, AutoGenerateContext context, IEnumerable<MemberInfo> members = null)
     {
       var type = typeof(TType);
 

@@ -1,5 +1,5 @@
 ﻿namespace AutoBogus.Tests.Models.Simple
 {
-  public sealed class TestAbstractClass
+  public abstract class TestAbstractClass
   { }
 }

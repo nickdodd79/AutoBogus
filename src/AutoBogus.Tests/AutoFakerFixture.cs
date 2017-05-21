@@ -12,7 +12,7 @@ namespace AutoBogus.Tests
     [Fact]
     public void Should_Generate_Type()
     {
-      AutoFaker.Generate<Order>().Should().BePopulated();
+      AutoFaker.Generate<Order>().Should().BePopulatedWithoutMocks();
     }
 
     [Fact]
@@ -24,7 +24,7 @@ namespace AutoBogus.Tests
 
       foreach (var instance in instances)
       {
-        instance.Should().BePopulated();
+        instance.Should().BePopulatedWithoutMocks();
       }      
     }
 
@@ -56,7 +56,7 @@ namespace AutoBogus.Tests
 
       var instance = order.Generate();
 
-      instance.Should().BePopulated().And.Code.Should().Be(code);
+      instance.Should().BePopulatedWithoutMocks().And.Code.Should().Be(code);
     }
 
     [Fact]
