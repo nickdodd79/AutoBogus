@@ -7,12 +7,21 @@ using System.Reflection;
 
 namespace AutoBogus
 {
+  /// <summary>
+  /// An class for binding auto generated instances.
+  /// </summary>
   public class AutoBinder
     : Binder, IAutoBinder
   {
     private static readonly Type EnumerableType = typeof(IEnumerable);
     private static readonly Type DictionaryType = typeof(IDictionary);
 
+    /// <summary>
+    /// Creates an instance of <typeparamref name="TType"/>.
+    /// </summary>
+    /// <typeparam name="TType">The type of instance to create.</typeparam>
+    /// <param name="context">The <see cref="AutoGenerateContext"/> instance for the generate request.</param>
+    /// <returns>The created instance of <typeparamref name="TType"/>.</returns>
     public virtual TType CreateInstance<TType>(AutoGenerateContext context)
     {
       var constructor = GetConstructor<TType>();
@@ -30,6 +39,17 @@ namespace AutoBogus
       return default(TType);
     }
 
+    /// <summary>
+    /// Populates the provided instance with auto generated values.
+    /// </summary>
+    /// <typeparam name="TType">The type of instance to populate.</typeparam>
+    /// <param name="instance">The instance to populate.</param>
+    /// <param name="context">The <see cref="AutoGenerateContext"/> instance for the generate request.</param>
+    /// <param name="members">An optional collection of members to populate. If null, all writable instance members are populated.</param>
+    /// <remarks>
+    /// Due to the boxing nature of value types, the <paramref name="instance"/> parameter is an object. This means the populated
+    /// values are applied to provided instance and not a copy.
+    /// </remarks>
     public virtual void PopulateInstance<TType>(object instance, AutoGenerateContext context, IEnumerable<MemberInfo> members = null)
     {
       var type = typeof(TType);

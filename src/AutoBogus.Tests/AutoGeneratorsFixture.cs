@@ -234,29 +234,29 @@ namespace AutoBogus.Tests
       }
     }
 
-    public object InvokeGenerator(IAutoGenerator generator)
+    private object InvokeGenerator(IAutoGenerator generator)
     {
       return generator.Generate(_context);
     }
 
-    public static IEnumerable<Type> GetGenericTypes(Type type)
+    private static IEnumerable<Type> GetGenericTypes(Type type)
     {
       var typeInfo = type.GetTypeInfo();
       return typeInfo.GetGenericArguments();
     }
 
-    public static Type GetGeneratorType(Type type, params Type[] types)
+    private static Type GetGeneratorType(Type type, params Type[] types)
     {
       return type.MakeGenericType(types);
     }
 
-    public static IAutoGenerator CreateGenerator(Type type, params Type[] types)
+    private static IAutoGenerator CreateGenerator(Type type, params Type[] types)
     {
       type = GetGeneratorType(type, types);
       return (IAutoGenerator)Activator.CreateInstance(type);
     }
 
-    public static IEnumerable<object[]> GetRegisteredTypes()
+    private static IEnumerable<object[]> GetRegisteredTypes()
     {
       return AutoGeneratorFactory.Generators.Select(g => new object[]
       {

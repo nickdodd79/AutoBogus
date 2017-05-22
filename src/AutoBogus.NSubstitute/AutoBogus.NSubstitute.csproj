@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
+    <Description>Package DescripA C# library complementing the Bogus generator by adding auto creation and population capabilities. This package includes mocking options using NSubtitute.</Description>
+    <Product>AutoBogus</Product>
+    <Company />
+    <Authors>Nick Dodd</Authors>
+    <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿namespace AutoBogus
 {
-  public interface IAutoGenerator
+  internal interface IAutoGenerator
   {
     object Generate(AutoGenerateContext context);
   }

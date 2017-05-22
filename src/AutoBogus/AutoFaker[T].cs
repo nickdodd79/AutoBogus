@@ -6,22 +6,42 @@ using System.Reflection;
 
 namespace AutoBogus
 {
+  /// <summary>
+  /// A class used to invoke generation requests of type <typeparamref name="TType"/>.
+  /// </summary>
+  /// <typeparam name="TType">The type of instance to generate.</typeparam>
   public sealed class AutoFaker<TType>
     : Faker<TType>
     where TType : class
   {
+    /// <summary>
+    /// Instantiates an instance of the <see cref="AutoFaker{TType}"/> class.
+    /// </summary>
     public AutoFaker()
       : this("en", null)
     { }
 
+    /// <summary>
+    /// Instantiates an instance of the <see cref="AutoFaker{TType}"/> class.
+    /// </summary>
+    /// <param name="locale">The locale to use for value generation.</param>
     public AutoFaker(string locale)
       : this(locale, null)
     { }
 
+    /// <summary>
+    /// Instantiates an instance of the <see cref="AutoFaker{TType}"/> class.
+    /// </summary>
+    /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for the generation request.</param>
     public AutoFaker(IAutoBinder binder)
       : this(null, binder)
     { }
 
+    /// <summary>
+    /// Instantiates an instance of the <see cref="AutoFaker{TType}"/> class.
+    /// </summary>
+    /// <param name="locale">The locale to use for value generation.</param>
+    /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for the generation request.</param>
     public AutoFaker(string locale = "en", IAutoBinder binder = null)
       : this(new AutoFakerContext(locale, binder))
     { }
@@ -45,6 +65,11 @@ namespace AutoBogus
     private bool FinishInitialized { get; set; }
     private Func<Faker, TType> DefaultCreateAction { get; set; }
 
+    /// <summary>
+    /// Generates an instance of type <typeparamref name="TType"/>.
+    /// </summary>
+    /// <param name="ruleSets">An optional list of delimited rule sets to use for the generate request.</param>
+    /// <returns>The generated instance of type <typeparamref name="TType"/>.</returns>
     public override TType Generate(string ruleSets = null)
     {
       var context = GetContext(ruleSets);
@@ -55,6 +80,12 @@ namespace AutoBogus
       return base.Generate(ruleSets);
     }
 
+    /// <summary>
+    /// Generates a collection of instances of type <typeparamref name="TType"/>.
+    /// </summary>
+    /// <param name="count">The number of instances to generate.</param>
+    /// <param name="ruleSets">An optional list of delimited rule sets to use for the generate request.</param>
+    /// <returns>The collection of generated instances of type <typeparamref name="TType"/>.</returns>
     public override IEnumerable<TType> Generate(int count, string ruleSets = null)
     {
       var context = GetContext(ruleSets);
@@ -65,6 +96,11 @@ namespace AutoBogus
       return base.Generate(count, ruleSets);
     }
 
+    /// <summary>
+    /// Populates the provided instance with auto generated values.
+    /// </summary>
+    /// <param name="instance">The instance to populate.</param>
+    /// <param name="ruleSets">An optional list of delimited rule sets to use for the populate request.</param>
     public override void Populate(TType instance, string ruleSets = null)
     {
       var context = GetContext(ruleSets);

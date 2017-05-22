@@ -4,6 +4,9 @@ using System.Reflection;
 
 namespace AutoBogus.Moq
 {
+  /// <summary>
+  /// A class that enables Moq binding for interface and abstract types.
+  /// </summary>
   public sealed class MoqBinder
     : AutoBinder
   {
@@ -16,6 +19,12 @@ namespace AutoBogus.Moq
       Factory = type.GetMethod("Of", new Type[0]);
     }
 
+    /// <summary>
+    /// Creates an instance of <typeparamref name="TType"/>.
+    /// </summary>
+    /// <typeparam name="TType">The type of instance to create.</typeparam>
+    /// <param name="context">The <see cref="AutoGenerateContext"/> instance for the generate request.</param>
+    /// <returns>The created instance of <typeparamref name="TType"/>.</returns>
     public override TType CreateInstance<TType>(AutoGenerateContext context)
     {
       var type = typeof(TType);
