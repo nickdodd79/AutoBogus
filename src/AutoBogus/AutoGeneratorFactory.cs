@@ -14,6 +14,7 @@ namespace AutoBogus
       {typeof(byte), new ByteGenerator()},
       {typeof(char), new CharGenerator()},
       {typeof(DateTime), new DateTimeGenerator()},
+      {typeof(DateTimeOffset), new DateTimeOffsetGenerator()},
       {typeof(decimal), new DecimalGenerator()},
       {typeof(double), new DoubleGenerator()},
       {typeof(float), new FloatGenerator()},
