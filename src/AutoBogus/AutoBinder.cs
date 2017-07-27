@@ -1,5 +1,4 @@
-﻿using Bogus;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ namespace AutoBogus
   /// An class for binding auto generated instances.
   /// </summary>
   public class AutoBinder
-    : Binder, IAutoBinder
+    : Bogus.Binder, IAutoBinder
   {
     private static readonly Type EnumerableType = typeof(IEnumerable);
     private static readonly Type DictionaryType = typeof(IDictionary);
