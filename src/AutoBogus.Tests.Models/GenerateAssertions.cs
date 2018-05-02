@@ -28,6 +28,7 @@ namespace AutoBogus.Tests.Models
       Assertions.Add(IsDecimal, AssertDecimal);
       Assertions.Add(IsGuid, AssertGuid);
       Assertions.Add(IsDateTime, AssertDateTime);
+      Assertions.Add(IsDateTimeOffset, AssertDateTimeOffset);
       Assertions.Add(IsString, AssertString);
 
       Assertions.Add(IsEnum, AssertEnum);
@@ -133,6 +134,7 @@ namespace AutoBogus.Tests.Models
     private static bool IsDecimal(Type type) => type == typeof(decimal);
     private static bool IsGuid(Type type) => type == typeof(Guid);
     private static bool IsDateTime(Type type) => type == typeof(DateTime);
+    private static bool IsDateTimeOffset(Type type) => type == typeof(DateTimeOffset);
     private static bool IsString(Type type) => type == typeof(string);
     private static bool IsEnum(Type type) => type.GetTypeInfo().IsEnum;
     private static bool IsNullable(Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
@@ -146,6 +148,7 @@ namespace AutoBogus.Tests.Models
     private static string AssertDecimal(string path, Type type, object value) => value.Equals(0d) ? GetAssertionMessage(path, type) : null;
     private static string AssertGuid(string path, Type type, object value) => Guid.TryParse(value.ToString(), out Guid result) ? null : GetAssertionMessage(path, type);
     private static string AssertDateTime(string path, Type type, object value) => DateTime.TryParse(value.ToString(), out DateTime result) ? null : GetAssertionMessage(path, type);
+    private static string AssertDateTimeOffset(string path, Type type, object value) => DateTimeOffset.TryParse(value.ToString(), out DateTimeOffset result) ? null : GetAssertionMessage(path, type);
     private static string AssertEnum(string path, Type type, object value) => Enum.IsDefined(type, value) ? null : GetAssertionMessage(path, type);
     private static string AssertNull(string path, Type type, object value) => value == null ? null : $"Expected value to be null for '{path}'.";
 

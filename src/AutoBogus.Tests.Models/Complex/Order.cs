@@ -6,7 +6,7 @@ namespace AutoBogus.Tests.Models.Complex
   public sealed class Order
   {
     public DateTime Timestamp;
-
+    
     public Order(int id, ICalculator calculator)
     {
       Id = id;
@@ -19,5 +19,6 @@ namespace AutoBogus.Tests.Models.Complex
     public Status Status { get; set; }
     public DiscountBase[] Discounts { get; set; }
     public IEnumerable<OrderItem> Items { get; set; }
+    public DateTimeOffset DateCreated { get; set; }
   }
 }
