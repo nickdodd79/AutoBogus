@@ -1,5 +1,5 @@
-﻿using FakeItEasy;
-using System.Reflection;
+﻿using AutoBogus.Util;
+using FakeItEasy;
 
 namespace AutoBogus.FakeItEasy
 {
@@ -18,9 +18,8 @@ namespace AutoBogus.FakeItEasy
     public override TType CreateInstance<TType>(AutoGenerateContext context)
     {
       var type = typeof(TType);
-      var typeInfo = type.GetTypeInfo();
 
-      if (typeInfo.IsInterface || typeInfo.IsAbstract)
+      if (ReflectionHelper.IsInterface(type) || ReflectionHelper.IsAbstract(type))
       {
         return A.Fake<TType>();
       }

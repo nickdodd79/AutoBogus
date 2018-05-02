@@ -1,31 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.6;net45</TargetFrameworks>
+    <TargetFrameworks>net40;netstandard1.3;netstandard2.0</TargetFrameworks>
     <Authors>Nick Dodd</Authors>
     <Company />
+    <Product>AutoBogus</Product>
     <Description>A C# library complementing the Bogus generator by adding auto creation and population capabilities.</Description>
     <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="temp\**" />
-    <EmbeddedResource Remove="temp\**" />
-    <None Remove="temp\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="AutoFaker`12.cs" />
-    <Compile Remove="AutoGeneratorFactory3.cs" />
-    <Compile Remove="AutoType.cs" />
-    <Compile Remove="AutoTypeGenerator.cs" />
-    <Compile Remove="DefaultAutoBinder.cs" />
-    <Compile Remove="TypeHelpers.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Bogus" Version="15.0.3" />
+    <PackageReference Include="Bogus" Version="22.0.8" />
   </ItemGroup>
 
 </Project>
+

@@ -1,8 +1,8 @@
 ﻿using AutoBogus.Generators;
+using AutoBogus.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace AutoBogus
 {
@@ -38,24 +38,22 @@ namespace AutoBogus
     internal static IAutoGenerator GetGenerator(Type type, AutoGenerateContext context)
     {
       // Do some type -> generator mapping
-      var typeInfo = type.GetTypeInfo();
-
-      if (typeInfo.IsArray)
+      if (ReflectionHelper.IsArray(type))
       {
         type = type.GetElementType();
         return CreateGenericGenerator(typeof(ArrayGenerator<>), type);
       }
 
-      if (typeInfo.IsEnum)
+      if (ReflectionHelper.IsEnum(type))
       {
         return CreateGenericGenerator(typeof(EnumGenerator<>), type);
       }
 
-      if (typeInfo.IsGenericType)
+      if (ReflectionHelper.IsGenericType(type))
       {
         // For generic types we need to interrogate the inner types
-        var generics = typeInfo.GetGenericArguments();
-        var definition = typeInfo.GetGenericTypeDefinition();
+        var generics = ReflectionHelper.GetGenericArguments(type);
+        var definition = ReflectionHelper.GetGenericTypeDefinition(type);
 
         if (definition == typeof(IDictionary<,>))
         {

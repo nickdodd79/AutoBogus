@@ -1,8 +1,10 @@
-﻿using System;
+﻿using AutoBogus.Util;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Binder = Bogus.Binder;
 
 namespace AutoBogus
 {
@@ -10,7 +12,7 @@ namespace AutoBogus
   /// An class for binding auto generated instances.
   /// </summary>
   public class AutoBinder
-    : Bogus.Binder, IAutoBinder
+    : Binder, IAutoBinder
   {
     private static readonly Type EnumerableType = typeof(IEnumerable);
     private static readonly Type DictionaryType = typeof(IDictionary);
@@ -97,8 +99,7 @@ namespace AutoBogus
     private ConstructorInfo GetConstructor<TType>()
     {
       var type = typeof(TType);
-      var typeInfo = type.GetTypeInfo();
-      var constructors = typeInfo.GetConstructors();
+      var constructors = ReflectionHelper.GetConstructors(type);
 
       // For dictionaries and enumerables locate a constructor that is used for populating as well
       if (IsDictionary(type))
@@ -128,8 +129,7 @@ namespace AutoBogus
               let p = c.GetParameters()
               where p.Count() == 1
               let m = p.Single()
-              let i = m.ParameterType.GetTypeInfo()
-              where i.IsGenericType
+              where ReflectionHelper.IsGenericType(m.ParameterType)
               let d = m.ParameterType.GetGenericTypeDefinition()
               where d == type
               select c).SingleOrDefault();
@@ -141,19 +141,19 @@ namespace AutoBogus
       memberSetter = null;
 
       // Extract the member type and setter action
-      if (member.MemberType == MemberTypes.Field)
+      if (ReflectionHelper.IsField(member))
       {
         var fieldInfo = member as FieldInfo;
 
         memberType = fieldInfo.FieldType;
         memberSetter = fieldInfo.SetValue;
       }
-      else if (member.MemberType == MemberTypes.Property)
+      else if (ReflectionHelper.IsProperty(member))
       {
         var propertyInfo = member as PropertyInfo;
 
         memberType = propertyInfo.PropertyType;
-        memberSetter = propertyInfo.SetValue;
+        memberSetter = (obj, value) => propertyInfo.SetValue(obj, value, new object[0]);
       }
     }
   }

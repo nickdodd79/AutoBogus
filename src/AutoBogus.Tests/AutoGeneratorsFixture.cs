@@ -27,7 +27,7 @@ namespace AutoBogus.Tests
       : AutoGeneratorsFixture
     {
       [Theory]
-      [MemberData("GetRegisteredTypes")]
+      [MemberData(nameof(GetRegisteredTypes))]
       public void Generate_Should_Return_Value(Type type)
       {
         var generator = AutoGeneratorFactory.Generators[type];
@@ -36,12 +36,20 @@ namespace AutoBogus.Tests
       }
 
       [Theory]
-      [MemberData("GetRegisteredTypes")]
+      [MemberData(nameof(GetRegisteredTypes))]
       public void GetGenerator_Should_Return_Generator(Type type)
       {
         var generator = AutoGeneratorFactory.Generators[type];
 
         AutoGeneratorFactory.GetGenerator(type, _context).Should().Be(generator);
+      }
+
+      public static IEnumerable<object[]> GetRegisteredTypes()
+      {
+        return AutoGeneratorFactory.Generators.Select(g => new object[]
+        {
+          g.Key
+        });
       }
     }
 
@@ -216,7 +224,7 @@ namespace AutoBogus.Tests
         else
         {
           InvokeGenerator(generator).Should().BeAssignableTo(type);
-        }        
+        }
       }
 
       [Theory]
@@ -254,14 +262,6 @@ namespace AutoBogus.Tests
     {
       type = GetGeneratorType(type, types);
       return (IAutoGenerator)Activator.CreateInstance(type);
-    }
-
-    private static IEnumerable<object[]> GetRegisteredTypes()
-    {
-      return AutoGeneratorFactory.Generators.Select(g => new object[]
-      {
-        g.Key
-      });
     }
   }
 }

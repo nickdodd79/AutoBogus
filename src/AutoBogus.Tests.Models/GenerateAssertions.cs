@@ -41,7 +41,7 @@ namespace AutoBogus.Tests.Models
     private Order Order { get; }
     private AssertionScope Scope { get; set; }
 
-    protected override string Context => "order";
+    protected override string Identifier => "order";
 
     public AndConstraint<Order> BePopulatedWithMocks()
     {
@@ -186,8 +186,7 @@ namespace AutoBogus.Tests.Models
 
     private string AssertDictionary(string path, Type type, object value)
     {
-      var typeInfo = type.GetTypeInfo();
-      var genericTypes = typeInfo.GetGenericArguments();
+      var genericTypes = type.GetGenericArguments();
       var keyType = genericTypes.ElementAt(0);
       var valueType = genericTypes.ElementAt(1);
       var dictionary = value as IDictionary;
@@ -210,8 +209,7 @@ namespace AutoBogus.Tests.Models
 
     private string AssertEnumerable(string path, Type type, object value)
     {
-      var typeInfo = type.GetTypeInfo();
-      var genericTypes = typeInfo.GetGenericArguments();
+      var genericTypes = type.GetGenericArguments();
       var itemType = genericTypes.Single();
 
       return AssertItems(path, itemType, value as IEnumerable);
@@ -308,19 +306,16 @@ namespace AutoBogus.Tests.Models
     private IEnumerable<MemberInfo> GetMemberInfos(Type type)
     {
       return (from m in type.GetMembers()
-              where m.MemberType == MemberTypes.Property || m.MemberType == MemberTypes.Field
+              where IsField(m) || IsProperty(m)
               select m);
     }
 
     private static bool IsType(Type type, Type baseType)
     {
-      var typeInfo = type.GetTypeInfo();
-      var baseTypeInfo = baseType.GetTypeInfo();
-
       // We may need to do some generics magic to compare the types
-      if (typeInfo.IsGenericType && baseTypeInfo.IsGenericType)
+      if (IsGenericType(type) && IsGenericType(baseType))
       {
-        var types = typeInfo.GetGenericArguments();
+        var types = type.GetGenericArguments();
         var baseTypes = baseType.GetGenericArguments();
 
         if (types.Length == baseTypes.Length)
@@ -338,20 +333,48 @@ namespace AutoBogus.Tests.Models
       memberGetter = null;
 
       // Extract the member type and getter action
-      if (member.MemberType == MemberTypes.Field)
+      if (IsField(member))
       {
         var fieldInfo = member as FieldInfo;
 
         memberType = fieldInfo.FieldType;
         memberGetter = fieldInfo.GetValue;
       }
-      else if (member.MemberType == MemberTypes.Property)
+      else if (IsProperty(member))
       {
         var propertyInfo = member as PropertyInfo;
 
         memberType = propertyInfo.PropertyType;
         memberGetter = propertyInfo.GetValue;
       }
+    }
+
+    private static bool IsField(MemberInfo member)
+    {
+#if NET45
+      return member.MemberType == MemberTypes.Field;
+#else
+      return member is FieldInfo;
+#endif
+    }
+
+    private static bool IsProperty(MemberInfo member)
+    {
+#if NET45
+      return member.MemberType == MemberTypes.Property;
+#else
+      return member is PropertyInfo;
+#endif
+    }
+
+    private static bool IsGenericType(Type type)
+    {
+#if NET45
+      return type.IsGenericType;
+#else
+      var typeInfo = type.GetTypeInfo();
+      return typeInfo.IsGenericType;
+#endif
     }
   }
 }

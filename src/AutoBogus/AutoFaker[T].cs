@@ -86,7 +86,7 @@ namespace AutoBogus
     /// <param name="count">The number of instances to generate.</param>
     /// <param name="ruleSets">An optional list of delimited rule sets to use for the generate request.</param>
     /// <returns>The collection of generated instances of type <typeparamref name="TType"/>.</returns>
-    public override IEnumerable<TType> Generate(int count, string ruleSets = null)
+    public override List<TType> Generate(int count, string ruleSets = null)
     {
       var context = GetContext(ruleSets);
 
@@ -94,7 +94,7 @@ namespace AutoBogus
       PrepareFinish(context);
 
       return base.Generate(count, ruleSets);
-    }
+    }    
 
     /// <summary>
     /// Populates the provided instance with auto generated values.
