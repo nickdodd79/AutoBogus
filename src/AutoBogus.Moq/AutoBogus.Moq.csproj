@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFrameworks>netstandard1.6;net45</TargetFrameworks>
     <Description>A C# library complementing the Bogus generator by adding auto creation and population capabilities. This package includes mocking options using Moq.</Description>
     <Authors>Nick Dodd</Authors>
     <Company />
