@@ -1,5 +1,5 @@
 ﻿namespace AutoBogus.Tests.Models.Simple
 {
-  public interface TestInterface
+  public interface ITestInterface
   { }
 }

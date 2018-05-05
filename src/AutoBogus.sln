@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoBogus.Moq", "AutoBogus.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoBogus.NSubstitute", "AutoBogus.NSubstitute\AutoBogus.NSubstitute.csproj", "{88DB6DA5-6119-4E5C-8C77-3E0861EF04BC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBogus.Playground", "AutoBogus.Playground\AutoBogus.Playground.csproj", "{AC5564EA-340E-48C8-B643-82A2C11EB921}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{88DB6DA5-6119-4E5C-8C77-3E0861EF04BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88DB6DA5-6119-4E5C-8C77-3E0861EF04BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88DB6DA5-6119-4E5C-8C77-3E0861EF04BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC5564EA-340E-48C8-B643-82A2C11EB921}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC5564EA-340E-48C8-B643-82A2C11EB921}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC5564EA-340E-48C8-B643-82A2C11EB921}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC5564EA-340E-48C8-B643-82A2C11EB921}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +67,7 @@ Global
 		{3AF6390B-59BD-48C8-B8BE-6EF53ED17E4E} = {C7769B05-8F64-4C15-8206-BF4DFE919BC4}
 		{A401B4B8-EBFB-4358-9D6F-2A657D9A236E} = {C7769B05-8F64-4C15-8206-BF4DFE919BC4}
 		{8FAD1671-409D-4149-92FF-7D918B84B71E} = {C7769B05-8F64-4C15-8206-BF4DFE919BC4}
+		{AC5564EA-340E-48C8-B643-82A2C11EB921} = {C7769B05-8F64-4C15-8206-BF4DFE919BC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {337C9A4F-6114-46B5-BE89-623F6D1AB8FD}

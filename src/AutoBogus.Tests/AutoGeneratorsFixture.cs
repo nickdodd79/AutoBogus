@@ -60,7 +60,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(TestEnum[]))]
       [InlineData(typeof(TestStruct[]))]
       [InlineData(typeof(TestClass[]))]
-      [InlineData(typeof(TestInterface[]))]
+      [InlineData(typeof(ITestInterface[]))]
       [InlineData(typeof(TestAbstractClass[]))]
       public void Generate_Should_Return_Array(Type type)
       {
@@ -75,7 +75,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(TestEnum[]))]
       [InlineData(typeof(TestStruct[]))]
       [InlineData(typeof(TestClass[]))]
-      [InlineData(typeof(TestInterface[]))]
+      [InlineData(typeof(ITestInterface[]))]
       [InlineData(typeof(TestAbstractClass[]))]
       public void GetGenerator_Should_Return_ArrayGenerator(Type type)
       {
@@ -111,7 +111,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IDictionary<int, TestEnum>))]
       [InlineData(typeof(IDictionary<int, TestStruct>))]
       [InlineData(typeof(IDictionary<int, TestClass>))]
-      [InlineData(typeof(IDictionary<int, TestInterface>))]
+      [InlineData(typeof(IDictionary<int, ITestInterface>))]
       [InlineData(typeof(IDictionary<int, TestAbstractClass>))]
       public void Generate_Should_Return_Dictionary(Type type)
       {
@@ -136,7 +136,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IDictionary<int, TestEnum>))]
       [InlineData(typeof(IDictionary<int, TestStruct>))]
       [InlineData(typeof(IDictionary<int, TestClass>))]
-      [InlineData(typeof(IDictionary<int, TestInterface>))]
+      [InlineData(typeof(IDictionary<int, ITestInterface>))]
       [InlineData(typeof(IDictionary<int, TestAbstractClass>))]
       public void GetGenerator_Should_Return_DictionaryGenerator(Type type)
       {
@@ -156,7 +156,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IEnumerable<TestEnum>))]
       [InlineData(typeof(IEnumerable<TestStruct>))]
       [InlineData(typeof(IEnumerable<TestClass>))]
-      [InlineData(typeof(IEnumerable<TestInterface>))]
+      [InlineData(typeof(IEnumerable<ITestInterface>))]
       [InlineData(typeof(IEnumerable<TestAbstractClass>))]
       public void Generate_Should_Return_Enumerable(Type type)
       {
@@ -172,7 +172,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IEnumerable<TestEnum>))]
       [InlineData(typeof(IEnumerable<TestStruct>))]
       [InlineData(typeof(IEnumerable<TestClass>))]
-      [InlineData(typeof(IEnumerable<TestInterface>))]
+      [InlineData(typeof(IEnumerable<ITestInterface>))]
       [InlineData(typeof(IEnumerable<TestAbstractClass>))]
       public void GetGenerator_Should_Return_EnumerableGenerator(Type type)
       {
@@ -208,7 +208,7 @@ namespace AutoBogus.Tests
       [Theory]
       [InlineData(typeof(TestStruct))]
       [InlineData(typeof(TestClass))]
-      [InlineData(typeof(TestInterface))]
+      [InlineData(typeof(ITestInterface))]
       [InlineData(typeof(TestAbstractClass))]
       [InlineData(typeof(List<TestClass>))]
       [InlineData(typeof(SortedList<int, TestClass>))]
@@ -230,7 +230,7 @@ namespace AutoBogus.Tests
       [Theory]
       [InlineData(typeof(TestStruct))]
       [InlineData(typeof(TestClass))]
-      [InlineData(typeof(TestInterface))]
+      [InlineData(typeof(ITestInterface))]
       [InlineData(typeof(TestAbstractClass))]
       [InlineData(typeof(List<TestClass>))]
       [InlineData(typeof(SortedList<int, TestClass>))]

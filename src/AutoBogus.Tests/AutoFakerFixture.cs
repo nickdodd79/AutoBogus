@@ -202,7 +202,7 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Not_Generate_Interface_Type()
       {
-        AutoFaker.Generate<TestInterface>().Should().BeNull();
+        AutoFaker.Generate<ITestInterface>().Should().BeNull();
       }
 
       [Fact]

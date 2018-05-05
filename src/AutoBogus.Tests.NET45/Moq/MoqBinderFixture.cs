@@ -24,7 +24,7 @@ namespace AutoBogus.Moq.Tests
     [Fact]
     public void Should_Create_Interface_Mock()
     {
-      _faker.Generate<TestInterface>().Should().NotBeNull();
+      _faker.Generate<ITestInterface>().Should().NotBeNull();
     }
 
     [Fact]

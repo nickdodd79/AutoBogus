@@ -14,8 +14,6 @@ namespace AutoBogus
     : Faker<TType>
     where TType : class
   {
-    private IAutoBinder _binder;
-
     /// <summary>
     /// Instantiates an instance of the <see cref="AutoFaker{TType}"/> class.
     /// </summary>
