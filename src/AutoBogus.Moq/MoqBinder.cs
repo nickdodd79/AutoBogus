@@ -33,8 +33,7 @@ namespace AutoBogus.Moq
       if (typeInfo.IsInterface || typeInfo.IsAbstract)
       {
         // Take the cached factory method and make it generic based on the requested type
-        // Because this method supported struct and class types, and Moq only supported class types
-        // We need to put this 'hack' into place
+        // Because this method supports struct and class types, and Moq only supports class types we need to put this 'hack' into place
         var factory = Factory.MakeGenericMethod(type);
         return (TType) factory.Invoke(null, new object[0]);
       }

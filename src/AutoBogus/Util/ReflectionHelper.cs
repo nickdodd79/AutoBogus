@@ -6,6 +6,11 @@ namespace AutoBogus.Util
 {
   internal static class ReflectionHelper
   {
+    internal static IEnumerable<Type> GetGenericArguments(Type type)
+    {
+      return type.GetGenericArguments();
+    }
+
     internal static bool IsEnum(Type type)
     {
 #if NET40
@@ -16,9 +21,14 @@ namespace AutoBogus.Util
 #endif
     }
 
-    internal static bool IsArray(Type type)
+    internal static bool IsClass(Type type)
     {
-      return type.IsArray;
+#if NET40
+      return type.IsClass;
+#else
+      var typeInfo = type.GetTypeInfo();
+      return typeInfo.IsClass;
+#endif
     }
 
     internal static bool IsAbstract(Type type)
@@ -67,21 +77,6 @@ namespace AutoBogus.Util
 #else
       return member is PropertyInfo;
 #endif
-    }
-
-    internal static IEnumerable<ConstructorInfo> GetConstructors(Type type)
-    {
-      return type.GetConstructors();
-    }
-
-    internal static Type GetGenericTypeDefinition(Type type)
-    {
-      return type.GetGenericTypeDefinition();
-    }
-
-    internal static IEnumerable<Type> GetGenericArguments(Type type)
-    {
-      return type.GetGenericArguments();
     }
   }
 }

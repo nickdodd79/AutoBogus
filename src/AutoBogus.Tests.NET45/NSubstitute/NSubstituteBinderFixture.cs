@@ -1,17 +1,36 @@
 ﻿using AutoBogus.Tests.Models;
 using AutoBogus.Tests.Models.Complex;
+using AutoBogus.Tests.Models.Simple;
+using FluentAssertions;
 using Xunit;
 
 namespace AutoBogus.NSubstitute.Tests
 {
   public class NSubstituteBinderFixture
   {
+    private IAutoFaker _faker;
+
+    public NSubstituteBinderFixture()
+    {
+      _faker = AutoFaker.Create<NSubstituteBinder>();
+    }
+
     [Fact]
     public void Should_Create_With_Mocks()
     {
-      var binder = new NSubstituteBinder();
+      _faker.Generate<Order>().Should().BeGeneratedWithMocks();
+    }
 
-      AutoFaker.Generate<Order>(binder).Should().BePopulatedWithMocks();
+    [Fact]
+    public void Should_Create_Interface_Mock()
+    {
+      _faker.Generate<TestInterface>().Should().NotBeNull();
+    }
+
+    [Fact]
+    public void Should_Create_Abstract_Mock()
+    {
+      _faker.Generate<TestAbstractClass>().Should().NotBeNull();
     }
   }
 }

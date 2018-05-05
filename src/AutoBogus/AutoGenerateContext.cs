@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using System;
 using System.Collections.Generic;
 
 namespace AutoBogus
@@ -8,15 +9,15 @@ namespace AutoBogus
   /// </summary>
   public sealed class AutoGenerateContext
   {
-    private const int DefaultCount = 3;
-
     internal AutoGenerateContext(Faker faker, IEnumerable<string> ruleSets, IAutoBinder binder)
-    {
+    {      
       Faker = faker;
       RuleSets = ruleSets;
       Binder = binder;
+
+      Types = new Stack<Type>();
     }
-    
+
     /// <summary>
     /// The underlying <see cref="Bogus.Faker"/> instance used to generate random values.
     /// </summary>
@@ -27,33 +28,33 @@ namespace AutoBogus
     /// </summary>
     public IEnumerable<string> RuleSets { get; }
 
+    internal Stack<Type> Types { get; }
     internal IAutoBinder Binder { get; }
-
+    
     /// <summary>
-    /// Creates a populated instance of type <typeparamref name="TType"/>.
+    /// Creates an instance of type <typeparamref name="TType"/>.
     /// </summary>
     /// <typeparam name="TType">The instance type to generate.</typeparam>
-    /// <param name="context">The <see cref="AutoGenerateContext"/> instance for the generate request.</param>
-    /// <returns>A populated instance of <typeparamref name="TType"/>.</returns>
-    public TType Generate<TType>(AutoGenerateContext context)
+    /// <returns>An instance of <typeparamref name="TType"/>.</returns>
+    public TType Generate<TType>()
     {
-      var generator = AutoGeneratorFactory.GetGenerator<TType>(context);
-      return (TType)generator.Generate(context);
+      var generator = AutoGeneratorFactory.GetGenerator<TType>(this);
+      return (TType)generator.Generate(this);
     }
 
     /// <summary>
-    /// Creates a collection of populated instances of type <typeparamref name="TType"/>.
+    /// Creates a collection of instances of type <typeparamref name="TType"/>.
     /// </summary>
     /// <typeparam name="TType">The instance type to generate.</typeparam>
-    /// <param name="context">The <see cref="AutoGenerateContext"/> instance for the generate request.</param>
-    /// <returns>A collection of populated instances of <typeparamref name="TType"/>.</returns>
-    public IEnumerable<TType> GenerateMany<TType>(AutoGenerateContext context)
+    /// <param name="count">The number of instances to generate.</param>
+    /// <returns>A collection of instances of <typeparamref name="TType"/>.</returns>
+    public List<TType> GenerateMany<TType>(int? count = null)
     {
       var items = new List<TType>();
 
-      for (var index = 0; index < DefaultCount; index++)
+      for (var index = 0; index < (count ?? AutoFaker.DefaultCount); index++)
       {
-        var item = Generate<TType>(context);
+        var item = Generate<TType>();
 
         // Ensure the generated value is not null (which means the type couldn't be generated)
         if (item != null)

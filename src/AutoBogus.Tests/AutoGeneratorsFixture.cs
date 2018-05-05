@@ -86,6 +86,24 @@ namespace AutoBogus.Tests
       }
     }
 
+    public class EnumGenerator
+      : AutoGeneratorsFixture
+    {
+      [Fact]
+      public void Generate_Should_Return_Enum()
+      {
+        var generator = new EnumGenerator<TestEnum>();
+
+        InvokeGenerator(generator).Should().BeOfType<TestEnum>();
+      }
+
+      [Fact]
+      public void GetGenerator_Should_Return_EnumGenerator()
+      {
+        AutoGeneratorFactory.GetGenerator<TestEnum>(_context).Should().BeOfType<EnumGenerator<TestEnum>>();
+      }
+    }
+
     public class DictionaryGenerator
       : AutoGeneratorsFixture
     {
@@ -163,24 +181,6 @@ namespace AutoBogus.Tests
         var generatorType = GetGeneratorType(typeof(EnumerableGenerator<>), itemType);
 
         AutoGeneratorFactory.GetGenerator(type, _context).Should().BeOfType(generatorType);
-      }
-    }
-
-    public class EnumGenerator
-      : AutoGeneratorsFixture
-    {
-      [Fact]
-      public void Generate_Should_Return_Enum()
-      {
-        var generator = new EnumGenerator<TestEnum>();
-
-        InvokeGenerator(generator).Should().BeOfType<TestEnum>();
-      }
-
-      [Fact]
-      public void GetGenerator_Should_Return_EnumGenerator()
-      {
-        AutoGeneratorFactory.GetGenerator<TestEnum>(_context).Should().BeOfType<EnumGenerator<TestEnum>>();
       }
     }
 

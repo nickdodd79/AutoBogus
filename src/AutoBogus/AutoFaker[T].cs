@@ -10,15 +10,17 @@ namespace AutoBogus
   /// A class used to invoke generation requests of type <typeparamref name="TType"/>.
   /// </summary>
   /// <typeparam name="TType">The type of instance to generate.</typeparam>
-  public sealed class AutoFaker<TType>
+  public class AutoFaker<TType>
     : Faker<TType>
     where TType : class
   {
+    private IAutoBinder _binder;
+
     /// <summary>
     /// Instantiates an instance of the <see cref="AutoFaker{TType}"/> class.
     /// </summary>
     public AutoFaker()
-      : this("en", null)
+      : this(null, null)
     { }
 
     /// <summary>
@@ -42,14 +44,10 @@ namespace AutoBogus
     /// </summary>
     /// <param name="locale">The locale to use for value generation.</param>
     /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for the generation request.</param>
-    public AutoFaker(string locale = "en", IAutoBinder binder = null)
-      : this(new AutoFakerContext(locale, binder))
-    { }
-
-    private AutoFaker(AutoFakerContext context)
-      : base(context.Locale, context.Binder)
+    public AutoFaker(string locale = null, IAutoBinder binder = null)
+      : base(locale ?? AutoFaker.DefaultLocale)
     {
-      Context = context;
+      Binder = binder ?? AutoFaker.DefaultBinder;
 
       // Ensure the default create action is cleared
       // This is so we can check whether it has been set externally
@@ -59,12 +57,12 @@ namespace AutoBogus
 
     private Type Type => typeof(TType);
 
-    private AutoFakerContext Context { get; }
+    internal IAutoBinder Binder { get; }
 
     private bool CreateInitialized { get; set; }
     private bool FinishInitialized { get; set; }
     private Func<Faker, TType> DefaultCreateAction { get; set; }
-
+        
     /// <summary>
     /// Generates an instance of type <typeparamref name="TType"/>.
     /// </summary>
@@ -115,7 +113,7 @@ namespace AutoBogus
       var type = typeof(TType);
       var ruleSetNames = ParseRuleSets(ruleSets);
 
-      return new AutoGenerateContext(FakerHub, ruleSetNames, Context.Binder);
+      return new AutoGenerateContext(FakerHub, ruleSetNames, Binder);
     }
 
     private IEnumerable<string> ParseRuleSets(string ruleSets)
@@ -144,7 +142,7 @@ namespace AutoBogus
           // This is because any specific rule sets are expected to handle the full creation
           if (context.RuleSets.Contains(currentRuleSet))
           {
-            return Context.Binder.CreateInstance<TType>(context);
+            return Binder.CreateInstance<TType>(context);
           }
 
           return DefaultCreateAction.Invoke(faker);

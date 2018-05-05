@@ -1,37 +1,140 @@
-﻿using System.Collections.Generic;
+﻿using Bogus;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AutoBogus
 {
   /// <summary>
-  /// A class used to conveniently invoke generate requests for a given type.
+  /// A class used to conveniently invoke generate requests.
   /// </summary>
-  public static class AutoFaker
+  public sealed class AutoFaker
+    : IAutoFaker
   {
-    /// <summary>
-    /// Generates a populated instance of type <typeparamref name="TType"/>.
-    /// </summary>
-    /// <typeparam name="TType">The type of instance to generate.</typeparam>
-    /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for the generation request.</param>
-    /// <returns>The generated instance of type <typeparamref name="TType"/>.</returns>
-    public static TType Generate<TType>(IAutoBinder binder = null)
-      where TType : class
+    internal const int DefaultCount = 3;
+    internal const string DefaultLocale = "en";
+
+    internal static IAutoBinder DefaultBinder = new AutoBinder();
+
+    private AutoFaker(string locale, IAutoBinder binder)
     {
-      var auto = new AutoFaker<TType>(binder);
-      return auto.Generate();
+      Locale = locale;
+      Binder = binder;
+    }
+
+    internal string Locale { get; private set; }
+    internal IAutoBinder Binder { get; private set; }
+
+    TType IAutoFaker.Generate<TType>()
+    {
+      var context = CreateContext();
+      return context.Generate<TType>();
+    }
+
+    List<TType> IAutoFaker.Generate<TType>(int count)
+    {
+      var context = CreateContext();
+      return context.GenerateMany<TType>(count);
+    }
+
+    private AutoGenerateContext CreateContext()
+    {
+      var faker = new Faker(Locale ?? DefaultLocale);
+      var ruleSets = Enumerable.Empty<string>();
+      var binder = Binder ?? DefaultBinder;
+
+      return new AutoGenerateContext(faker, ruleSets, binder);
+    }
+
+    #region Create
+
+    /// <summary>
+    /// Creates a configured <see cref="IAutoFaker"/> instance.
+    /// </summary>
+    /// <typeparam name="TBinder">The <see cref="IAutoBinder"/> type of use for generate requests.</typeparam>
+    /// <param name="locale">The locale to use for value generation.</param>
+    /// <returns>The configured <see cref="IAutoFaker"/> instance.</returns>
+    public static IAutoFaker Create<TBinder>(string locale = null)
+      where TBinder : IAutoBinder, new()
+    {
+      var binder = new TBinder();
+      return Create(locale, binder);
     }
 
     /// <summary>
-    /// Generates a collection of populated instances of type <typeparamref name="TType"/>.
+    /// Creates a configured <see cref="IAutoFaker"/> instance.
+    /// </summary>
+    /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for generate requests.</param>
+    /// <returns>The configured <see cref="IAutoFaker"/> instance.</returns>
+    public static IAutoFaker Create(IAutoBinder binder)
+    {
+      return Create(null, binder);
+    }
+
+    /// <summary>
+    /// Creates a configured <see cref="IAutoFaker"/> instance.
+    /// </summary>
+    /// <param name="locale">The locale to use for value generation.</param>
+    /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for generate requests.</param>
+    /// <returns>The configured <see cref="IAutoFaker"/> instance.</returns>
+    public static IAutoFaker Create(string locale = null, IAutoBinder binder = null)
+    {
+      return new AutoFaker(locale, binder);
+    }
+
+    #endregion
+
+    #region SetBinder
+
+    /// <summary>
+    /// Sets the default binder used for binding auto generated instances.
+    /// </summary>
+    /// <typeparam name="TBinder">The binder type to use for generate requests.</typeparam>
+    public static void SetBinder<TBinder>()
+      where TBinder : IAutoBinder, new()
+    {
+      var binder = new TBinder();
+      SetBinder(binder);
+    }
+
+    /// <summary>
+    /// Sets the default binder used for binding auto generated instances.
+    /// </summary>
+    /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for generate requests.</param>
+    public static void SetBinder(IAutoBinder binder)
+    {
+      DefaultBinder = binder ?? new AutoBinder();
+    }
+
+    #endregion
+
+    #region Generate
+
+    /// <summary>
+    /// Generates an instance of type <typeparamref name="TType"/>.
+    /// </summary>
+    /// <typeparam name="TType">The type of instance to generate.</typeparam>
+    /// <param name="locale">The locale to use for value generation.</param>
+    /// <returns>The generated instance of type <typeparamref name="TType"/>.</returns>
+    public static TType Generate<TType>(string locale = null)
+    {
+      var faker = Create(locale);
+      return faker.Generate<TType>();
+    }
+
+    /// <summary>
+    /// Generates a collection of instances of type <typeparamref name="TType"/>.
     /// </summary>
     /// <typeparam name="TType">The type of instance to generate.</typeparam>
     /// <param name="count">The number of instances to generate.</param>
-    /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for the generation request.</param>
+    /// <param name="locale">The locale to use for value generation.</param>
     /// <returns>The collection of generated instances of type <typeparamref name="TType"/>.</returns>
-    public static IEnumerable<TType> Generate<TType>(int count, IAutoBinder binder = null)
-      where TType : class
+    public static List<TType> Generate<TType>(int count, string locale = null)
     {
-      var auto = new AutoFaker<TType>(binder);
-      return auto.Generate(count);
+      var faker = Create(locale);
+      return faker.Generate<TType>(count);
     }
+
+    #endregion
   }
 }
+

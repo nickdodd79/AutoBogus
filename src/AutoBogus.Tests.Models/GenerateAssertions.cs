@@ -1,5 +1,4 @@
 ﻿using System;
-using AutoBogus.Tests.Models.Complex;
 using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
 using System.Reflection;
@@ -11,59 +10,87 @@ using FluentAssertions;
 namespace AutoBogus.Tests.Models
 {
   public sealed class GenerateAssertions
-    : ReferenceTypeAssertions<Order, GenerateAssertions>
+    : ReferenceTypeAssertions<object, GenerateAssertions>
   {
     private MethodInfo DefaultValueFactory;
     private IDictionary<Func<Type, bool>, Func<string, Type, object, string>> Assertions = new Dictionary<Func<Type, bool>, Func<string, Type, object, string>>();
 
-    internal GenerateAssertions(Order order)
+    internal GenerateAssertions(object subject)
     {
       var type = GetType();
 
-      Order = order;
+      Subject = subject;
       DefaultValueFactory = type.GetMethod("GetDefaultValue", BindingFlags.Instance | BindingFlags.NonPublic);
 
       // Add the assertions to type mappings
-      Assertions.Add(IsInt, AssertInt);
-      Assertions.Add(IsDecimal, AssertDecimal);
-      Assertions.Add(IsGuid, AssertGuid);
+      Assertions.Add(IsBool, AssertBool);
+      Assertions.Add(IsByte, AssertByte);
+      Assertions.Add(IsChar, AssertChar);
       Assertions.Add(IsDateTime, AssertDateTime);
       Assertions.Add(IsDateTimeOffset, AssertDateTimeOffset);
+      Assertions.Add(IsDecimal, AssertDecimal);
+      Assertions.Add(IsDouble, AssertDouble);
+      Assertions.Add(IsFloat, AssertFloat);
+      Assertions.Add(IsGuid, AssertGuid);
+      Assertions.Add(IsInt, AssertInt);
+      Assertions.Add(IsLong, AssertLong);
+      Assertions.Add(IsSByte, AssertSByte);
+      Assertions.Add(IsShort, AssertShort);
       Assertions.Add(IsString, AssertString);
+      Assertions.Add(IsUInt, AssertUInt);
+      Assertions.Add(IsULong, AssertULong);
+      Assertions.Add(IsUShort, AssertUShort);
 
-      Assertions.Add(IsEnum, AssertEnum);
-      Assertions.Add(IsNullable, AssertNullable);
       Assertions.Add(IsArray, AssertArray);
+      Assertions.Add(IsEnum, AssertEnum);
       Assertions.Add(IsDictionary, AssertDictionary);
       Assertions.Add(IsEnumerable, AssertEnumerable);
+      Assertions.Add(IsNullable, AssertNullable);
     }
 
-    private Order Order { get; }
     private AssertionScope Scope { get; set; }
 
-    protected override string Identifier => "order";
+    protected override string Identifier => "Generate";
 
-    public AndConstraint<Order> BePopulatedWithMocks()
+    public AndConstraint<object> BeGenerated()
     {
-      // Ensure the mocked objects are asserted as null
+      var type = Subject.GetType();
+      var assertion = GetAssertion(type);
+
+      Scope = Execute.Assertion;
+
+      // Assert the value and output any fail messages
+      var message = assertion.Invoke(null, type, Subject);
+            
+      Scope = Scope
+        .ForCondition(message == null)
+        .FailWith(message)
+        .Then;
+
+      return new AndConstraint<object>(Subject);
+    }
+
+    public AndConstraint<object> BeGeneratedWithMocks()
+    {
+      // Ensure the mocked objects are asserted as not null
       Assertions.Add(IsInterface, AssertMock);
       Assertions.Add(IsAbstract, AssertMock);
 
-      return BePopulated();
+      return AssertSubject();
     }
 
-    public AndConstraint<Order> BePopulatedWithoutMocks()
+    public AndConstraint<object> BeGeneratedWithoutMocks()
     {
       // Ensure the mocked objects are asserted as null
       Assertions.Add(IsInterface, AssertNull);
       Assertions.Add(IsAbstract, AssertNull);
 
-      return BePopulated();     
+      return AssertSubject();
     }
 
-    public AndConstraint<Order> BeNotPopulated()
+    public AndConstraint<object> NotBeGenerated()
     {
-      var type = typeof(Order);
+      var type = Subject.GetType();
       var memberInfos = GetMemberInfos(type);
 
       Scope = Execute.Assertion;
@@ -73,19 +100,19 @@ namespace AutoBogus.Tests.Models
         AssertDefaultValue(memberInfo);
       }
 
-      return new AndConstraint<Order>(Order);
+      return new AndConstraint<object>(Subject);
     }
 
-    private AndConstraint<Order> BePopulated()
+    private AndConstraint<object> AssertSubject()
     {
-      var type = typeof(Order);
+      var type = Subject.GetType();
       var assertion = GetAssertion(type);
 
       Scope = Execute.Assertion;
 
-      assertion.Invoke(type.Name, type, Order);
+      assertion.Invoke(type.Name, type, Subject);
 
-      return new AndConstraint<Order>(Order);
+      return new AndConstraint<object>(Subject);
     }
 
     private string AssertType(string path, Type type, object instance)
@@ -108,7 +135,7 @@ namespace AutoBogus.Tests.Models
       // Resolve the default value for the current member type and check it matches
       var factory = DefaultValueFactory.MakeGenericMethod(memberType);
       var defaultValue = factory.Invoke(this, new object[0]);
-      var value = memberGetter.Invoke(Order);
+      var value = memberGetter.Invoke(Subject);
       var equal = value == null && defaultValue == null;
 
       if (!equal)
@@ -130,32 +157,54 @@ namespace AutoBogus.Tests.Models
         .Then;
     }
 
-    private static bool IsInt(Type type) => type == typeof(int);
-    private static bool IsDecimal(Type type) => type == typeof(decimal);
-    private static bool IsGuid(Type type) => type == typeof(Guid);
+    private static bool IsBool(Type type) => type == typeof(bool);
+    private static bool IsByte(Type type) => type == typeof(byte);
+    private static bool IsChar(Type type) => type == typeof(char);
     private static bool IsDateTime(Type type) => type == typeof(DateTime);
     private static bool IsDateTimeOffset(Type type) => type == typeof(DateTimeOffset);
+    private static bool IsDecimal(Type type) => type == typeof(decimal);
+    private static bool IsDouble(Type type) => type == typeof(double);
+    private static bool IsFloat(Type type) => type == typeof(float);
+    private static bool IsGuid(Type type) => type == typeof(Guid);
+    private static bool IsInt(Type type) => type == typeof(int);
+    private static bool IsLong(Type type) => type == typeof(long);
+    private static bool IsSByte(Type type) => type == typeof(sbyte);
+    private static bool IsShort(Type type) => type == typeof(short);
     private static bool IsString(Type type) => type == typeof(string);
-    private static bool IsEnum(Type type) => type.GetTypeInfo().IsEnum;
-    private static bool IsNullable(Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+    private static bool IsUInt(Type type) => type == typeof(uint);
+    private static bool IsULong(Type type) => type == typeof(ulong);
+    private static bool IsUShort(Type type) => type == typeof(ushort);
     private static bool IsArray(Type type) => type.IsArray;
+    private static bool IsEnum(Type type) => type.GetTypeInfo().IsEnum;
     private static bool IsDictionary(Type type) => IsType(type, typeof(IDictionary<,>));
     private static bool IsEnumerable(Type type) => IsType(type, typeof(IEnumerable<>));
+    private static bool IsNullable(Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
     private static bool IsAbstract(Type type) => type.GetTypeInfo().IsAbstract;
     private static bool IsInterface(Type type) => type.GetTypeInfo().IsInterface;
 
-    private static string AssertInt(string path, Type type, object value) => value.Equals(0) ? GetAssertionMessage(path, type) : null;
-    private static string AssertDecimal(string path, Type type, object value) => value.Equals(0d) ? GetAssertionMessage(path, type) : null;
-    private static string AssertGuid(string path, Type type, object value) => Guid.TryParse(value.ToString(), out Guid result) ? null : GetAssertionMessage(path, type);
-    private static string AssertDateTime(string path, Type type, object value) => DateTime.TryParse(value.ToString(), out DateTime result) ? null : GetAssertionMessage(path, type);
-    private static string AssertDateTimeOffset(string path, Type type, object value) => DateTimeOffset.TryParse(value.ToString(), out DateTimeOffset result) ? null : GetAssertionMessage(path, type);
-    private static string AssertEnum(string path, Type type, object value) => Enum.IsDefined(type, value) ? null : GetAssertionMessage(path, type);
+    private static string AssertBool(string path, Type type, object value) => value != null && bool.TryParse(value.ToString(), out bool result) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertByte(string path, Type type, object value) => value != null && byte.TryParse(value.ToString(), out byte result) && result != default(byte) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertChar(string path, Type type, object value) => value != null && char.TryParse(value.ToString(), out char result) && result != default(char) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertDateTime(string path, Type type, object value) => value != null && DateTime.TryParse(value.ToString(), out DateTime result) && result != default(DateTime) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertDateTimeOffset(string path, Type type, object value) => value != null && DateTimeOffset.TryParse(value.ToString(), out DateTimeOffset result) && result != default(DateTimeOffset) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertDecimal(string path, Type type, object value) => value != null && decimal.TryParse(value.ToString(), out decimal result) && result != default(decimal) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertDouble(string path, Type type, object value) => value != null && double.TryParse(value.ToString(), out double result) && result != default(double) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertFloat(string path, Type type, object value) => value != null && float.TryParse(value.ToString(), out float result) && result != default(float) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertGuid(string path, Type type, object value) => value != null && Guid.TryParse(value.ToString(), out Guid result) && result != default(Guid) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertInt(string path, Type type, object value) => value != null && int.TryParse(value.ToString(), out int result) && result != default(int) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertLong(string path, Type type, object value) => value != null && long.TryParse(value.ToString(), out long result) && result != default(long) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertSByte(string path, Type type, object value) => value != null && sbyte.TryParse(value.ToString(), out sbyte result) && result != default(sbyte) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertShort(string path, Type type, object value) => value != null && short.TryParse(value.ToString(), out short result) && result != default(short) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertUInt(string path, Type type, object value) => value != null && uint.TryParse(value.ToString(), out uint result) && result != default(uint) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertULong(string path, Type type, object value) => value != null && ulong.TryParse(value.ToString(), out ulong result) && result != default(ulong) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertUShort(string path, Type type, object value) => value != null && ushort.TryParse(value.ToString(), out ushort result) && result != default(ushort) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertEnum(string path, Type type, object value) => value != null && Enum.IsDefined(type, value) ? null : GetAssertionMessage(path, type, value);
     private static string AssertNull(string path, Type type, object value) => value == null ? null : $"Expected value to be null for '{path}'.";
 
     private static string AssertString(string path, Type type, object value)
     {
       var str = value?.ToString();
-      return string.IsNullOrWhiteSpace(str) ? GetAssertionMessage(path, type) : null ;
+      return string.IsNullOrWhiteSpace(str) ? GetAssertionMessage(path, type, value) : null ;
     }
 
     private string AssertNullable(string path, Type type, object value)
@@ -175,7 +224,7 @@ namespace AutoBogus.Tests.Models
 
       // Assert via assignment rather than explicit checks (the actual instance could be a sub class)
       var valueType = value.GetType();
-      return type.IsAssignableFrom(valueType) ? null : GetAssertionMessage(path, type);
+      return type.IsAssignableFrom(valueType) ? null : GetAssertionMessage(path, type, value);
     }
 
     private string AssertArray(string path, Type type, object value)
@@ -289,9 +338,11 @@ namespace AutoBogus.Tests.Models
       return default(TType);
     }
 
-    private static string GetAssertionMessage(string path, Type type)
+    private static string GetAssertionMessage(string path, Type type, object value)
     {
-      return $"Excepted a value of type '{type.FullName}' for '{path}'.";
+      return string.IsNullOrWhiteSpace(path)
+        ? $"Excepted a value of type '{type.FullName}' -> {value ?? "?"}."
+        : $"Excepted a value of type '{type.FullName}' for '{path}' -> {value ?? "?"}.";
     }
 
     private Func<string, Type, object, string> GetAssertion(Type type)

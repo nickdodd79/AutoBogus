@@ -5,7 +5,7 @@
   {
     object IAutoGenerator.Generate(AutoGenerateContext context)
     {
-      return context.GenerateMany<TType>(context); 
+      return context.GenerateMany<TType>(); 
     }    
   }
 }

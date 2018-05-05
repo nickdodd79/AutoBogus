@@ -38,7 +38,7 @@ namespace AutoBogus
     internal static IAutoGenerator GetGenerator(Type type, AutoGenerateContext context)
     {
       // Do some type -> generator mapping
-      if (ReflectionHelper.IsArray(type))
+      if (type.IsArray)
       {
         type = type.GetElementType();
         return CreateGenericGenerator(typeof(ArrayGenerator<>), type);
@@ -52,8 +52,8 @@ namespace AutoBogus
       if (ReflectionHelper.IsGenericType(type))
       {
         // For generic types we need to interrogate the inner types
+        var definition = type.GetGenericTypeDefinition();
         var generics = ReflectionHelper.GetGenericArguments(type);
-        var definition = ReflectionHelper.GetGenericTypeDefinition(type);
 
         if (definition == typeof(IDictionary<,>))
         {

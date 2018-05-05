@@ -6,7 +6,7 @@
   {
     object IAutoGenerator.Generate(AutoGenerateContext context)
     {
-      return context.Generate<TType>(context);
+      return context.Generate<TType>();
     }
   }
 }

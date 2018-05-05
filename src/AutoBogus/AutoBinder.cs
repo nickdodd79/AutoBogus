@@ -49,13 +49,13 @@ namespace AutoBogus
     /// <param name="members">An optional collection of members to populate. If null, all writable instance members are populated.</param>
     /// <remarks>
     /// Due to the boxing nature of value types, the <paramref name="instance"/> parameter is an object. This means the populated
-    /// values are applied to provided instance and not a copy.
+    /// values are applied to the provided instance and not a copy.
     /// </remarks>
     public virtual void PopulateInstance<TType>(object instance, AutoGenerateContext context, IEnumerable<MemberInfo> members = null)
     {
       var type = typeof(TType);
 
-      // We can only populate non-null instance 
+      // We can only populate non-null instances 
       // Dictionaries and Enumerables are populated via their constructors
       if (instance == null || IsDictionary(type) || IsEnumerable(type))
       {
@@ -77,11 +77,23 @@ namespace AutoBogus
 
         if (memberType != null && memberSetter != null)
         {
+          // Check if the type has already been generated as a parent
+          // If so skip this generation otherwise track it for use later in the object tree
+          if (context.Types.Contains(memberType))
+          {
+            continue;
+          }
+
+          context.Types.Push(memberType);
+
           // Generate a random value and bind it to the instance
           var generator = AutoGeneratorFactory.GetGenerator(memberType, context);
           var value = generator.Generate(context);
 
           memberSetter.Invoke(instance, value);
+
+          // Remove the current type from the type stack so siblings can be created
+          context.Types.Pop();
         }
       }
     }
@@ -99,7 +111,7 @@ namespace AutoBogus
     private ConstructorInfo GetConstructor<TType>()
     {
       var type = typeof(TType);
-      var constructors = ReflectionHelper.GetConstructors(type);
+      var constructors = type.GetConstructors();
 
       // For dictionaries and enumerables locate a constructor that is used for populating as well
       if (IsDictionary(type))

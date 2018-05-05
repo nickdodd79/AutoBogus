@@ -1,13 +1,11 @@
-﻿using System.Linq;
-
-namespace AutoBogus.Generators
+﻿namespace AutoBogus.Generators
 {
   internal sealed class ArrayGenerator<TType>
     : IAutoGenerator
   {
     object IAutoGenerator.Generate(AutoGenerateContext context)
     {
-      var items = context.GenerateMany<TType>(context);
+      var items = context.GenerateMany<TType>();
       return items.ToArray();
     }
   }

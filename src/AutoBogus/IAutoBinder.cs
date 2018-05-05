@@ -27,7 +27,7 @@ namespace AutoBogus
     /// <param name="members">An optional collection of members to populate. If null, all writable instance members are populated.</param>
     /// <remarks>
     /// Due to the boxing nature of value types, the <paramref name="instance"/> parameter is an object. This means the populated
-    /// values are applied to provided instance and not a copy.
+    /// values are applied to the provided instance and not a copy.
     /// </remarks>
     void PopulateInstance<TType>(object instance, AutoGenerateContext context, IEnumerable<MemberInfo> members = null);
   }

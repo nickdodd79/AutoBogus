@@ -10,12 +10,12 @@ namespace AutoBogus.Generators
       var items = new Dictionary<TKey, TValue>();
       
       // Get a list of keys
-      var keys = context.GenerateMany<TKey>(context);
+      var keys = context.GenerateMany<TKey>();
       
       foreach (var key in keys)
       {
         // Get a matching value for the current key and add to the dictionary
-        var value = context.Generate<TValue>(context);
+        var value = context.Generate<TValue>();
 
         if (value != null)
         {
