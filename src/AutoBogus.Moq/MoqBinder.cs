@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using AutoBogus.Util;
+using Moq;
 using System;
 using System.Reflection;
 
@@ -28,9 +29,8 @@ namespace AutoBogus.Moq
     public override TType CreateInstance<TType>(AutoGenerateContext context)
     {
       var type = typeof(TType);
-      var typeInfo = type.GetTypeInfo();
 
-      if (typeInfo.IsInterface || typeInfo.IsAbstract)
+      if (ReflectionHelper.IsInterface(type) || ReflectionHelper.IsAbstract(type))
       {
         // Take the cached factory method and make it generic based on the requested type
         // Because this method supports struct and class types, and Moq only supports class types we need to put this 'hack' into place

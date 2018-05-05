@@ -4,5 +4,6 @@
 [assembly: InternalsVisibleTo("AutoBogus.Moq")]
 [assembly: InternalsVisibleTo("AutoBogus.NSubstitute")]
 
+[assembly: InternalsVisibleTo("AutoBogus.Tests.Models")]
 [assembly: InternalsVisibleTo("AutoBogus.Tests")]
 [assembly: InternalsVisibleTo("AutoBogus.Tests.NET45")]

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using AutoBogus.Util;
+using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
-using System.Reflection;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Collections;
-using FluentAssertions;
+using System.Reflection;
 
 namespace AutoBogus.Tests.Models
 {
@@ -175,15 +176,15 @@ namespace AutoBogus.Tests.Models
     private static bool IsULong(Type type) => type == typeof(ulong);
     private static bool IsUShort(Type type) => type == typeof(ushort);
     private static bool IsArray(Type type) => type.IsArray;
-    private static bool IsEnum(Type type) => type.GetTypeInfo().IsEnum;
+    private static bool IsEnum(Type type) => ReflectionHelper.IsEnum(type);
     private static bool IsDictionary(Type type) => IsType(type, typeof(IDictionary<,>));
     private static bool IsEnumerable(Type type) => IsType(type, typeof(IEnumerable<>));
-    private static bool IsNullable(Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-    private static bool IsAbstract(Type type) => type.GetTypeInfo().IsAbstract;
-    private static bool IsInterface(Type type) => type.GetTypeInfo().IsInterface;
+    private static bool IsNullable(Type type) => ReflectionHelper.IsGenericType(type) && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+    private static bool IsAbstract(Type type) => ReflectionHelper.IsAbstract(type);
+    private static bool IsInterface(Type type) => ReflectionHelper.IsInterface(type);
 
     private static string AssertBool(string path, Type type, object value) => value != null && bool.TryParse(value.ToString(), out bool result) ? null : GetAssertionMessage(path, type, value);
-    private static string AssertByte(string path, Type type, object value) => value != null && byte.TryParse(value.ToString(), out byte result) && result != default(byte) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertByte(string path, Type type, object value) => value != null && byte.TryParse(value.ToString(), out byte result) ? null : GetAssertionMessage(path, type, value);
     private static string AssertChar(string path, Type type, object value) => value != null && char.TryParse(value.ToString(), out char result) && result != default(char) ? null : GetAssertionMessage(path, type, value);
     private static string AssertDateTime(string path, Type type, object value) => value != null && DateTime.TryParse(value.ToString(), out DateTime result) && result != default(DateTime) ? null : GetAssertionMessage(path, type, value);
     private static string AssertDateTimeOffset(string path, Type type, object value) => value != null && DateTimeOffset.TryParse(value.ToString(), out DateTimeOffset result) && result != default(DateTimeOffset) ? null : GetAssertionMessage(path, type, value);
@@ -193,7 +194,7 @@ namespace AutoBogus.Tests.Models
     private static string AssertGuid(string path, Type type, object value) => value != null && Guid.TryParse(value.ToString(), out Guid result) && result != default(Guid) ? null : GetAssertionMessage(path, type, value);
     private static string AssertInt(string path, Type type, object value) => value != null && int.TryParse(value.ToString(), out int result) && result != default(int) ? null : GetAssertionMessage(path, type, value);
     private static string AssertLong(string path, Type type, object value) => value != null && long.TryParse(value.ToString(), out long result) && result != default(long) ? null : GetAssertionMessage(path, type, value);
-    private static string AssertSByte(string path, Type type, object value) => value != null && sbyte.TryParse(value.ToString(), out sbyte result) && result != default(sbyte) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertSByte(string path, Type type, object value) => value != null && sbyte.TryParse(value.ToString(), out sbyte result) ? null : GetAssertionMessage(path, type, value);
     private static string AssertShort(string path, Type type, object value) => value != null && short.TryParse(value.ToString(), out short result) && result != default(short) ? null : GetAssertionMessage(path, type, value);
     private static string AssertUInt(string path, Type type, object value) => value != null && uint.TryParse(value.ToString(), out uint result) && result != default(uint) ? null : GetAssertionMessage(path, type, value);
     private static string AssertULong(string path, Type type, object value) => value != null && ulong.TryParse(value.ToString(), out ulong result) && result != default(ulong) ? null : GetAssertionMessage(path, type, value);
@@ -302,9 +303,7 @@ namespace AutoBogus.Tests.Models
       {
         // Otherwise ensure we are not dealing with interface or abstract class
         // These types will result in an empty list by default because they cannot be generated
-        var typeInfo = type.GetTypeInfo();
-
-        if (!typeInfo.IsInterface && !typeInfo.IsAbstract)
+        if (!ReflectionHelper.IsInterface(type) && !ReflectionHelper.IsAbstract(type))
         {
           elementType = elementType ?? "value";
           return $"Excepted {elementType} to not be empty for '{path}'.";
@@ -357,14 +356,14 @@ namespace AutoBogus.Tests.Models
     private IEnumerable<MemberInfo> GetMemberInfos(Type type)
     {
       return (from m in type.GetMembers()
-              where IsField(m) || IsProperty(m)
+              where ReflectionHelper.IsField(m) || ReflectionHelper.IsProperty(m)
               select m);
     }
 
     private static bool IsType(Type type, Type baseType)
     {
       // We may need to do some generics magic to compare the types
-      if (IsGenericType(type) && IsGenericType(baseType))
+      if (ReflectionHelper.IsGenericType(type) && ReflectionHelper.IsGenericType(baseType))
       {
         var types = type.GetGenericArguments();
         var baseTypes = baseType.GetGenericArguments();
@@ -384,48 +383,20 @@ namespace AutoBogus.Tests.Models
       memberGetter = null;
 
       // Extract the member type and getter action
-      if (IsField(member))
+      if (ReflectionHelper.IsField(member))
       {
         var fieldInfo = member as FieldInfo;
 
         memberType = fieldInfo.FieldType;
         memberGetter = fieldInfo.GetValue;
       }
-      else if (IsProperty(member))
+      else if (ReflectionHelper.IsProperty(member))
       {
         var propertyInfo = member as PropertyInfo;
 
         memberType = propertyInfo.PropertyType;
         memberGetter = propertyInfo.GetValue;
       }
-    }
-
-    private static bool IsField(MemberInfo member)
-    {
-#if NET45
-      return member.MemberType == MemberTypes.Field;
-#else
-      return member is FieldInfo;
-#endif
-    }
-
-    private static bool IsProperty(MemberInfo member)
-    {
-#if NET45
-      return member.MemberType == MemberTypes.Property;
-#else
-      return member is PropertyInfo;
-#endif
-    }
-
-    private static bool IsGenericType(Type type)
-    {
-#if NET45
-      return type.IsGenericType;
-#else
-      var typeInfo = type.GetTypeInfo();
-      return typeInfo.IsGenericType;
-#endif
     }
   }
 }

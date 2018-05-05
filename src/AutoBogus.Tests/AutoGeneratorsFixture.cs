@@ -1,12 +1,12 @@
 ﻿using AutoBogus.Generators;
 using AutoBogus.Tests.Models.Simple;
+using AutoBogus.Util;
 using Bogus;
 using FluentAssertions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Xunit;
 
 namespace AutoBogus.Tests
@@ -115,7 +115,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IDictionary<int, TestAbstractClass>))]
       public void Generate_Should_Return_Dictionary(Type type)
       {
-        var genericTypes = GetGenericTypes(type);
+        var genericTypes = ReflectionHelper.GetGenericArguments(type);
         var keyType = genericTypes.ElementAt(0);
         var valueType = genericTypes.ElementAt(1);
         var generator = CreateGenerator(typeof(DictionaryGenerator<,>), keyType, valueType);
@@ -140,7 +140,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IDictionary<int, TestAbstractClass>))]
       public void GetGenerator_Should_Return_DictionaryGenerator(Type type)
       {
-        var genericTypes = GetGenericTypes(type);
+        var genericTypes = ReflectionHelper.GetGenericArguments(type);
         var keyType = genericTypes.ElementAt(0);
         var valueType = genericTypes.ElementAt(1);
         var generatorType = GetGeneratorType(typeof(DictionaryGenerator<,>), keyType, valueType);
@@ -160,7 +160,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IEnumerable<TestAbstractClass>))]
       public void Generate_Should_Return_Enumerable(Type type)
       {
-        var genericTypes = GetGenericTypes(type);
+        var genericTypes = ReflectionHelper.GetGenericArguments(type);
         var itemType = genericTypes.ElementAt(0);
         var generator = CreateGenerator(typeof(EnumerableGenerator<>), itemType);
         var enumerable = InvokeGenerator(generator) as IEnumerable;
@@ -176,7 +176,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IEnumerable<TestAbstractClass>))]
       public void GetGenerator_Should_Return_EnumerableGenerator(Type type)
       {
-        var genericTypes = GetGenericTypes(type);
+        var genericTypes = ReflectionHelper.GetGenericArguments(type);
         var itemType = genericTypes.ElementAt(0);
         var generatorType = GetGeneratorType(typeof(EnumerableGenerator<>), itemType);
 
@@ -214,10 +214,9 @@ namespace AutoBogus.Tests
       [InlineData(typeof(SortedList<int, TestClass>))]
       public void Generate_Should_Return_Value(Type type)
       {
-        var typeInfo = type.GetTypeInfo();
         var generator = CreateGenerator(typeof(TypeGenerator<>), type);
 
-        if (typeInfo.IsInterface || typeInfo.IsAbstract)
+        if (ReflectionHelper.IsInterface(type) || ReflectionHelper.IsAbstract(type))
         {
           InvokeGenerator(generator).Should().BeNull();
         }
@@ -245,12 +244,6 @@ namespace AutoBogus.Tests
     private object InvokeGenerator(IAutoGenerator generator)
     {
       return generator.Generate(_context);
-    }
-
-    private static IEnumerable<Type> GetGenericTypes(Type type)
-    {
-      var typeInfo = type.GetTypeInfo();
-      return typeInfo.GetGenericArguments();
     }
 
     private static Type GetGeneratorType(Type type, params Type[] types)
