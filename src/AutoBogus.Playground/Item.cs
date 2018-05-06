@@ -9,5 +9,6 @@ namespace AutoBogus.Playground
     public decimal Price { get; set; }
     public uint Quantity { get; set; }
     public Units Units { get; set; }
+    public ItemStatus Status { get; set; }
   }
 }

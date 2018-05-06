@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,6 +35,18 @@ namespace AutoBogus
     {
       var context = CreateContext();
       return context.GenerateMany<TType>(count);
+    }
+
+    TType IAutoFaker.Generate<TType, TFaker>(object[] args)
+    {
+      var faker = CreateFaker<TType, TFaker>(args);
+      return faker.Generate();
+    }
+
+    List<TType> IAutoFaker.Generate<TType, TFaker>(int count, object[] args)
+    {
+      var faker = CreateFaker<TType, TFaker>(args);
+      return faker.Generate(count);
     }
 
     private AutoGenerateContext CreateContext()
@@ -132,6 +145,48 @@ namespace AutoBogus
     {
       var faker = Create(locale);
       return faker.Generate<TType>(count);
+    }
+
+    #endregion
+
+    #region Generate_Faker
+
+    /// <summary>
+    /// Generates an instance of type <typeparamref name="TType"/> based on the <typeparamref name="TFaker"/>.
+    /// </summary>
+    /// <typeparam name="TType">The type of instance to generate.</typeparam>
+    /// <typeparam name="TFaker">The type of faker instance to use.</typeparam>
+    /// <param name="args">The constructor arguments used to instantiate type <typeparamref name="TFaker"/>.</param>
+    /// <returns>The generated instance of type <typeparamref name="TType"/>.</returns>
+    public static TType Generate<TType, TFaker>(object[] args = null)
+      where TType : class
+      where TFaker : AutoFaker<TType>
+    {
+      var faker = CreateFaker<TType, TFaker>(args);
+      return faker.Generate();
+    }
+
+    /// <summary>
+    /// Generates a collection of instances of type <typeparamref name="TType"/> based on the <typeparamref name="TFaker"/>.
+    /// </summary>
+    /// <typeparam name="TType">The type of instance to generate.</typeparam>
+    /// <typeparam name="TFaker">The type of faker instance to use.</typeparam>
+    /// <param name="count">The number of instances to generate.</param>
+    /// <param name="args">The constructor arguments used to instantiate type <typeparamref name="TFaker"/>.</param>
+    /// <returns>The collection of generated instances of type <typeparamref name="TType"/>.</returns>
+    public static List<TType> Generate<TType, TFaker>(int count, object[] args = null)
+      where TType : class
+      where TFaker : AutoFaker<TType>
+    {
+      var faker = CreateFaker<TType, TFaker>(args);
+      return faker.Generate(count);
+    }
+
+    private static AutoFaker<TType> CreateFaker<TType, TFaker>(object[] args )
+      where TType : class
+    {
+      var type = typeof(TFaker);
+      return (AutoFaker<TType>)Activator.CreateInstance(type, args ?? new object[0]);
     }
 
     #endregion

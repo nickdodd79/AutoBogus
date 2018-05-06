@@ -16,7 +16,39 @@ namespace AutoBogus.Tests
   {
     private const string _name = "Generate";
     private static Type _type = typeof(AutoFaker);
-    
+
+    public class SetBinder
+      : AutoFakerFixture, IDisposable
+    {
+      private class TestBinder
+        : AutoBinder
+      { }
+
+      [Fact]
+      public void Should_Set_Binder()
+      {
+        AutoFaker.SetBinder<TestBinder>();
+
+        AutoFaker.DefaultBinder.Should().BeOfType<TestBinder>();
+      }
+
+      [Fact]
+      public void Should_Set_Binder_With_Instance()
+      {
+        var binder = new TestBinder();
+
+        AutoFaker.SetBinder(binder);
+
+        AutoFaker.DefaultBinder.Should().Be(binder);
+      }
+
+      public void Dispose()
+      {
+        // Clear the binder to ensure other tests are not affected - its static
+        AutoFaker.SetBinder(null);
+      }
+    }
+
     public class Generate
       : AutoFakerFixture
     {
@@ -61,7 +93,7 @@ namespace AutoBogus.Tests
       }
     }
 
-    public class Generate_Helper
+    public class Generate_Static
       : AutoFakerFixture
     {
       private static MethodInfo _generate = _type.GetMethod(_name, BindingFlags.Static | BindingFlags.Public, null, new[] { typeof(string) }, null);
@@ -96,35 +128,25 @@ namespace AutoBogus.Tests
       }
     }
 
-    public class SetBinder
-      : AutoFakerFixture, IDisposable
+    public class Generate_Faker
+      : AutoFakerFixture
     {
-      private class TestBinder
-        : AutoBinder
+      private sealed class OrderFaker
+        : AutoFaker<Order>
       { }
 
       [Fact]
-      public void Should_Set_Binder()
+      public void Should_Generate_Complex_Type()
       {
-        AutoFaker.SetBinder<TestBinder>();
-
-        AutoFaker.DefaultBinder.Should().BeOfType<TestBinder>();
+        AutoFaker.Generate<Order, OrderFaker>().Should().BeGeneratedWithoutMocks();
       }
 
       [Fact]
-      public void Should_Set_Binder_With_Instance()
+      public void Should_Generate_Many_Complex_Types()
       {
-        var binder = new TestBinder();
+        var instances = AutoFaker.Generate<Order, OrderFaker>(AutoFaker.DefaultCount);
 
-        AutoFaker.SetBinder(binder);
-
-        AutoFaker.DefaultBinder.Should().Be(binder);
-      }
-
-      public void Dispose()
-      {
-        // Clear the binder to ensure other tests are not affected - its static
-        AutoFaker.SetBinder(null);
+        AssertGenerateMany(instances);
       }
     }
 
