@@ -34,10 +34,10 @@ AutoFaker.SetBinder<ICustomBinder>();
 var faker = AutoFaker.Create<ICustomBinder>();
 ```
 
-Note that the static definition will be used as the default if nothing is defined for an instance or for an `AutoFaker[T]` implementation (see below).
+Note that the static definition will be used as the default if nothing is defined for an instance or for an `AutoFaker<T>` implementation (see below).
 
-## AutoFaker[T]
-The `AutoFaker[T]` class is a Bogus wrapper that adds auto generation for member values. In turn, it means all the goodness of Bogus is automatically available (like rule sets).
+## AutoFaker&lt;T&gt;
+The `AutoFaker<T>` class is a Bogus wrapper that adds auto generation for member values. In turn, it means all the goodness of Bogus is automatically available (like rule sets).
 
 ```c#
 var personFaker = new AutoFaker<Person>()
