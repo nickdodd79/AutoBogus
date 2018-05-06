@@ -37,7 +37,7 @@ var faker = AutoFaker.Create<ICustomBinder>();
 Note that the static definition will be used as the default if nothing is defined for an instance or for an `AutoFaker<T>` implementation (see below).
 
 ## AutoFaker&lt;T&gt;
-The `AutoFaker<T>` class is a Bogus wrapper that adds auto generation for member values. In turn, it means all the goodness of Bogus is automatically available (like rule sets).
+The `AutoFaker<T>` class is a **Bogus** wrapper that adds auto generation for member values. In turn, it means all the goodness of **Bogus** is automatically available (e.g. rule sets).
 
 ```c#
 var personFaker = new AutoFaker<Person>()
@@ -87,7 +87,7 @@ var person2 = AutoFaker.Generate<Person, PersonFaker>(new[] { id });
 person2.Dump();
 ```
 
-Note that, should a rule set be used to generate a type, then only members **not** defined in the rule set are auto generated. In the example above, the `Id` member will **not** be generated, but will instead use the `RuleFor` value.
+Note that, should a rule set be used to generate a type, then only members **not** defined in the rule set are auto generated. In the examples above, the `Id` member will **not** be generated, but will instead use the `RuleFor` value.
 
 # Binders
 A default `IAutoBinder` implementation is included with **AutoBogus**, but it will not generate interfaces or abstract classes. For this, the following packages are available:
