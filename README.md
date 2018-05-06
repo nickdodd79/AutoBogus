@@ -40,16 +40,16 @@ Note that the static definition will be used as the default if nothing is define
 The `AutoFaker[T]` class is a Bogus wrapper that adds auto generation for member values. In turn, it means all the goodness of Bogus is automatically available (like rule sets).
 
 ```c#
-var personFake = new AutoFaker<Person>()
+var personFaker = new AutoFaker<Person>()
   .RuleFor(fake => fake.Id, fake => fake.Random.Int())
   .RuleSet("empty", rules =>
   {
     rules.RuleFor(fake => fake.Id, () => 0);
   });
 
-// Call Generate() or use explicit conversion 
-var person1 = personFake.Generate();
-var person2 = (Person)personFake;
+// Use explicit conversion or call Generate()
+var person1 = (Person)personFaker;
+var person2 = personFaker.Generate();
 
 person1.Dump();
 person2.Dump();
@@ -57,11 +57,37 @@ person2.Dump();
 // An existing instance can also be populated
 var person3 = new Person();
 
-personFake.Populate(person3);
+personFaker.Populate(person3);
 person3.Dump();
 ```
 
-Note that, should a rule set be used to generate a type, then only members not defined in the rule set are auto generated. In the example above, the `Id` member will not be generated - it would use the value from `fake => fake.Random.Int()`.
+When the `AutoFaker<T>` class is inherited, you can either instantiate an instance or use the `AutoFaker` class to auto instantiate and invoke a `Generate()` method.
+
+```c#
+public class PersonFaker : AutoFaker<Person>
+{
+  public PersonFaker(int id)
+  {
+    RuleFor(fake => fake.Id, () => id)
+  }
+}
+
+var id = AutoFaker.Generate<int>();
+
+// Create an instance and call Generate()
+var personFaker = new PersonFaker(id);
+var person1 = personFaker.Generate();
+
+person1.Dump();
+
+// Create a Person instance using AutoFaker.Generate()
+// If the AutoFaker<T> class needs constructor arguments, they can be passed as an object array
+var person2 = AutoFaker.Generate<Person, PersonFaker>(new[] { id });
+
+person2.Dump();
+```
+
+Note that, should a rule set be used to generate a type, then only members **not** defined in the rule set are auto generated. In the example above, the `Id` member will **not** be generated, but will instead use the `RuleFor` value.
 
 # Binders
 A default `IAutoBinder` implementation is included with **AutoBogus**, but it will not generate interfaces or abstract classes. For this, the following packages are available:
