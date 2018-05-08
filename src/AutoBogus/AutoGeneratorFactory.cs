@@ -26,6 +26,7 @@ namespace AutoBogus
       {typeof(string), new StringGenerator()},
       {typeof(uint), new UIntGenerator()},
       {typeof(ulong), new ULongGenerator()},
+      {typeof(Uri), new UriGenerator()},
       {typeof(ushort), new UShortGenerator()}
     };
 

@@ -1,4 +1,6 @@
-﻿namespace AutoBogus.Tests.Models.Complex
+﻿using System;
+
+namespace AutoBogus.Tests.Models.Complex
 {
   public sealed class Product
   {
@@ -10,5 +12,6 @@
     public int Id { get; }
     public string Description { get; set; }
     public Price Price { get; set; }
+    public Uri ImageUrl { get; set; }
   }
 }

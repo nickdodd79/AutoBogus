@@ -40,6 +40,7 @@ namespace AutoBogus.Tests.Models
       Assertions.Add(IsString, AssertString);
       Assertions.Add(IsUInt, AssertUInt);
       Assertions.Add(IsULong, AssertULong);
+      Assertions.Add(IsUri, AssertUri);
       Assertions.Add(IsUShort, AssertUShort);
 
       Assertions.Add(IsArray, AssertArray);
@@ -174,6 +175,7 @@ namespace AutoBogus.Tests.Models
     private static bool IsString(Type type) => type == typeof(string);
     private static bool IsUInt(Type type) => type == typeof(uint);
     private static bool IsULong(Type type) => type == typeof(ulong);
+    private static bool IsUri(Type type) => type == typeof(Uri);
     private static bool IsUShort(Type type) => type == typeof(ushort);
     private static bool IsArray(Type type) => type.IsArray;
     private static bool IsEnum(Type type) => ReflectionHelper.IsEnum(type);
@@ -198,6 +200,7 @@ namespace AutoBogus.Tests.Models
     private static string AssertShort(string path, Type type, object value) => value != null && short.TryParse(value.ToString(), out short result) && result != default(short) ? null : GetAssertionMessage(path, type, value);
     private static string AssertUInt(string path, Type type, object value) => value != null && uint.TryParse(value.ToString(), out uint result) && result != default(uint) ? null : GetAssertionMessage(path, type, value);
     private static string AssertULong(string path, Type type, object value) => value != null && ulong.TryParse(value.ToString(), out ulong result) && result != default(ulong) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertUri(string path, Type type, object value) => value != null && Uri.IsWellFormedUriString(value.ToString(), UriKind.RelativeOrAbsolute) ? null : GetAssertionMessage(path, type, value);
     private static string AssertUShort(string path, Type type, object value) => value != null && ushort.TryParse(value.ToString(), out ushort result) && result != default(ushort) ? null : GetAssertionMessage(path, type, value);
     private static string AssertEnum(string path, Type type, object value) => value != null && Enum.IsDefined(type, value) ? null : GetAssertionMessage(path, type, value);
     private static string AssertNull(string path, Type type, object value) => value == null ? null : $"Expected value to be null for '{path}'.";
