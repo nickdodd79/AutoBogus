@@ -158,6 +158,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IEnumerable<TestClass>))]
       [InlineData(typeof(IEnumerable<ITestInterface>))]
       [InlineData(typeof(IEnumerable<TestAbstractClass>))]
+      [InlineData(typeof(ICollection<TestAbstractClass>))]
       public void Generate_Should_Return_Enumerable(Type type)
       {
         var genericTypes = ReflectionHelper.GetGenericArguments(type);
@@ -174,6 +175,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IEnumerable<TestClass>))]
       [InlineData(typeof(IEnumerable<ITestInterface>))]
       [InlineData(typeof(IEnumerable<TestAbstractClass>))]
+      [InlineData(typeof(ICollection<TestAbstractClass>))]
       public void GetGenerator_Should_Return_EnumerableGenerator(Type type)
       {
         var genericTypes = ReflectionHelper.GetGenericArguments(type);

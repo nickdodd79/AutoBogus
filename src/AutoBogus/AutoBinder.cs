@@ -14,9 +14,6 @@ namespace AutoBogus
   public class AutoBinder
     : Binder, IAutoBinder
   {
-    private static readonly Type EnumerableType = typeof(IEnumerable);
-    private static readonly Type DictionaryType = typeof(IDictionary);
-
     /// <summary>
     /// Creates an instance of <typeparamref name="TType"/>.
     /// </summary>
@@ -100,12 +97,12 @@ namespace AutoBogus
 
     private bool IsDictionary(Type type)
     {
-      return DictionaryType.IsAssignableFrom(type);
+      return ReflectionHelper.IsAssignableFrom(typeof(IDictionary), type);
     }
 
     private bool IsEnumerable(Type type)
     {
-      return EnumerableType.IsAssignableFrom(type);
+      return ReflectionHelper.IsAssignableFrom(typeof(IEnumerable), type);
     }
 
     private ConstructorInfo GetConstructor<TType>()

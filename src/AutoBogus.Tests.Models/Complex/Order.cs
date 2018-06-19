@@ -20,5 +20,6 @@ namespace AutoBogus.Tests.Models.Complex
     public DiscountBase[] Discounts { get; set; }
     public IEnumerable<OrderItem> Items { get; set; }
     public DateTimeOffset DateCreated { get; set; }
+    public ICollection<string> Comments { get; set; }
   }
 }

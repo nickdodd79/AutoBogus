@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AutoBogus.Playground
 {
@@ -10,5 +11,6 @@ namespace AutoBogus.Playground
     public uint Quantity { get; set; }
     public Units Units { get; set; }
     public ItemStatus Status { get; set; }
+    public ICollection<string> Comments { get; set; }
   }
 }

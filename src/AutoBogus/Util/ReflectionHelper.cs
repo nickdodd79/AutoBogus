@@ -61,6 +61,18 @@ namespace AutoBogus.Util
 #endif
     }
 
+    internal static bool IsAssignableFrom(Type baseType, Type type)
+    {
+#if NET40
+      return baseType.IsAssignableFrom(type);
+#else
+      var baseTypeInfo = baseType.GetTypeInfo();
+      var typeInfo = type.GetTypeInfo();
+      
+      return baseTypeInfo.IsAssignableFrom(typeInfo);
+#endif
+    }
+
     internal static bool IsField(MemberInfo member)
     {
 #if NET40

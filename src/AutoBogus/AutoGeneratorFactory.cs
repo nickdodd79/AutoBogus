@@ -56,7 +56,7 @@ namespace AutoBogus
         var definition = type.GetGenericTypeDefinition();
         var generics = ReflectionHelper.GetGenericArguments(type);
 
-        if (definition == typeof(IDictionary<,>))
+        if (IsDictionaryDefinition(definition))
         {
           var keyType = generics.ElementAt(0);
           var valueType = generics.ElementAt(1);
@@ -64,13 +64,13 @@ namespace AutoBogus
           return CreateGenericGenerator(typeof(DictionaryGenerator<,>), keyType, valueType);
         }
 
-        if (definition == typeof(IEnumerable<>))
+        if (IsEnumerableDefinition(definition))
         {
           type = generics.Single();
           return CreateGenericGenerator(typeof(EnumerableGenerator<>), type);
         }
 
-        if (definition == typeof(Nullable<>))
+        if (IsNullableDefinition(definition))
         {
           type = generics.Single();
           return CreateGenericGenerator(typeof(NullableGenerator<>), type);
@@ -90,6 +90,24 @@ namespace AutoBogus
     {
       var type = generatorType.MakeGenericType(genericTypes);
       return (IAutoGenerator)Activator.CreateInstance(type);
+    }
+
+    private static bool IsDictionaryDefinition(Type definition)
+    {
+      return ReflectionHelper.IsAssignableFrom(typeof(IDictionary<,>), definition);
+    }
+
+    private static bool IsEnumerableDefinition(Type definition)
+    {
+      // The ICollection interface should fall under the IEnumerable bucket, but doesn't
+      // Therefore, include an additional check for it
+      return ReflectionHelper.IsAssignableFrom(typeof(IEnumerable<>), definition) ||
+             ReflectionHelper.IsAssignableFrom(typeof(ICollection<>), definition);
+    }
+
+    private static bool IsNullableDefinition(Type definition)
+    {
+      return ReflectionHelper.IsAssignableFrom(typeof(Nullable<>), definition);
     }
   }
 }
