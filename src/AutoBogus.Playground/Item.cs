@@ -11,6 +11,7 @@ namespace AutoBogus.Playground
     public uint Quantity { get; set; }
     public Units Units { get; set; }
     public ItemStatus Status { get; set; }
+    public Uri InfoLink { get; set; }
     public ICollection<string> Comments { get; set; }
   }
 }
