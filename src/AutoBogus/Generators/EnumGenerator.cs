@@ -2,7 +2,7 @@
 {
   internal sealed class EnumGenerator<TType>
     : IAutoGenerator
-    where TType: struct
+    where TType: struct, System.Enum
   {
     object IAutoGenerator.Generate(AutoGenerateContext context)
     {

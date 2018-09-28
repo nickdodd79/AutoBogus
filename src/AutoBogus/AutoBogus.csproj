@@ -9,10 +9,11 @@
     <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
     <Version>2.1.2</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus" Version="22.0.8" />
+    <PackageReference Include="Bogus" Version="24.2.0" />
   </ItemGroup>
 
 </Project>
