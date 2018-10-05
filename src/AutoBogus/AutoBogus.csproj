@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus" Version="24.2.0" />
+    <PackageReference Include="Bogus" Version="24.3.0" />
   </ItemGroup>
 
 </Project>

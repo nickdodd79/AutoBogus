@@ -1,18 +1,19 @@
+using AutoBogus.FakeItEasy;
 using AutoBogus.Tests.Models;
 using AutoBogus.Tests.Models.Complex;
 using AutoBogus.Tests.Models.Simple;
 using FluentAssertions;
 using Xunit;
 
-namespace AutoBogus.Moq.Tests
+namespace AutoBogus.Tests
 {
-  public class MoqBinderFixture
+  public class FakeItEasyBinderFixture
   {
     private IAutoFaker _faker;
 
-    public MoqBinderFixture()
+    public FakeItEasyBinderFixture()
     {
-      _faker = AutoFaker.Create<MoqBinder>();
+      _faker = AutoFaker.Create<FakeItEasyBinder>();
     }
 
     [Fact]

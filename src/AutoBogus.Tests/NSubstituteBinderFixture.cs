@@ -1,10 +1,11 @@
-﻿using AutoBogus.Tests.Models;
+﻿using AutoBogus.NSubstitute;
+using AutoBogus.Tests.Models;
 using AutoBogus.Tests.Models.Complex;
 using AutoBogus.Tests.Models.Simple;
 using FluentAssertions;
 using Xunit;
 
-namespace AutoBogus.NSubstitute.Tests
+namespace AutoBogus.Tests
 {
   public class NSubstituteBinderFixture
   {
