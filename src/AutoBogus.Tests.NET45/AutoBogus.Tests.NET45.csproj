@@ -39,6 +39,9 @@
     <Compile Include="..\AutoBogus.Tests\AutoFakerFixture.cs">
       <Link>AutoFakerFixture.cs</Link>
     </Compile>
+    <Compile Include="..\AutoBogus.Tests\AutoGenerateContextFixture.cs">
+      <Link>AutoGenerateContextFixture.cs</Link>
+    </Compile>
     <Compile Include="..\AutoBogus.Tests\AutoGeneratorsFixture.cs">
       <Link>AutoGeneratorsFixture.cs</Link>
     </Compile>

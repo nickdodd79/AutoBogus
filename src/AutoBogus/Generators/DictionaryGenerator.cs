@@ -10,7 +10,7 @@ namespace AutoBogus.Generators
       var items = new Dictionary<TKey, TValue>();
       
       // Get a list of keys
-      var keys = context.GenerateMany<TKey>();
+      var keys = context.GenerateUniqueMany<TKey>();
       
       foreach (var key in keys)
       {

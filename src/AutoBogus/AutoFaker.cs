@@ -14,6 +14,8 @@ namespace AutoBogus
     internal const int DefaultCount = 3;
     internal const string DefaultLocale = "en";
 
+    internal const int GenerateAttemptsThreshold = 3;
+
     internal static IAutoBinder DefaultBinder = new AutoBinder();
 
     private AutoFaker(string locale, IAutoBinder binder)

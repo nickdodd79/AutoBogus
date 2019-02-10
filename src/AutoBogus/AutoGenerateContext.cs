@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AutoBogus
 {
@@ -51,23 +52,63 @@ namespace AutoBogus
     public List<TType> GenerateMany<TType>(int? count = null)
     {
       var items = new List<TType>();
+      GenerateMany(count, items, false);
 
-      // Generate the required number of items and ensure the list is unique
-      count = (count ?? AutoFaker.DefaultCount);
+      return items;
+    }
 
-      while (items.Count < count)
+    /// <summary>
+    /// Creates a collection of unique instances of type <typeparamref name="TType"/>.
+    /// </summary>
+    /// <typeparam name="TType">The instance type to generate.</typeparam>
+    /// <param name="count">The number of instances to generate.</param>
+    /// <returns>A collection of unique instances of <typeparamref name="TType"/>.</returns>
+    public List<TType> GenerateUniqueMany<TType>(int? count = null)
+    {
+      var items = new List<TType>();
+      GenerateMany(count, items, true);
+
+      return items;
+    }
+
+    internal void GenerateMany<TType>(int? count, List<TType> items, bool unique, int attempt = 1, Func<TType> generate = null)
+    {
+      // Apply any defaults
+      count = count ?? AutoFaker.DefaultCount;
+      generate = generate ?? (() => Generate<TType>());
+
+      // Generate a list of items
+      var required = count - items.Count;
+
+      for (var index = 0; index < required; index++)
       {
-        var item = Generate<TType>();
+        var item = generate.Invoke();
 
         // Ensure the generated value is not null (which means the type couldn't be generated)
-        // Also ensure the list doesn't already contain the generated value
-        if (item != null && !items.Contains(item))
+        if (item != null)
         {
           items.Add(item);
         }
       }
 
-      return items;
+      if (unique)
+      {
+        // Remove any duplicates and generate more to match the required count
+        var filtered = items.Distinct().ToList();
+        
+        if (filtered.Count < count)
+        {
+          // To maintain the items reference, clear and reapply the filtered list
+          items.Clear();
+          items.AddRange(filtered);
+
+          // Only continue to generate more if the attempts threshold is not reached
+          if (attempt < AutoFaker.GenerateAttemptsThreshold)
+          {
+            GenerateMany(count, items, unique, attempt + 1, generate);
+          }
+        }
+      }
     }
   }
 }
