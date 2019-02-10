@@ -10,7 +10,7 @@ namespace AutoBogus
   public sealed class AutoGenerateContext
   {
     internal AutoGenerateContext(Faker faker, IEnumerable<string> ruleSets, IAutoBinder binder)
-    {      
+    {
       Faker = faker;
       RuleSets = ruleSets;
       Binder = binder;
@@ -30,7 +30,7 @@ namespace AutoBogus
 
     internal Stack<Type> Types { get; }
     internal IAutoBinder Binder { get; }
-    
+
     /// <summary>
     /// Creates an instance of type <typeparamref name="TType"/>.
     /// </summary>
@@ -52,12 +52,16 @@ namespace AutoBogus
     {
       var items = new List<TType>();
 
-      for (var index = 0; index < (count ?? AutoFaker.DefaultCount); index++)
+      // Generate the required number of items and ensure the list is unique
+      count = (count ?? AutoFaker.DefaultCount);
+
+      while (items.Count < count)
       {
         var item = Generate<TType>();
 
         // Ensure the generated value is not null (which means the type couldn't be generated)
-        if (item != null)
+        // Also ensure the list doesn't already contain the generated value
+        if (item != null && !items.Contains(item))
         {
           items.Add(item);
         }
