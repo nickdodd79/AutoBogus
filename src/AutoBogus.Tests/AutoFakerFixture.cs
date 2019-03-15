@@ -7,15 +7,22 @@ using NSubstitute;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Xunit;
 
 namespace AutoBogus.Tests
 {
   public class AutoFakerFixture
+    : IDisposable
   {
     private const string _name = "Generate";
     private static Type _type = typeof(AutoFaker);
+
+    public void Dispose()
+    {
+      AutoFaker.ClearGeneratorOverrides();
+    }
 
     public class SetBinder
       : AutoFakerFixture, IDisposable
@@ -49,6 +56,107 @@ namespace AutoBogus.Tests
       }
     }
 
+    public class Overrides
+      : AutoFakerFixture
+    {
+      private IList<int> _ids;
+
+      private class OverrideIdClass
+      {
+        public int Value { get; private set; }
+
+        public void Set(int value)
+        {
+          Value = value;
+        }
+      }
+
+      private class OverrideClass
+      {
+        public OverrideClass()
+        {
+          Id = new OverrideIdClass();
+        }
+
+        public OverrideIdClass Id { get; }
+        public OverrideClass Child { get; set; }
+      }
+
+      public Overrides()
+      {
+        _ids = new List<int>();
+      }
+
+      [Fact]
+      public void Should_Throw_If_Override_Generator_Is_Null()
+      {
+        Action action = () => AutoFaker.AddGeneratorOverride<OverrideClass>(null);
+
+        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("generator");
+      }
+
+      [Fact]
+      public void Should_Use_Override_Generator_To_Generate_Value()
+      {
+        AutoFaker.AddGeneratorOverride(context => CreateInstance());
+
+        var result = AutoFaker.Generate<OverrideClass>();
+
+        _ids.Should().HaveCount(2);
+
+        result.Should().BeEquivalentTo(new
+        {
+          Id = new
+          {
+            Value = _ids.ElementAt(0)
+          },
+          Child = new
+          {
+            Id = new
+            {
+              Value = _ids.ElementAt(1)
+            },
+            Child = default(OverrideClass)
+          }
+        });
+      }
+
+      [Fact]
+      public void Should_Use_Override_Generator_To_Generate_Value_And_Not_Continue_Population()
+      {
+        AutoFaker.AddGeneratorOverride(context => {
+          var instance = CreateInstance();
+          context.Populate = false;
+          return instance;
+        });
+
+        var result = AutoFaker.Generate<OverrideClass>();
+
+        _ids.Should().HaveCount(1);
+
+        result.Should().BeEquivalentTo(new
+        {
+          Id = new
+          {
+            Value = _ids.ElementAt(0)
+          },
+          Child = default(OverrideClass)
+        });
+      }
+
+      private OverrideClass CreateInstance()
+      {
+        var id = AutoFaker.Generate<int>();
+        var instance = new OverrideClass();
+
+        _ids.Add(id);
+
+        instance.Id.Set(id);
+
+        return instance;
+      }
+    }
+    
     public class Generate
       : AutoFakerFixture
     {

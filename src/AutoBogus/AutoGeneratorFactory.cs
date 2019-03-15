@@ -8,6 +8,7 @@ namespace AutoBogus
 {
   internal static class AutoGeneratorFactory
   {
+    internal static IDictionary<Type, IAutoGenerator> Overrides = new Dictionary<Type, IAutoGenerator>();
     internal static IDictionary<Type, IAutoGenerator> Generators = new Dictionary<Type, IAutoGenerator>
     {
       {typeof(bool), new BoolGenerator()},
@@ -38,6 +39,12 @@ namespace AutoBogus
 
     internal static IAutoGenerator GetGenerator(Type type, AutoGenerateContext context)
     {
+      // Check if a custom generator has been registered
+      if (Overrides.ContainsKey(type))
+      {
+        return Overrides[type];
+      }
+
       // Do some type -> generator mapping
       if (type.IsArray)
       {
