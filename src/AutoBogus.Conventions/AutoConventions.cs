@@ -7,7 +7,7 @@ namespace AutoBogus.Conventions
   {
     private static IList<IAutoConvention> Conventions = new List<IAutoConvention>
     {
-      new FirstNameConvention()
+      // new FirstNameConvention()
     };
 
     public static void Build(Action<AutoConventionsContext> builder = null)
@@ -23,7 +23,7 @@ namespace AutoBogus.Conventions
       // Register the generator used to apply the conventions
       AutoFaker.AddGeneratorOverride<string>(overrideContext =>
       {
-
+        return null;
       });
     }
   }
