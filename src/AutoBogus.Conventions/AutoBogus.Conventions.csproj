@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net40;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <Authors>Nick Dodd</Authors>
+    <Company />
+    <Product>AutoBogus</Product>
+    <Description>A C# library complementing the Bogus generator by adding auto creation and population capabilities. This package includes generator options for common types and member names.</Description>
+    <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
+    <Version>2.2.1</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AutoBogus\AutoBogus.csproj" />
+  </ItemGroup>
+
+</Project>
