@@ -81,6 +81,9 @@ namespace AutoBogus
             continue;
           }
 
+          context.MemberName = member.Name;
+          context.MemberType = memberType;
+
           context.Types.Push(memberType);
 
           // Generate a random value and bind it to the instance

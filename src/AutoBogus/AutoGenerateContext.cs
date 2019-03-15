@@ -29,6 +29,9 @@ namespace AutoBogus
     /// </summary>
     public IEnumerable<string> RuleSets { get; }
 
+    internal string MemberName { get; set; }
+    internal Type MemberType { get; set; }
+
     internal Stack<Type> Types { get; }
     internal IAutoBinder Binder { get; }
 

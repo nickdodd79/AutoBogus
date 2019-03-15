@@ -14,7 +14,7 @@ namespace AutoBogus
 
     object IAutoGenerator.Generate(AutoGenerateContext context)
     {
-      var overrideContext = new AutoGeneratorOverrideContext(context.Faker);
+      var overrideContext = new AutoGeneratorOverrideContext(context);
       var value = Generator.Invoke(overrideContext);
 
       // Only populate the generated instance if the populate flah is true
