@@ -14,15 +14,9 @@ using Xunit;
 namespace AutoBogus.Tests
 {
   public class AutoFakerFixture
-    : IDisposable
   {
     private const string _name = "Generate";
     private static Type _type = typeof(AutoFaker);
-
-    public void Dispose()
-    {
-      AutoFaker.ClearGeneratorOverrides();
-    }
 
     public class SetBinder
       : AutoFakerFixture, IDisposable
@@ -59,32 +53,14 @@ namespace AutoBogus.Tests
     public class Overrides
       : AutoFakerFixture
     {
-      private IList<int> _ids;
-
-      private class OverrideIdClass
-      {
-        public int Value { get; private set; }
-
-        public void Set(int value)
-        {
-          Value = value;
-        }
-      }
-
-      private class OverrideClass
-      {
-        public OverrideClass()
-        {
-          Id = new OverrideIdClass();
-        }
-
-        public OverrideIdClass Id { get; }
-        public OverrideClass Child { get; set; }
-      }
+      private IList<int> _ids;      
 
       public Overrides()
       {
         _ids = new List<int>();
+
+        // Ensure the override is reset for each test
+        AutoFaker.RemoveGeneratorOverride<OverrideClass>();
       }
 
       [Fact]
@@ -124,7 +100,8 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Use_Override_Generator_To_Generate_Value_And_Not_Continue_Population()
       {
-        AutoFaker.AddGeneratorOverride(context => {
+        AutoFaker.AddGeneratorOverride(context =>
+        {
           var instance = CreateInstance();
           context.Populate = false;
           return instance;
@@ -156,14 +133,14 @@ namespace AutoBogus.Tests
         return instance;
       }
     }
-    
+
     public class Generate
       : AutoFakerFixture
     {
       private static Type _interfaceType = typeof(IAutoFaker);
       private static string _methodName = $"{_interfaceType.FullName}.{_name}";
       private static MethodInfo _generate = _type.GetMethod(_methodName, BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[0], null);
-      private static MethodInfo _generateMany = _type.GetMethod(_methodName, BindingFlags.Instance | BindingFlags.NonPublic, null, new[] { typeof(int) }, null); 
+      private static MethodInfo _generateMany = _type.GetMethod(_methodName, BindingFlags.Instance | BindingFlags.NonPublic, null, new[] { typeof(int) }, null);
 
       private IAutoFaker _faker;
 
@@ -283,7 +260,7 @@ namespace AutoBogus.Tests
         var order = new Order(id, calculator);
 
         _order.Populate(order);
-          
+
         order.Should().BeGeneratedWithMocks();
         order.Id.Should().Be(id);
         order.Calculator.Should().Be(calculator);
@@ -292,7 +269,7 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Use_Custom_Instantiator()
       {
-        var binder = Substitute.For<IAutoBinder>();        
+        var binder = Substitute.For<IAutoBinder>();
         var order = new AutoFaker<Order>(binder)
           .CustomInstantiator(faker => new Order(default(int), default(ICalculator)))
           .Generate();
@@ -326,7 +303,7 @@ namespace AutoBogus.Tests
       }
     }
 
-    public class Behaviors
+    public class Behaviors_Types
       : AutoFakerFixture
     {
       [Fact]
@@ -340,21 +317,103 @@ namespace AutoBogus.Tests
       {
         AutoFaker.Generate<TestAbstractClass>().Should().BeNull();
       }
+    }
+
+    public class Behaviors_Recursive
+      : AutoFakerFixture
+    {
+      private TestRecursiveClass _instance;
+
+      public Behaviors_Recursive()
+      {
+        _instance = AutoFaker.Generate<TestRecursiveClass>();
+      }
 
       [Fact]
-      public void Should_Generate_Recursive_Types_To_2_Levels()
+      public void Should_Generate_Recursive_Types()
       {
-        AutoFaker.Generate<TestRecursiveClass>().Should().BeEquivalentTo(new TestRecursiveClass
+        var item = new TestRecursiveClass
         {
-          Child1 = new TestRecursiveClass
+          Child = default(TestRecursiveClass),
+          Children = default(IEnumerable<TestRecursiveClass>),
+          Sub = new TestRecursiveSubClass
           {
-            Child1 = default(TestRecursiveClass),
-            Child2 = default(TestRecursiveClass)
+            Value = default(TestRecursiveClass)
+          }
+        };
+
+        _instance.Child.Should().BeEquivalentTo(new TestRecursiveClass
+        {
+          Child = default(TestRecursiveClass),
+          Children = new[]
+          {
+            item,
+            item,
+            item
           },
-          Child2 = new TestRecursiveClass
+          Sub = new TestRecursiveSubClass
           {
-            Child1 = default(TestRecursiveClass),
-            Child2 = default(TestRecursiveClass)
+            Value = default(TestRecursiveClass)
+          }
+        });
+      }
+
+      [Fact]
+      public void Should_Generate_Recursive_Lists()
+      {
+        var item = new TestRecursiveClass
+        {
+          Child = new TestRecursiveClass
+          {
+            Child = default(TestRecursiveClass),
+            Children = default(IEnumerable<TestRecursiveClass>),
+            Sub = new TestRecursiveSubClass
+            {
+              Value = default(TestRecursiveClass)
+            }
+          },
+          Children = default(IEnumerable<TestRecursiveClass>),
+          Sub = new TestRecursiveSubClass
+          {
+            Value = new TestRecursiveClass
+            {
+              Child = default(TestRecursiveClass),
+              Children = default(IEnumerable<TestRecursiveClass>),
+              Sub = default(TestRecursiveSubClass)
+            }
+          }
+        };
+
+        _instance.Children.Should().BeEquivalentTo(new[]
+        {
+          item,
+          item,
+          item
+        });
+      }
+
+      [Fact]
+      public void Should_Generate_Recursive_Sub_Types()
+      {
+        var item = new TestRecursiveClass
+        {
+          Child = default(TestRecursiveClass),
+          Children = default(IEnumerable<TestRecursiveClass>),
+          Sub = default(TestRecursiveSubClass)
+        };
+
+        _instance.Sub.Should().BeEquivalentTo(new TestRecursiveSubClass
+        {
+          Value = new TestRecursiveClass
+          {
+            Child = default(TestRecursiveClass),
+            Children = new[]
+            {
+              item,
+              item,
+              item
+            },
+            Sub = default(TestRecursiveSubClass)
           }
         });
       }

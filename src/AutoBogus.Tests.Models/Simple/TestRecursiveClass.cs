@@ -1,8 +1,11 @@
-﻿namespace AutoBogus.Tests.Models.Simple
+﻿using System.Collections.Generic;
+
+namespace AutoBogus.Tests.Models.Simple
 {
   public sealed class TestRecursiveClass
   {
-    public TestRecursiveClass Child1 { get; set; }
-    public TestRecursiveClass Child2 { get; set; }
+    public TestRecursiveClass Child { get; set; }
+    public IEnumerable<TestRecursiveClass> Children { get; set; }
+    public TestRecursiveSubClass Sub { get; set; }
   }
 }
