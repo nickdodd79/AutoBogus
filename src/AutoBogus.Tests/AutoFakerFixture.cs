@@ -7,7 +7,6 @@ using NSubstitute;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Xunit;
 
@@ -47,90 +46,6 @@ namespace AutoBogus.Tests
       {
         // Clear the binder to ensure other tests are not affected - its static
         AutoFaker.SetBinder(null);
-      }
-    }
-
-    public class Overrides
-      : AutoFakerFixture
-    {
-      private IList<int> _ids;      
-
-      public Overrides()
-      {
-        _ids = new List<int>();
-
-        // Ensure the override is reset for each test
-        AutoFaker.RemoveGeneratorOverride<OverrideClass>();
-      }
-
-      [Fact]
-      public void Should_Throw_If_Override_Generator_Is_Null()
-      {
-        Action action = () => AutoFaker.AddGeneratorOverride<OverrideClass>(null);
-
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("generator");
-      }
-
-      [Fact]
-      public void Should_Use_Override_Generator_To_Generate_Value()
-      {
-        AutoFaker.AddGeneratorOverride(context => CreateInstance());
-
-        var result = AutoFaker.Generate<OverrideClass>();
-
-        _ids.Should().HaveCount(2);
-
-        result.Should().BeEquivalentTo(new
-        {
-          Id = new
-          {
-            Value = _ids.ElementAt(0)
-          },
-          Child = new
-          {
-            Id = new
-            {
-              Value = _ids.ElementAt(1)
-            },
-            Child = default(OverrideClass)
-          }
-        });
-      }
-
-      [Fact]
-      public void Should_Use_Override_Generator_To_Generate_Value_And_Not_Continue_Population()
-      {
-        AutoFaker.AddGeneratorOverride(context =>
-        {
-          var instance = CreateInstance();
-          context.Populate = false;
-          return instance;
-        });
-
-        var result = AutoFaker.Generate<OverrideClass>();
-
-        _ids.Should().HaveCount(1);
-
-        result.Should().BeEquivalentTo(new
-        {
-          Id = new
-          {
-            Value = _ids.ElementAt(0)
-          },
-          Child = default(OverrideClass)
-        });
-      }
-
-      private OverrideClass CreateInstance()
-      {
-        var id = AutoFaker.Generate<int>();
-        var instance = new OverrideClass();
-
-        _ids.Add(id);
-
-        instance.Id.Set(id);
-
-        return instance;
       }
     }
 

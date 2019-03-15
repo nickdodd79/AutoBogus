@@ -122,43 +122,6 @@ namespace AutoBogus
 
     #endregion
 
-    #region Overrides
-
-    /// <summary>
-    /// Adds a type generator override for custom generation.
-    /// </summary>
-    /// <typeparam name="TType">The generation type to override.</typeparam>
-    /// <param name="generator">The generation handler for the type.</param>
-    public static void AddGeneratorOverride<TType>(Func<AutoGeneratorOverrideContext, TType> generator)
-    {
-      var type = typeof(TType);
-      AutoGeneratorFactory.Overrides[type] = new AutoGeneratorOverride<TType>(generator);
-    }
-
-    /// <summary>
-    /// Removes a type generator override.
-    /// </summary>
-    /// <typeparam name="TType">The generation type to remove.</typeparam>
-    public static void RemoveGeneratorOverride<TType>()
-    {
-      var type = typeof(TType);
-
-      if (AutoGeneratorFactory.Overrides.ContainsKey(type))
-      {
-        AutoGeneratorFactory.Overrides.Remove(type);
-      }
-    }
-
-    /// <summary>
-    /// Removes all type generator overrides.
-    /// </summary>
-    public static void ClearGeneratorOverrides()
-    {
-      AutoGeneratorFactory.Overrides.Clear();
-    }
-
-    #endregion
-
     #region Generate
 
     /// <summary>
