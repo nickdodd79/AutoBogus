@@ -17,6 +17,7 @@ namespace AutoBogus
     internal const int GenerateAttemptsThreshold = 3;
 
     internal static IAutoBinder DefaultBinder = new AutoBinder();
+    internal static IEnumerable<IAutoGeneratorOverride> Overrides = Enumerable.Empty<IAutoGeneratorOverride>();
 
     private AutoFaker(string locale, IAutoBinder binder)
     {
@@ -29,13 +30,13 @@ namespace AutoBogus
 
     TType IAutoFaker.Generate<TType>()
     {
-      var context = CreateContext<TType>();
+      var context = CreateContext();
       return context.Generate<TType>();
     }
 
     List<TType> IAutoFaker.Generate<TType>(int count)
     {
-      var context = CreateContext<List<TType>>();
+      var context = CreateContext();
       return context.GenerateMany<TType>(count);
     }
 
@@ -51,15 +52,52 @@ namespace AutoBogus
       return faker.Generate(count);
     }
 
-    private AutoGenerateContext CreateContext<TGenerate>()
+    private AutoGenerateContext CreateContext()
     {
-      var type = typeof(TGenerate);
       var faker = new Faker(Locale ?? DefaultLocale);
       var ruleSets = Enumerable.Empty<string>();
       var binder = Binder ?? DefaultBinder;
+      var overrides = Overrides.ToList();
 
-      return new AutoGenerateContext(type, faker, ruleSets, binder);
+      return new AutoGenerateContext(faker, ruleSets, binder, overrides);
     }
+
+    #region SetBinder
+
+    /// <summary>
+    /// Sets the default binder used for binding auto generated instances.
+    /// </summary>
+    /// <typeparam name="TBinder">The binder type to use for generate requests.</typeparam>
+    public static void SetBinder<TBinder>()
+      where TBinder : IAutoBinder, new()
+    {
+      var binder = new TBinder();
+      SetBinder(binder);
+    }
+
+    /// <summary>
+    /// Sets the default binder used for binding auto generated instances.
+    /// </summary>
+    /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for generate requests.</param>
+    public static void SetBinder(IAutoBinder binder)
+    {
+      DefaultBinder = binder ?? new AutoBinder();
+    }
+
+    #endregion
+
+    #region Overrides
+
+    /// <summary>
+    /// Sets the generator overrides to use for generating instances.
+    /// </summary>
+    /// <param name="overrides">A collection of <see cref="IAutoGeneratorOverride"/> instances to use for overridding generate requests.</param>
+    public static void SetGeneratorOverrides(params IAutoGeneratorOverride[] overrides)
+    {
+      Overrides = overrides;
+    }
+
+    #endregion
 
     #region Create
 
@@ -95,30 +133,6 @@ namespace AutoBogus
     public static IAutoFaker Create(string locale = null, IAutoBinder binder = null)
     {
       return new AutoFaker(locale, binder);
-    }
-
-    #endregion
-
-    #region SetBinder
-
-    /// <summary>
-    /// Sets the default binder used for binding auto generated instances.
-    /// </summary>
-    /// <typeparam name="TBinder">The binder type to use for generate requests.</typeparam>
-    public static void SetBinder<TBinder>()
-      where TBinder : IAutoBinder, new()
-    {
-      var binder = new TBinder();
-      SetBinder(binder);
-    }
-
-    /// <summary>
-    /// Sets the default binder used for binding auto generated instances.
-    /// </summary>
-    /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for generate requests.</param>
-    public static void SetBinder(IAutoBinder binder)
-    {
-      DefaultBinder = binder ?? new AutoBinder();
     }
 
     #endregion

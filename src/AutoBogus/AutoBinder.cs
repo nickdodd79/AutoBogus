@@ -81,7 +81,6 @@ namespace AutoBogus
             continue;
           }
 
-          context.GenerateType = memberType;
           context.GenerateName = member.Name;
 
           context.Types.Push(memberType);

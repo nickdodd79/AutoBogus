@@ -38,6 +38,14 @@ namespace AutoBogus
 
     internal static IAutoGenerator GetGenerator(Type type, AutoGenerateContext context)
     {
+      // Check if an overrides is available for this generate request
+      var generatorOverride = context.Overrides.FirstOrDefault(o => o.CanOverride(type, context));
+        
+      if (generatorOverride != null)
+      {
+        return generatorOverride;
+      }
+
       // Do some type -> generator mapping
       if (type.IsArray)
       {

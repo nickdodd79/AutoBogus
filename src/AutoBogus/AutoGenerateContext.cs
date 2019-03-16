@@ -10,20 +10,15 @@ namespace AutoBogus
   /// </summary>
   public sealed class AutoGenerateContext
   {
-    internal AutoGenerateContext(Type generateType, Faker faker, IEnumerable<string> ruleSets, IAutoBinder binder)
+    internal AutoGenerateContext(Faker faker, IEnumerable<string> ruleSets, IAutoBinder binder, IEnumerable<IAutoGeneratorOverride> overrides)
     {
-      GenerateType = generateType;
       Faker = faker;
       RuleSets = ruleSets;
       Binder = binder;
+      Overrides = overrides;
 
       Types = new Stack<Type>();
     }
-
-    /// <summary>
-    /// The <see cref="System.Type"/> for the current generate request.
-    /// </summary>
-    public Type GenerateType { get; internal set; }
 
     /// <summary>
     /// The name associated with the current generate request.
@@ -42,6 +37,7 @@ namespace AutoBogus
 
     internal Stack<Type> Types { get; }
     internal IAutoBinder Binder { get; }
+    internal IEnumerable<IAutoGeneratorOverride> Overrides { get; }
 
     /// <summary>
     /// Generates an instance of type <typeparamref name="TType"/>.
@@ -80,6 +76,16 @@ namespace AutoBogus
       GenerateMany(count, items, true);
 
       return items;
+    }
+
+    /// <summary>
+    /// Populates the provided instance with auto generated values.
+    /// </summary>
+    /// <typeparam name="TType">The type of instance to populate.</typeparam>
+    /// <param name="instance">The instance to populate.</param>
+    public void Populate<TType>(TType instance)
+    {
+      Binder.PopulateInstance<TType>(instance, this);
     }
 
     internal void GenerateMany<TType>(int? count, List<TType> items, bool unique, int attempt = 1, Func<TType> generate = null)
