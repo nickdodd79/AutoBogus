@@ -323,16 +323,19 @@ namespace AutoBogus.Tests.Models
       // Create a trace path for the current member
       path = string.Concat(path, ".", memberInfo.Name);
 
-      // Resolve the assertion and value for the member type
-      var value = memberGetter.Invoke(instance);
-      var assertion = GetAssertion(memberType);
-      var message = assertion.Invoke(path, memberType, value);
+      // Resolve the assertion and value for the member type      
+      if (instance != null)
+      {
+        var value = memberGetter.Invoke(instance);
+        var assertion = GetAssertion(memberType);
+        var message = assertion.Invoke(path, memberType, value);
 
-      // Register an assertion for each member
-      Scope = Scope
-        .ForCondition(message == null)
-        .FailWith(message)
-        .Then;
+        // Register an assertion for each member
+        Scope = Scope
+          .ForCondition(message == null)
+          .FailWith(message)
+          .Then;
+      }
     }
 
     private object GetDefaultValue<TType>()

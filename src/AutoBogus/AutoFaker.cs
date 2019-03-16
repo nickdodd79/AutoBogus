@@ -29,13 +29,13 @@ namespace AutoBogus
 
     TType IAutoFaker.Generate<TType>()
     {
-      var context = CreateContext();
+      var context = CreateContext<TType>();
       return context.Generate<TType>();
     }
 
     List<TType> IAutoFaker.Generate<TType>(int count)
     {
-      var context = CreateContext();
+      var context = CreateContext<List<TType>>();
       return context.GenerateMany<TType>(count);
     }
 
@@ -51,13 +51,14 @@ namespace AutoBogus
       return faker.Generate(count);
     }
 
-    private AutoGenerateContext CreateContext()
+    private AutoGenerateContext CreateContext<TGenerate>()
     {
+      var type = typeof(TGenerate);
       var faker = new Faker(Locale ?? DefaultLocale);
       var ruleSets = Enumerable.Empty<string>();
       var binder = Binder ?? DefaultBinder;
 
-      return new AutoGenerateContext(faker, ruleSets, binder);
+      return new AutoGenerateContext(type, faker, ruleSets, binder);
     }
 
     #region Create
@@ -184,14 +185,14 @@ namespace AutoBogus
       return faker.Generate(count);
     }
 
+    #endregion
+
     private static AutoFaker<TType> CreateFaker<TType, TFaker>(object[] args)
       where TType : class
     {
       var type = typeof(TFaker);
       return (AutoFaker<TType>)Activator.CreateInstance(type, args ?? new object[0]);
     }
-
-    #endregion
   }
 }
 

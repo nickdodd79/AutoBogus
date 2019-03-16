@@ -13,16 +13,6 @@ namespace AutoBogus.Tests
 {
   public class AutoGeneratorsFixture
   {
-    private AutoGenerateContext _context;
-
-    public AutoGeneratorsFixture()
-    {
-      var faker = new Faker();
-      var binder = new AutoBinder();
-
-      _context = new AutoGenerateContext(faker, Enumerable.Empty<string>(), binder);
-    }
-
     public class RegisteredGenerator
       : AutoGeneratorsFixture
     {
@@ -32,16 +22,17 @@ namespace AutoBogus.Tests
       {
         var generator = AutoGeneratorFactory.Generators[type];
 
-        InvokeGenerator(generator).Should().BeOfType(type);
+        InvokeGenerator(type, generator).Should().BeOfType(type);
       }
 
       [Theory]
       [MemberData(nameof(GetRegisteredTypes))]
       public void GetGenerator_Should_Return_Generator(Type type)
       {
+        var context = CreateContext(type);
         var generator = AutoGeneratorFactory.Generators[type];
 
-        AutoGeneratorFactory.GetGenerator(type, _context).Should().Be(generator);
+        AutoGeneratorFactory.GetGenerator(type, context).Should().Be(generator);
       }
 
       public static IEnumerable<object[]> GetRegisteredTypes()
@@ -66,7 +57,7 @@ namespace AutoBogus.Tests
       {
         var itemType = type.GetElementType();
         var generator = CreateGenerator(typeof(ArrayGenerator<>), itemType);
-        var array = InvokeGenerator(generator) as Array;
+        var array = InvokeGenerator(type, generator) as Array;
 
         array.Should().NotBeNull().And.NotContainNulls();
       }
@@ -79,10 +70,11 @@ namespace AutoBogus.Tests
       [InlineData(typeof(TestAbstractClass[]))]
       public void GetGenerator_Should_Return_ArrayGenerator(Type type)
       {
+        var context = CreateContext(type);
         var itemType = type.GetElementType();
         var generatorType = GetGeneratorType(typeof(ArrayGenerator<>), itemType);
 
-        AutoGeneratorFactory.GetGenerator(type, _context).Should().BeOfType(generatorType);
+        AutoGeneratorFactory.GetGenerator(type, context).Should().BeOfType(generatorType);
       }
     }
 
@@ -92,15 +84,19 @@ namespace AutoBogus.Tests
       [Fact]
       public void Generate_Should_Return_Enum()
       {
+        var type = typeof(TestEnum);
         var generator = new EnumGenerator<TestEnum>();
 
-        InvokeGenerator(generator).Should().BeOfType<TestEnum>();
+        InvokeGenerator(type, generator).Should().BeOfType<TestEnum>();
       }
 
       [Fact]
       public void GetGenerator_Should_Return_EnumGenerator()
       {
-        AutoGeneratorFactory.GetGenerator<TestEnum>(_context).Should().BeOfType<EnumGenerator<TestEnum>>();
+        var type = typeof(TestEnum);
+        var context = CreateContext(type);
+
+        AutoGeneratorFactory.GetGenerator<TestEnum>(context).Should().BeOfType<EnumGenerator<TestEnum>>();
       }
     }
 
@@ -119,7 +115,7 @@ namespace AutoBogus.Tests
         var keyType = genericTypes.ElementAt(0);
         var valueType = genericTypes.ElementAt(1);
         var generator = CreateGenerator(typeof(DictionaryGenerator<,>), keyType, valueType);
-        var dictionary = InvokeGenerator(generator) as IDictionary;
+        var dictionary = InvokeGenerator(type, generator) as IDictionary;
 
         dictionary.Should().NotBeNull().And.NotContainNulls();
 
@@ -140,12 +136,13 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IDictionary<int, TestAbstractClass>))]
       public void GetGenerator_Should_Return_DictionaryGenerator(Type type)
       {
+        var context = CreateContext(type);
         var genericTypes = ReflectionHelper.GetGenericArguments(type);
         var keyType = genericTypes.ElementAt(0);
         var valueType = genericTypes.ElementAt(1);
         var generatorType = GetGeneratorType(typeof(DictionaryGenerator<,>), keyType, valueType);
 
-        AutoGeneratorFactory.GetGenerator(type, _context).Should().BeOfType(generatorType);
+        AutoGeneratorFactory.GetGenerator(type, context).Should().BeOfType(generatorType);
       }
     }
 
@@ -164,7 +161,7 @@ namespace AutoBogus.Tests
         var genericTypes = ReflectionHelper.GetGenericArguments(type);
         var itemType = genericTypes.ElementAt(0);
         var generator = CreateGenerator(typeof(EnumerableGenerator<>), itemType);
-        var enumerable = InvokeGenerator(generator) as IEnumerable;
+        var enumerable = InvokeGenerator(type, generator) as IEnumerable;
 
         enumerable.Should().NotBeNull().And.NotContainNulls();
       }
@@ -178,11 +175,12 @@ namespace AutoBogus.Tests
       [InlineData(typeof(ICollection<TestAbstractClass>))]
       public void GetGenerator_Should_Return_EnumerableGenerator(Type type)
       {
+        var context = CreateContext(type);
         var genericTypes = ReflectionHelper.GetGenericArguments(type);
         var itemType = genericTypes.ElementAt(0);
         var generatorType = GetGeneratorType(typeof(EnumerableGenerator<>), itemType);
 
-        AutoGeneratorFactory.GetGenerator(type, _context).Should().BeOfType(generatorType);
+        AutoGeneratorFactory.GetGenerator(type, context).Should().BeOfType(generatorType);
       }
     }
 
@@ -192,15 +190,19 @@ namespace AutoBogus.Tests
       [Fact]
       public void Generate_Should_Return_Value()
       {
+        var type = typeof(TestEnum?);
         var generator = new NullableGenerator<TestEnum>();
 
-        InvokeGenerator(generator).Should().BeOfType<TestEnum>();
+        InvokeGenerator(type, generator).Should().BeOfType<TestEnum>();
       }
 
       [Fact]
       public void GetGenerator_Should_Return_NullableGenerator()
       {
-        AutoGeneratorFactory.GetGenerator<TestEnum?>(_context).Should().BeOfType<NullableGenerator<TestEnum>>();
+        var type = typeof(TestEnum?);
+        var context = CreateContext(type);
+
+        AutoGeneratorFactory.GetGenerator<TestEnum?>(context).Should().BeOfType<NullableGenerator<TestEnum>>();
       }
     }
 
@@ -220,11 +222,11 @@ namespace AutoBogus.Tests
 
         if (ReflectionHelper.IsInterface(type) || ReflectionHelper.IsAbstract(type))
         {
-          InvokeGenerator(generator).Should().BeNull();
+          InvokeGenerator(type, generator).Should().BeNull();
         }
         else
         {
-          InvokeGenerator(generator).Should().BeAssignableTo(type);
+          InvokeGenerator(type, generator).Should().BeAssignableTo(type);
         }
       }
 
@@ -237,15 +239,17 @@ namespace AutoBogus.Tests
       [InlineData(typeof(SortedList<int, TestClass>))]
       public void GetGenerator_Should_Return_TypeGenerator(Type type)
       {
+        var context = CreateContext(type);
         var generatorType = GetGeneratorType(typeof(TypeGenerator<>), type);
 
-        AutoGeneratorFactory.GetGenerator(type, _context).Should().BeOfType(generatorType);
+        AutoGeneratorFactory.GetGenerator(type, context).Should().BeOfType(generatorType);
       }
     }
 
-    private object InvokeGenerator(IAutoGenerator generator)
+    private object InvokeGenerator(Type type, IAutoGenerator generator)
     {
-      return generator.Generate(_context);
+      var context = CreateContext(type);
+      return generator.Generate(context);
     }
 
     private static Type GetGeneratorType(Type type, params Type[] types)
@@ -257,6 +261,14 @@ namespace AutoBogus.Tests
     {
       type = GetGeneratorType(type, types);
       return (IAutoGenerator)Activator.CreateInstance(type);
+    }
+    
+    private AutoGenerateContext CreateContext(Type type)
+    {
+      var faker = new Faker();
+      var binder = new AutoBinder();
+
+      return new AutoGenerateContext(type, faker, Enumerable.Empty<string>(), binder);
     }
   }
 }

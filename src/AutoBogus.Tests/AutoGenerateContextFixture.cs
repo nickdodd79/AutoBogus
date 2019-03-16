@@ -1,25 +1,40 @@
-﻿using FluentAssertions;
+﻿using Bogus;
+using FluentAssertions;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace AutoBogus.Tests
 {
   public class AutoGenerateContextFixture
   {
-    private int _value;
-    private List<int> _items;
+    private Faker _faker;
+    private IEnumerable<string> _ruleSets;
+    private AutoBinder _binder;
     private AutoGenerateContext _context;
 
     public AutoGenerateContextFixture()
     {
-      _value = 1;
-      _items = new List<int> { _value };
-      _context = new AutoGenerateContext(null, null, null);
+      _faker = new Faker();
+      _ruleSets = Enumerable.Empty<string>();
+      _binder = new AutoBinder();
     }
 
     public class GenerateMany_Internal
       : AutoGenerateContextFixture
     {
+      private int _value;
+      private List<int> _items;
+
+      public GenerateMany_Internal()
+      {
+        var type = typeof(List<int>);
+
+        _value = 1;
+        _items = new List<int> { _value };
+        _context = new AutoGenerateContext(type, _faker, _ruleSets, _binder);
+      }
+
       [Fact]
       public void Should_Generate_Duplicates_If_Not_Unique()
       {
@@ -46,7 +61,7 @@ namespace AutoBogus.Tests
       public void Should_Short_Circuit_If_Unique_Attempts_Overflow()
       {
         var attempts = 0;
-        
+
         _context.GenerateMany(2, _items, true, 1, () =>
         {
           attempts++;

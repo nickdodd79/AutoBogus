@@ -68,7 +68,7 @@ namespace AutoBogus
     /// <returns>The generated instance of type <typeparamref name="TType"/>.</returns>
     public override TType Generate(string ruleSets = null)
     {
-      var context = GetContext(ruleSets);
+      var context = CreateContext<TType>(ruleSets);
 
       PrepareCreate(context);
       PrepareFinish(context);
@@ -84,7 +84,7 @@ namespace AutoBogus
     /// <returns>The collection of generated instances of type <typeparamref name="TType"/>.</returns>
     public override List<TType> Generate(int count, string ruleSets = null)
     {
-      var context = GetContext(ruleSets);
+      var context = CreateContext<List<TType>>(ruleSets);
 
       PrepareCreate(context);
       PrepareFinish(context);
@@ -99,19 +99,19 @@ namespace AutoBogus
     /// <param name="ruleSets">An optional list of delimited rule sets to use for the populate request.</param>
     public override void Populate(TType instance, string ruleSets = null)
     {
-      var context = GetContext(ruleSets);
+      var context = CreateContext<TType>(ruleSets);
 
       PrepareFinish(context);
 
       base.Populate(instance, ruleSets);
     }
     
-    private AutoGenerateContext GetContext(string ruleSets)
+    private AutoGenerateContext CreateContext<TGenerate>(string ruleSets)
     {
-      var type = typeof(TType);
+      var type = typeof(TGenerate);
       var ruleSetNames = ParseRuleSets(ruleSets);
 
-      return new AutoGenerateContext(FakerHub, ruleSetNames, Binder);
+      return new AutoGenerateContext(type, FakerHub, ruleSetNames, Binder);
     }
 
     private IEnumerable<string> ParseRuleSets(string ruleSets)

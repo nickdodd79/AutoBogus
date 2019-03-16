@@ -10,14 +10,25 @@ namespace AutoBogus
   /// </summary>
   public sealed class AutoGenerateContext
   {
-    internal AutoGenerateContext(Faker faker, IEnumerable<string> ruleSets, IAutoBinder binder)
+    internal AutoGenerateContext(Type generateType, Faker faker, IEnumerable<string> ruleSets, IAutoBinder binder)
     {
+      GenerateType = generateType;
       Faker = faker;
       RuleSets = ruleSets;
       Binder = binder;
 
       Types = new Stack<Type>();
     }
+
+    /// <summary>
+    /// The <see cref="System.Type"/> for the current generate request.
+    /// </summary>
+    public Type GenerateType { get; internal set; }
+
+    /// <summary>
+    /// The name associated with the current generate request.
+    /// </summary>
+    public string GenerateName { get; internal set; }
 
     /// <summary>
     /// The underlying <see cref="Bogus.Faker"/> instance used to generate random values.
@@ -33,7 +44,7 @@ namespace AutoBogus
     internal IAutoBinder Binder { get; }
 
     /// <summary>
-    /// Creates an instance of type <typeparamref name="TType"/>.
+    /// Generates an instance of type <typeparamref name="TType"/>.
     /// </summary>
     /// <typeparam name="TType">The instance type to generate.</typeparam>
     /// <returns>An instance of <typeparamref name="TType"/>.</returns>
@@ -44,7 +55,7 @@ namespace AutoBogus
     }
 
     /// <summary>
-    /// Creates a collection of instances of type <typeparamref name="TType"/>.
+    /// Generates a collection of instances of type <typeparamref name="TType"/>.
     /// </summary>
     /// <typeparam name="TType">The instance type to generate.</typeparam>
     /// <param name="count">The number of instances to generate.</param>
@@ -58,7 +69,7 @@ namespace AutoBogus
     }
 
     /// <summary>
-    /// Creates a collection of unique instances of type <typeparamref name="TType"/>.
+    /// Generates a collection of unique instances of type <typeparamref name="TType"/>.
     /// </summary>
     /// <typeparam name="TType">The instance type to generate.</typeparam>
     /// <param name="count">The number of instances to generate.</param>

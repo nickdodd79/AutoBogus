@@ -9,7 +9,7 @@ using Binder = Bogus.Binder;
 namespace AutoBogus
 {
   /// <summary>
-  /// An class for binding auto generated instances.
+  /// A class for binding auto generated instances.
   /// </summary>
   public class AutoBinder
     : Binder, IAutoBinder
@@ -34,7 +34,7 @@ namespace AutoBogus
         return (TType)constructor.Invoke(parameters);
       }
 
-      return default(TType);
+      return default;
     }
 
     /// <summary>
@@ -80,6 +80,9 @@ namespace AutoBogus
           {
             continue;
           }
+
+          context.GenerateType = memberType;
+          context.GenerateName = member.Name;
 
           context.Types.Push(memberType);
 
