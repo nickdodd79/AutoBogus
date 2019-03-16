@@ -28,11 +28,9 @@ namespace AutoBogus.Tests
 
       public GenerateMany_Internal()
       {
-        var type = typeof(List<int>);
-
         _value = 1;
         _items = new List<int> { _value };
-        _context = new AutoGenerateContext(type, _faker, _ruleSets, _binder);
+        _context = new AutoGenerateContext(_faker, _ruleSets, _binder, Enumerable.Empty<IAutoGeneratorOverride>());
       }
 
       [Fact]

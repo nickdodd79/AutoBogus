@@ -49,6 +49,93 @@ namespace AutoBogus.Tests
       }
     }
 
+    public class Overrides
+      : AutoFakerFixture, IDisposable
+    {
+      private const string Name = "This is a string";
+
+      private int _id;
+
+      private sealed class OverrideFaker
+        : AutoFaker<OverrideClass>
+      { }
+
+      private class TestGeneratorOverride
+        : IAutoGeneratorOverride
+      {
+        public TestGeneratorOverride(int id)
+        {
+          Id = id;
+        }
+
+        private int Id { get; }
+
+        public bool CanOverride(Type type, AutoGenerateContext context)
+        {
+          return type == typeof(OverrideClass);
+        }
+
+        public object Generate(AutoGenerateContext context)
+        {
+          var instance = new OverrideClass();
+
+          instance.Id.SetValue(Id);
+          context.Populate(instance);
+
+          return instance;
+        }
+      }
+
+      public Overrides()
+      {
+        _id = AutoFaker.Generate<int>();
+
+        AutoFaker.SetGeneratorOverrides(
+          new TestGeneratorOverride(_id),
+          new AutoGeneratorTypeOverride<string>(c => Name));
+      }
+
+      public void Dispose()
+      {
+        AutoFaker.SetGeneratorOverrides();
+      }
+
+      [Fact]
+      public void Should_Override_For_Generate()
+      {
+        var faker = AutoFaker.Create();
+        AssertOverrides(() => faker.Generate<OverrideClass>());
+      }
+
+      [Fact]
+      public void Should_Override_For_Generate_Static()
+      {
+        AssertOverrides(() => AutoFaker.Generate<OverrideClass>());
+      }
+
+      [Fact]
+      public void Should_Override_For_Generate_Faker()
+      {
+        AssertOverrides(() => AutoFaker.Generate<OverrideClass, OverrideFaker>());
+      }
+
+      [Fact]
+      public void Should_Override_For_AutoFaker_T()
+      {
+        var faker = new AutoFaker<OverrideClass>();
+        AssertOverrides(() => faker.Generate());
+      }
+
+      private void AssertOverrides(Func<OverrideClass> invoker)
+      {
+        var instance = invoker.Invoke();
+
+        instance.Id.Value.Should().Be(_id);
+        instance.Name.Should().Be(Name);
+        instance.Amounts.Should().NotBeEmpty();
+      }
+    }
+
     public class Generate
       : AutoFakerFixture
     {
@@ -153,17 +240,17 @@ namespace AutoBogus.Tests
     public class AutoFaker_T
       : AutoFakerFixture
     {
-      private Faker<Order> _order;
+      private Faker<Order> _faker;
 
       public AutoFaker_T()
       {
-        _order = new AutoFaker<Order>();
+        _faker = new AutoFaker<Order>();
       }
 
       [Fact]
       public void Should_Generate_Type()
       {
-        _order.Generate().Should().BeGeneratedWithoutMocks();
+        _faker.Generate().Should().BeGeneratedWithoutMocks();
       }
 
       [Fact]
@@ -174,7 +261,7 @@ namespace AutoBogus.Tests
         var calculator = Substitute.For<ICalculator>();
         var order = new Order(id, calculator);
 
-        _order.Populate(order);
+        _faker.Populate(order);
 
         order.Should().BeGeneratedWithMocks();
         order.Id.Should().Be(id);
@@ -196,7 +283,7 @@ namespace AutoBogus.Tests
       public void Should_Not_Generate_Rule_Set_Members()
       {
         var code = Guid.NewGuid();
-        var order = _order
+        var order = _faker
           .RuleFor(o => o.Code, code)
           .Generate();
 
@@ -207,14 +294,14 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Not_Generate_If_No_Default_Rule_Set()
       {
-        _order.RuleSet("test", rules =>
+        _faker.RuleSet("test", rules =>
         {
           // No default constructor so ensure a create action is defined
           // Make the values default so the NotBeGenerated() check passes
           rules.CustomInstantiator(f => new Order(default(int), default(ICalculator)));
         });
 
-        _order.Generate("test").Should().NotBeGenerated();
+        _faker.Generate("test").Should().NotBeGenerated();
       }
     }
 
