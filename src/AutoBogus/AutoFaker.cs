@@ -55,11 +55,12 @@ namespace AutoBogus
     private AutoGenerateContext CreateContext()
     {
       var faker = new Faker(Locale ?? DefaultLocale);
-      var ruleSets = Enumerable.Empty<string>();
       var binder = Binder ?? DefaultBinder;
-      var overrides = Overrides.ToList();
 
-      return new AutoGenerateContext(faker, ruleSets, binder, overrides);
+      return new AutoGenerateContext(faker, binder)
+      {
+        Overrides = Overrides.ToList()
+      };
     }
 
     #region SetBinder

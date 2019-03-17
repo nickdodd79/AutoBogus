@@ -30,7 +30,10 @@ namespace AutoBogus.Tests
       {
         _value = 1;
         _items = new List<int> { _value };
-        _context = new AutoGenerateContext(_faker, _ruleSets, _binder, Enumerable.Empty<IAutoGeneratorOverride>());
+        _context = new AutoGenerateContext(_faker, _binder)
+        {
+          RuleSets = _ruleSets
+        };
       }
 
       [Fact]

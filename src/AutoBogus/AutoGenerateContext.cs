@@ -10,12 +10,13 @@ namespace AutoBogus
   /// </summary>
   public sealed class AutoGenerateContext
   {
-    internal AutoGenerateContext(Faker faker, IEnumerable<string> ruleSets, IAutoBinder binder, IEnumerable<IAutoGeneratorOverride> overrides)
+    internal AutoGenerateContext(Faker faker, IAutoBinder binder)
     {
       Faker = faker;
-      RuleSets = ruleSets;
       Binder = binder;
-      Overrides = overrides;
+
+      RuleSets = Enumerable.Empty<string>();
+      Overrides = Enumerable.Empty<IAutoGeneratorOverride>();
 
       Types = new Stack<Type>();
     }
@@ -33,11 +34,12 @@ namespace AutoBogus
     /// <summary>
     /// The requested rule sets provided for the generate request.
     /// </summary>
-    public IEnumerable<string> RuleSets { get; }
+    public IEnumerable<string> RuleSets { get; internal set; }
 
     internal Stack<Type> Types { get; }
-    internal IAutoBinder Binder { get; }
-    internal IEnumerable<IAutoGeneratorOverride> Overrides { get; }
+    internal IAutoBinder Binder { get;}
+
+    internal IEnumerable<IAutoGeneratorOverride> Overrides { get; set; }
 
     /// <summary>
     /// Generates an instance of type <typeparamref name="TType"/>.

@@ -20,7 +20,7 @@ namespace AutoBogus.Tests
       var faker = new Faker();
       var binder = new AutoBinder();
 
-      _context = new AutoGenerateContext(faker, Enumerable.Empty<string>(), binder, Enumerable.Empty<IAutoGeneratorOverride>());
+      _context = new AutoGenerateContext(faker, binder);
     }
 
     public class RegisteredGenerator

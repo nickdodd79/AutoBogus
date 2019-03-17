@@ -108,10 +108,11 @@ namespace AutoBogus
     
     private AutoGenerateContext CreateContext(string ruleSets)
     {
-      var ruleSetNames = ParseRuleSets(ruleSets);
-      var overrides = AutoFaker.Overrides.ToList();
-
-      return new AutoGenerateContext(FakerHub, ruleSetNames, Binder, overrides);
+      return new AutoGenerateContext(FakerHub, Binder)
+      {
+        RuleSets = ParseRuleSets(ruleSets),
+        Overrides = AutoFaker.Overrides.ToList()
+      };
     }
 
     private IEnumerable<string> ParseRuleSets(string ruleSets)
