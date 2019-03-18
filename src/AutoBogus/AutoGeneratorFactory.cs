@@ -8,7 +8,6 @@ namespace AutoBogus
 {
   internal static class AutoGeneratorFactory
   {
-    internal static IDictionary<Type, IAutoGenerator> Overrides = new Dictionary<Type, IAutoGenerator>();
     internal static IDictionary<Type, IAutoGenerator> Generators = new Dictionary<Type, IAutoGenerator>
     {
       {typeof(bool), new BoolGenerator()},
@@ -31,21 +30,27 @@ namespace AutoBogus
       {typeof(ushort), new UShortGenerator()}
     };
 
-    internal static IAutoGenerator GetGenerator<TType>(AutoGenerateContext context)
+    internal static IAutoGenerator GetGenerator(AutoGenerateContext context)
     {
-      var type = typeof(TType);
-      return GetGenerator(type, context);
-    }
+      var generator = ResolveGenerator(context);
 
-    internal static IAutoGenerator GetGenerator(Type type, AutoGenerateContext context)
-    {
-      // Check if a custom generator has been registered
-      if (Overrides.ContainsKey(type))
+      // Check if an overrides is available for this generate request
+      var generatorOverride = context.Overrides.FirstOrDefault(o => o.CanOverride(context));
+
+      if (generatorOverride != null)
       {
-        return Overrides[type];
+        generatorOverride.ResolvedGenerator = generator;
+        return generatorOverride;
       }
 
+      return generator;
+    }
+
+    internal static IAutoGenerator ResolveGenerator(AutoGenerateContext context)
+    {
       // Do some type -> generator mapping
+      var type = context.GenerateType;
+
       if (type.IsArray)
       {
         type = type.GetElementType();

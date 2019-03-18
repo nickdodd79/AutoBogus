@@ -1,13 +1,16 @@
-﻿namespace AutoBogus.Tests.Models.Simple
+﻿using System.Collections.Generic;
+
+namespace AutoBogus.Tests.Models.Simple
 {
-  public class OverrideClass
+  public sealed class OverrideClass
   {
     public OverrideClass()
     {
-      Id = new OverrideIdClass();
+      Id = new OverrideId();
     }
 
-    public OverrideIdClass Id { get; }
-    public OverrideClass Child { get; set; }
+    public OverrideId Id { get; }
+    public string Name { get; set; }
+    public IEnumerable<int> Amounts { get; set; }
   }
 }

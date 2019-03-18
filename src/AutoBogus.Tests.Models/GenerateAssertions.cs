@@ -323,7 +323,7 @@ namespace AutoBogus.Tests.Models
       // Create a trace path for the current member
       path = string.Concat(path, ".", memberInfo.Name);
 
-      // Resolve the assertion and value for the member type
+      // Resolve the assertion and value for the member type      
       var value = memberGetter.Invoke(instance);
       var assertion = GetAssertion(memberType);
       var message = assertion.Invoke(path, memberType, value);

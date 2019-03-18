@@ -7,7 +7,6 @@ using NSubstitute;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Xunit;
 
@@ -51,86 +50,91 @@ namespace AutoBogus.Tests
     }
 
     public class Overrides
-      : AutoFakerFixture
+      : AutoFakerFixture, IDisposable
     {
-      private IList<int> _ids;      
+      private const string Name = "This is a string";
+
+      private int _id;
+
+      private sealed class OverrideFaker
+        : AutoFaker<OverrideClass>
+      { }
+
+      private class TestGeneratorOverride
+        : AutoGeneratorOverride
+      {
+        public TestGeneratorOverride(int id)
+        {
+          Id = id;
+        }
+
+        private int Id { get; }
+
+        public override bool CanOverride(AutoGenerateContext context)
+        {
+          return context.GenerateType == typeof(OverrideClass);
+        }
+
+        public override void Generate(AutoGenerateOverrideContext context)
+        {
+          base.Generate(context);
+
+          // Set an id value
+          var idProperty = context.GenerateType.GetProperty("Id");
+          var idInstance = idProperty.GetValue(context.Instance);
+          var setValueMethod = idProperty.PropertyType.GetMethod("SetValue");
+
+          setValueMethod.Invoke(idInstance, new object[] { Id });
+        }
+      }
 
       public Overrides()
       {
-        _ids = new List<int>();
+        _id = AutoFaker.Generate<int>();
 
-        // Ensure the override is reset for each test
-        AutoFaker.RemoveGeneratorOverride<OverrideClass>();
+        AutoFaker.SetGeneratorOverrides(
+          new TestGeneratorOverride(_id),
+          new AutoGeneratorTypeOverride<string>(c => Name));
+      }
+
+      public void Dispose()
+      {
+        AutoFaker.SetGeneratorOverrides();
       }
 
       [Fact]
-      public void Should_Throw_If_Override_Generator_Is_Null()
+      public void Should_Override_For_Generate()
       {
-        Action action = () => AutoFaker.AddGeneratorOverride<OverrideClass>(null);
-
-        action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("generator");
+        var faker = AutoFaker.Create();
+        AssertOverrides(() => faker.Generate<OverrideClass>());
       }
 
       [Fact]
-      public void Should_Use_Override_Generator_To_Generate_Value()
+      public void Should_Override_For_Generate_Static()
       {
-        AutoFaker.AddGeneratorOverride(context => CreateInstance());
-
-        var result = AutoFaker.Generate<OverrideClass>();
-
-        _ids.Should().HaveCount(2);
-
-        result.Should().BeEquivalentTo(new
-        {
-          Id = new
-          {
-            Value = _ids.ElementAt(0)
-          },
-          Child = new
-          {
-            Id = new
-            {
-              Value = _ids.ElementAt(1)
-            },
-            Child = default(OverrideClass)
-          }
-        });
+        AssertOverrides(() => AutoFaker.Generate<OverrideClass>());
       }
 
       [Fact]
-      public void Should_Use_Override_Generator_To_Generate_Value_And_Not_Continue_Population()
+      public void Should_Override_For_Generate_Faker()
       {
-        AutoFaker.AddGeneratorOverride(context =>
-        {
-          var instance = CreateInstance();
-          context.Populate = false;
-          return instance;
-        });
-
-        var result = AutoFaker.Generate<OverrideClass>();
-
-        _ids.Should().HaveCount(1);
-
-        result.Should().BeEquivalentTo(new
-        {
-          Id = new
-          {
-            Value = _ids.ElementAt(0)
-          },
-          Child = default(OverrideClass)
-        });
+        AssertOverrides(() => AutoFaker.Generate<OverrideClass, OverrideFaker>());
       }
 
-      private OverrideClass CreateInstance()
+      [Fact]
+      public void Should_Override_For_AutoFaker_T()
       {
-        var id = AutoFaker.Generate<int>();
-        var instance = new OverrideClass();
+        var faker = new AutoFaker<OverrideClass>();
+        AssertOverrides(() => faker.Generate());
+      }
 
-        _ids.Add(id);
+      private void AssertOverrides(Func<OverrideClass> invoker)
+      {
+        var instance = invoker.Invoke();
 
-        instance.Id.Set(id);
-
-        return instance;
+        instance.Id.Value.Should().Be(_id);
+        instance.Name.Should().Be(Name);
+        instance.Amounts.Should().NotBeEmpty();
       }
     }
 
@@ -238,17 +242,17 @@ namespace AutoBogus.Tests
     public class AutoFaker_T
       : AutoFakerFixture
     {
-      private Faker<Order> _order;
+      private Faker<Order> _faker;
 
       public AutoFaker_T()
       {
-        _order = new AutoFaker<Order>();
+        _faker = new AutoFaker<Order>();
       }
 
       [Fact]
       public void Should_Generate_Type()
       {
-        _order.Generate().Should().BeGeneratedWithoutMocks();
+        _faker.Generate().Should().BeGeneratedWithoutMocks();
       }
 
       [Fact]
@@ -259,7 +263,7 @@ namespace AutoBogus.Tests
         var calculator = Substitute.For<ICalculator>();
         var order = new Order(id, calculator);
 
-        _order.Populate(order);
+        _faker.Populate(order);
 
         order.Should().BeGeneratedWithMocks();
         order.Id.Should().Be(id);
@@ -281,7 +285,7 @@ namespace AutoBogus.Tests
       public void Should_Not_Generate_Rule_Set_Members()
       {
         var code = Guid.NewGuid();
-        var order = _order
+        var order = _faker
           .RuleFor(o => o.Code, code)
           .Generate();
 
@@ -292,14 +296,14 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Not_Generate_If_No_Default_Rule_Set()
       {
-        _order.RuleSet("test", rules =>
+        _faker.RuleSet("test", rules =>
         {
           // No default constructor so ensure a create action is defined
           // Make the values default so the NotBeGenerated() check passes
           rules.CustomInstantiator(f => new Order(default(int), default(ICalculator)));
         });
 
-        _order.Generate("test").Should().NotBeGenerated();
+        _faker.Generate("test").Should().NotBeGenerated();
       }
     }
 

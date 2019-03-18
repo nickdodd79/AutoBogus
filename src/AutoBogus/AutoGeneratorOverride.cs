@@ -1,29 +1,35 @@
-﻿using System;
-
-namespace AutoBogus
+﻿namespace AutoBogus
 {
-  internal sealed class AutoGeneratorOverride<TType>
+  /// <summary>
+  /// An class for overriding generate requests.
+  /// </summary>
+  public abstract class AutoGeneratorOverride
     : IAutoGenerator
   {
-    internal AutoGeneratorOverride(Func<AutoGeneratorOverrideContext, TType> generator)
-    {
-      Generator = generator ?? throw new ArgumentNullException(nameof(generator));
-    }
+    internal IAutoGenerator ResolvedGenerator { get; set; }
 
-    private Func<AutoGeneratorOverrideContext, TType> Generator { get; }
+    /// <summary>
+    /// Determines whether a generate request can be overridden based on an <see cref="AutoGenerateContext"/> instance.
+    /// </summary>
+    /// <param name="context">The <see cref="AutoGenerateContext"/> instance.</param>
+    /// <returns>true if the generate reqest can be overridden; otherwise false.</returns>
+    public abstract bool CanOverride(AutoGenerateContext context);
+
+    /// <summary>
+    /// Generates an override instance for a given type.
+    /// </summary>
+    /// <param name="context">The <see cref="AutoGenerateOverrideContext"/> instance.</param>
+    public virtual void Generate(AutoGenerateOverrideContext context)
+    {
+      context.Instance = ResolvedGenerator.Generate(context.GenerateContext);
+    }
 
     object IAutoGenerator.Generate(AutoGenerateContext context)
     {
-      var overrideContext = new AutoGeneratorOverrideContext(context);
-      var value = Generator.Invoke(overrideContext);
+      var overrideContext = new AutoGenerateOverrideContext(context);
+      Generate(overrideContext);
 
-      // Only populate the generated instance if the populate flah is true
-      if (overrideContext.Populate)
-      {
-        context.Binder.PopulateInstance<TType>(value, context);
-      }
-
-      return value;
+      return overrideContext.Instance;
     }
   }
 }

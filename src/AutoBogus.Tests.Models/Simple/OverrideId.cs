@@ -1,10 +1,10 @@
 ﻿namespace AutoBogus.Tests.Models.Simple
 {
-  public class OverrideIdClass
+  public sealed class OverrideId
   {
     public int Value { get; private set; }
 
-    public void Set(int value)
+    public void SetValue(int value)
     {
       Value = value;
     }

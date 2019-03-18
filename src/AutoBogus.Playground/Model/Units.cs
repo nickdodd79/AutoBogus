@@ -1,4 +1,4 @@
-﻿namespace AutoBogus.Playground
+﻿namespace AutoBogus.Playground.Model
 {
   public sealed class Units
   {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoBogus.Playground.Model;
+using System;
 
 namespace AutoBogus.Playground
 {

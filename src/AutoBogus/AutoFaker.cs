@@ -17,6 +17,7 @@ namespace AutoBogus
     internal const int GenerateAttemptsThreshold = 3;
 
     internal static IAutoBinder DefaultBinder = new AutoBinder();
+    internal static IEnumerable<AutoGeneratorOverride> Overrides = Enumerable.Empty<AutoGeneratorOverride>();
 
     private AutoFaker(string locale, IAutoBinder binder)
     {
@@ -54,11 +55,50 @@ namespace AutoBogus
     private AutoGenerateContext CreateContext()
     {
       var faker = new Faker(Locale ?? DefaultLocale);
-      var ruleSets = Enumerable.Empty<string>();
       var binder = Binder ?? DefaultBinder;
 
-      return new AutoGenerateContext(faker, ruleSets, binder);
+      return new AutoGenerateContext(faker, binder)
+      {
+        Overrides = Overrides.ToList()
+      };
     }
+
+    #region SetBinder
+
+    /// <summary>
+    /// Sets the default binder used for binding auto generated instances.
+    /// </summary>
+    /// <typeparam name="TBinder">The binder type to use for generate requests.</typeparam>
+    public static void SetBinder<TBinder>()
+      where TBinder : IAutoBinder, new()
+    {
+      var binder = new TBinder();
+      SetBinder(binder);
+    }
+
+    /// <summary>
+    /// Sets the default binder used for binding auto generated instances.
+    /// </summary>
+    /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for generate requests.</param>
+    public static void SetBinder(IAutoBinder binder)
+    {
+      DefaultBinder = binder ?? new AutoBinder();
+    }
+
+    #endregion
+
+    #region Overrides
+
+    /// <summary>
+    /// Sets the generator overrides to use for generating instances.
+    /// </summary>
+    /// <param name="overrides">A collection of <see cref="AutoGeneratorOverride"/> instances to use for overriding generate requests.</param>
+    public static void SetGeneratorOverrides(params AutoGeneratorOverride[] overrides)
+    {
+      Overrides = overrides;
+    }
+
+    #endregion
 
     #region Create
 
@@ -94,67 +134,6 @@ namespace AutoBogus
     public static IAutoFaker Create(string locale = null, IAutoBinder binder = null)
     {
       return new AutoFaker(locale, binder);
-    }
-
-    #endregion
-
-    #region SetBinder
-
-    /// <summary>
-    /// Sets the default binder used for binding auto generated instances.
-    /// </summary>
-    /// <typeparam name="TBinder">The binder type to use for generate requests.</typeparam>
-    public static void SetBinder<TBinder>()
-      where TBinder : IAutoBinder, new()
-    {
-      var binder = new TBinder();
-      SetBinder(binder);
-    }
-
-    /// <summary>
-    /// Sets the default binder used for binding auto generated instances.
-    /// </summary>
-    /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for generate requests.</param>
-    public static void SetBinder(IAutoBinder binder)
-    {
-      DefaultBinder = binder ?? new AutoBinder();
-    }
-
-    #endregion
-
-    #region Overrides
-
-    /// <summary>
-    /// Adds a type generator override for custom generation.
-    /// </summary>
-    /// <typeparam name="TType">The generation type to override.</typeparam>
-    /// <param name="generator">The generation handler for the type.</param>
-    public static void AddGeneratorOverride<TType>(Func<AutoGeneratorOverrideContext, TType> generator)
-    {
-      var type = typeof(TType);
-      AutoGeneratorFactory.Overrides[type] = new AutoGeneratorOverride<TType>(generator);
-    }
-
-    /// <summary>
-    /// Removes a type generator override.
-    /// </summary>
-    /// <typeparam name="TType">The generation type to remove.</typeparam>
-    public static void RemoveGeneratorOverride<TType>()
-    {
-      var type = typeof(TType);
-
-      if (AutoGeneratorFactory.Overrides.ContainsKey(type))
-      {
-        AutoGeneratorFactory.Overrides.Remove(type);
-      }
-    }
-
-    /// <summary>
-    /// Removes all type generator overrides.
-    /// </summary>
-    public static void ClearGeneratorOverrides()
-    {
-      AutoGeneratorFactory.Overrides.Clear();
     }
 
     #endregion
@@ -221,14 +200,14 @@ namespace AutoBogus
       return faker.Generate(count);
     }
 
+    #endregion
+
     private static AutoFaker<TType> CreateFaker<TType, TFaker>(object[] args)
       where TType : class
     {
       var type = typeof(TFaker);
       return (AutoFaker<TType>)Activator.CreateInstance(type, args ?? new object[0]);
     }
-
-    #endregion
   }
 }
 

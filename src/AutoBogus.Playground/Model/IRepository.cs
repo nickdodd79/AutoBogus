@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AutoBogus.Playground
+namespace AutoBogus.Playground.Model
 {
   public interface IRepository
   {

@@ -9,7 +9,7 @@ using Binder = Bogus.Binder;
 namespace AutoBogus
 {
   /// <summary>
-  /// An class for binding auto generated instances.
+  /// A class for binding auto generated instances.
   /// </summary>
   public class AutoBinder
     : Binder, IAutoBinder
@@ -28,13 +28,13 @@ namespace AutoBogus
       {
         // If a constructor is found generate values for each of the parameters
         var parameters = (from p in constructor.GetParameters()
-                          let g = AutoGeneratorFactory.GetGenerator(p.ParameterType, context)
+                          let g = GetParameterGenerator(p, context)
                           select g.Generate(context)).ToArray();
 
         return (TType)constructor.Invoke(parameters);
       }
 
-      return default(TType);
+      return default;
     }
 
     /// <summary>
@@ -81,13 +81,13 @@ namespace AutoBogus
             continue;
           }
 
-          context.MemberName = member.Name;
-          context.MemberType = memberType;
+          context.GenerateType = memberType;
+          context.GenerateName = member.Name;
 
           context.Types.Push(memberType);
 
           // Generate a random value and bind it to the instance
-          var generator = AutoGeneratorFactory.GetGenerator(memberType, context);
+          var generator = AutoGeneratorFactory.GetGenerator(context);
           var value = generator.Generate(context);
 
           memberSetter.Invoke(instance, value);
@@ -132,6 +132,14 @@ namespace AutoBogus
                                 select c).SingleOrDefault();
 
       return defaultConstructor ?? constructors.FirstOrDefault();
+    }
+
+    private IAutoGenerator GetParameterGenerator(ParameterInfo parameter, AutoGenerateContext context)
+    {
+      context.GenerateType = parameter.ParameterType;
+      context.GenerateName = parameter.Name;
+
+      return AutoGeneratorFactory.GetGenerator(context);
     }
 
     private ConstructorInfo ResolveTypedConstructor(Type type, IEnumerable<ConstructorInfo> constructors)
