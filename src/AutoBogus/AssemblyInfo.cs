@@ -3,6 +3,7 @@
 [assembly: InternalsVisibleTo("AutoBogus.FakeItEasy")]
 [assembly: InternalsVisibleTo("AutoBogus.Moq")]
 [assembly: InternalsVisibleTo("AutoBogus.NSubstitute")]
+[assembly: InternalsVisibleTo("AutoBogus.Conventions")]
 
 [assembly: InternalsVisibleTo("AutoBogus.Tests.Models")]
 [assembly: InternalsVisibleTo("AutoBogus.Tests")]

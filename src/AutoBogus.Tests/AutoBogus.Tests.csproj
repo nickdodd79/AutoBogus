@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AutoBogus.Conventions\AutoBogus.Conventions.csproj" />
     <ProjectReference Include="..\AutoBogus.FakeItEasy\AutoBogus.FakeItEasy.csproj" />
     <ProjectReference Include="..\AutoBogus.Moq\AutoBogus.Moq.csproj" />
     <ProjectReference Include="..\AutoBogus.NSubstitute\AutoBogus.NSubstitute.csproj" />
