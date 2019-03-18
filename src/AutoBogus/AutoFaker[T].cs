@@ -68,7 +68,7 @@ namespace AutoBogus
     /// <returns>The generated instance of type <typeparamref name="TType"/>.</returns>
     public override TType Generate(string ruleSets = null)
     {
-      var context = GetContext(ruleSets);
+      var context = CreateContext(ruleSets);
 
       PrepareCreate(context);
       PrepareFinish(context);
@@ -84,7 +84,7 @@ namespace AutoBogus
     /// <returns>The collection of generated instances of type <typeparamref name="TType"/>.</returns>
     public override List<TType> Generate(int count, string ruleSets = null)
     {
-      var context = GetContext(ruleSets);
+      var context = CreateContext(ruleSets);
 
       PrepareCreate(context);
       PrepareFinish(context);
@@ -99,19 +99,20 @@ namespace AutoBogus
     /// <param name="ruleSets">An optional list of delimited rule sets to use for the populate request.</param>
     public override void Populate(TType instance, string ruleSets = null)
     {
-      var context = GetContext(ruleSets);
+      var context = CreateContext(ruleSets);
 
       PrepareFinish(context);
 
       base.Populate(instance, ruleSets);
     }
     
-    private AutoGenerateContext GetContext(string ruleSets)
+    private AutoGenerateContext CreateContext(string ruleSets)
     {
-      var type = typeof(TType);
-      var ruleSetNames = ParseRuleSets(ruleSets);
-
-      return new AutoGenerateContext(FakerHub, ruleSetNames, Binder);
+      return new AutoGenerateContext(FakerHub, Binder)
+      {
+        RuleSets = ParseRuleSets(ruleSets),
+        Overrides = AutoFaker.Overrides.ToList()
+      };
     }
 
     private IEnumerable<string> ParseRuleSets(string ruleSets)
@@ -140,7 +141,13 @@ namespace AutoBogus
           // This is because any specific rule sets are expected to handle the full creation
           if (context.RuleSets.Contains(currentRuleSet))
           {
-            return Binder.CreateInstance<TType>(context);
+            // Set the current type being generated
+            context.GenerateType = typeof(TType);
+            context.GenerateName = null;
+
+            // Get the type generator
+            var generator = AutoGeneratorFactory.GetGenerator(context);
+            return (TType)generator.Generate(context);
           }
 
           return DefaultCreateAction.Invoke(faker);
