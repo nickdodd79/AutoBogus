@@ -17,7 +17,7 @@ namespace AutoBogus
     internal const int GenerateAttemptsThreshold = 3;
 
     internal static IAutoBinder DefaultBinder = new AutoBinder();
-    internal static IEnumerable<IAutoGeneratorOverride> Overrides = Enumerable.Empty<IAutoGeneratorOverride>();
+    internal static IEnumerable<AutoGeneratorOverride> Overrides = Enumerable.Empty<AutoGeneratorOverride>();
 
     private AutoFaker(string locale, IAutoBinder binder)
     {
@@ -92,8 +92,8 @@ namespace AutoBogus
     /// <summary>
     /// Sets the generator overrides to use for generating instances.
     /// </summary>
-    /// <param name="overrides">A collection of <see cref="IAutoGeneratorOverride"/> instances to use for overridding generate requests.</param>
-    public static void SetGeneratorOverrides(params IAutoGeneratorOverride[] overrides)
+    /// <param name="overrides">A collection of <see cref="AutoGeneratorOverride"/> instances to use for overriding generate requests.</param>
+    public static void SetGeneratorOverrides(params AutoGeneratorOverride[] overrides)
     {
       Overrides = overrides;
     }

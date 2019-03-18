@@ -61,7 +61,7 @@ namespace AutoBogus.Tests
       { }
 
       private class TestGeneratorOverride
-        : IAutoGeneratorOverride
+        : AutoGeneratorOverride
       {
         public TestGeneratorOverride(int id)
         {
@@ -70,19 +70,21 @@ namespace AutoBogus.Tests
 
         private int Id { get; }
 
-        public bool CanOverride(Type type, AutoGenerateContext context)
+        public override bool CanOverride(AutoGenerateContext context)
         {
-          return type == typeof(OverrideClass);
+          return context.GenerateType == typeof(OverrideClass);
         }
 
-        public object Generate(AutoGenerateContext context)
+        public override void Generate(AutoGenerateOverrideContext context)
         {
-          var instance = new OverrideClass();
+          base.Generate(context);
 
-          instance.Id.SetValue(Id);
-          context.Populate(instance);
+          // Set an id value
+          var idProperty = context.GenerateType.GetProperty("Id");
+          var idInstance = idProperty.GetValue(context.Instance);
+          var setValueMethod = idProperty.PropertyType.GetMethod("SetValue");
 
-          return instance;
+          setValueMethod.Invoke(idInstance, new object[] { Id });
         }
       }
 

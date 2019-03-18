@@ -141,7 +141,12 @@ namespace AutoBogus
           // This is because any specific rule sets are expected to handle the full creation
           if (context.RuleSets.Contains(currentRuleSet))
           {
-            var generator = AutoGeneratorFactory.GetGenerator<TType>(context);
+            // Set the current type being generated
+            context.GenerateType = typeof(TType);
+            context.GenerateName = null;
+
+            // Get the type generator
+            var generator = AutoGeneratorFactory.GetGenerator(context);
             return (TType)generator.Generate(context);
           }
 

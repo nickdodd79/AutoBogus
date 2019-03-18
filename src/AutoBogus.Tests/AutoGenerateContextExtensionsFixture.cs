@@ -6,14 +6,14 @@ using Xunit;
 
 namespace AutoBogus.Tests
 {
-  public class AutoGenerateContextFixture
+  public class AutoGenerateContextExtensionsFixture
   {
     private Faker _faker;
     private IEnumerable<string> _ruleSets;
     private AutoBinder _binder;
     private AutoGenerateContext _context;
 
-    public AutoGenerateContextFixture()
+    public AutoGenerateContextExtensionsFixture()
     {
       _faker = new Faker();
       _ruleSets = Enumerable.Empty<string>();
@@ -21,7 +21,7 @@ namespace AutoBogus.Tests
     }
 
     public class GenerateMany_Internal
-      : AutoGenerateContextFixture
+      : AutoGenerateContextExtensionsFixture
     {
       private int _value;
       private List<int> _items;
@@ -39,7 +39,7 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Generate_Duplicates_If_Not_Unique()
       {
-        _context.GenerateMany(2, _items, false, 1, () => _value);
+        AutoGenerateContextExtensions.GenerateMany(_context, 2, _items, false, 1, () => _value);
 
         _items.Should().BeEquivalentTo(new[] { 1, 1 });
       }
@@ -47,7 +47,7 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Not_Generate_Duplicates_If_Unique()
       {
-        _context.GenerateMany(2, _items, true, 1, () =>
+        AutoGenerateContextExtensions.GenerateMany(_context, 2, _items, true, 1, () =>
         {
           var item = _value;
           _value = 2;
@@ -63,7 +63,7 @@ namespace AutoBogus.Tests
       {
         var attempts = 0;
 
-        _context.GenerateMany(2, _items, true, 1, () =>
+        AutoGenerateContextExtensions.GenerateMany(_context, 2, _items, true, 1, () =>
         {
           attempts++;
           return _value;
