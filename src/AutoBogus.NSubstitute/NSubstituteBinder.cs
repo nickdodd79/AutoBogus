@@ -1,4 +1,4 @@
-﻿using AutoBogus.Util;
+using AutoBogus.Util;
 using NSubstitute;
 
 namespace AutoBogus.NSubstitute
@@ -6,7 +6,7 @@ namespace AutoBogus.NSubstitute
   /// <summary>
   /// A class that enables NSubstitute binding for interface and abstract types.
   /// </summary>
-  public sealed class NSubstituteBinder
+  public class NSubstituteBinder
     : AutoBinder
   {
     /// <summary>
