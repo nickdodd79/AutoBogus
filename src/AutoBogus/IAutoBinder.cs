@@ -1,11 +1,11 @@
-﻿using Bogus;
+using Bogus;
 using System.Collections.Generic;
 using System.Reflection;
 
 namespace AutoBogus
 {
   /// <summary>
-  /// An interface for binding auto generated instances.
+  /// An interface for binding generated instances.
   /// </summary>
   public interface IAutoBinder
     : IBinder
@@ -15,11 +15,11 @@ namespace AutoBogus
     /// </summary>
     /// <typeparam name="TType">The type of instance to create.</typeparam>
     /// <param name="context">The <see cref="AutoGenerateContext"/> instance for the generate request.</param>
-    /// <returns>The created instance of <typeparamref name="TType"/>.</returns>
+    /// <returns>The created instance.</returns>
     TType CreateInstance<TType>(AutoGenerateContext context);
 
     /// <summary>
-    /// Populates the provided instance with auto generated values.
+    /// Populates the provided instance with generated values.
     /// </summary>
     /// <typeparam name="TType">The type of instance to populate.</typeparam>
     /// <param name="instance">The instance to populate.</param>

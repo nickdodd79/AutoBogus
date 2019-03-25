@@ -1,0 +1,494 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AutoBogus</name>
+    </assembly>
+    <members>
+        <member name="T:AutoBogus.AutoGenerateContext">
+            <summary>
+            A class that provides context for a generate request.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.AutoGenerateContext.GenerateType">
+            <summary>
+            The type associated with the current generate request.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.AutoGenerateContext.GenerateName">
+            <summary>
+            The name associated with the current generate request.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.AutoGenerateContext.Faker">
+            <summary>
+            The underlying <see cref="T:Bogus.Faker"/> instance used to generate random values.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.AutoGenerateContext.RuleSets">
+            <summary>
+            The requested rule sets provided for the generate request.
+            </summary>
+        </member>
+        <member name="T:AutoBogus.AutoGenerateOverrideContext">
+            <summary>
+            A class that provides context when overriding a generate request.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.AutoGenerateOverrideContext.Instance">
+            <summary>
+            The instance generated during the override.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.AutoGenerateOverrideContext.GenerateType">
+            <summary>
+            The type associated with the current generate request.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.AutoGenerateOverrideContext.GenerateName">
+            <summary>
+            The name associated with the current generate request.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.AutoGenerateOverrideContext.Faker">
+            <summary>
+            The underlying <see cref="T:Bogus.Faker"/> instance used to generate random values.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.AutoGenerateOverrideContext.RuleSets">
+            <summary>
+            The requested rule sets provided for the generate request.
+            </summary>
+        </member>
+        <member name="T:AutoBogus.IAutoBinder">
+            <summary>
+            An interface for binding generated instances.
+            </summary>
+        </member>
+        <member name="M:AutoBogus.IAutoBinder.CreateInstance``1(AutoBogus.AutoGenerateContext)">
+            <summary>
+            Creates an instance of <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to create.</typeparam>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateContext"/> instance for the generate request.</param>
+            <returns>The created instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoBinder.PopulateInstance``1(System.Object,AutoBogus.AutoGenerateContext,System.Collections.Generic.IEnumerable{System.Reflection.MemberInfo})">
+            <summary>
+            Populates the provided instance with generated values.
+            </summary>
+            <typeparam name="TType">The type of instance to populate.</typeparam>
+            <param name="instance">The instance to populate.</param>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateContext"/> instance for the generate request.</param>
+            <param name="members">An optional collection of members to populate. If null, all writable instance members are populated.</param>
+            <remarks>
+            Due to the boxing nature of value types, the <paramref name="instance"/> parameter is an object. This means the populated
+            values are applied to the provided instance and not a copy.
+            </remarks>
+        </member>
+        <member name="T:AutoBogus.IAutoConfigBuilder`1">
+            <summary>
+            An interface for building configurations.
+            </summary>
+            <typeparam name="TBuilder"></typeparam>
+        </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithLocale(System.String)">
+            <summary>
+            Registers the locale to use when generating values.
+            </summary>
+            <param name="locale">The locale to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithRepeatCount(System.Int32)">
+            <summary>
+            Registers the number of items to generate for a collection.
+            </summary>
+            <param name="count">The repeat count to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithRecursiveDepth(System.Int32)">
+            <summary>
+            Registers the depth to recursively generate.
+            </summary>
+            <param name="depth">The recursive depth to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithBinder``1">
+            <summary>
+            Registers a binder type to use when generating values.
+            </summary>
+            <typeparam name="TBinder">The <see cref="T:AutoBogus.IAutoBinder"/> type to use.</typeparam>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithBinder(AutoBogus.IAutoBinder)">
+            <summary>
+            Registers a binder instance to use when generating values.
+            </summary>
+            <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithOverride(AutoBogus.AutoGeneratorOverride)">
+            <summary>
+            Registers an override instance to use when generating values.
+            </summary>
+            <param name="generatorOverride">The <see cref="T:AutoBogus.AutoGeneratorOverride"/> instance to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="T:AutoBogus.IAutoFaker">
+            <summary>
+            An interface for invoking generate requests.
+            </summary>
+        </member>
+        <member name="M:AutoBogus.IAutoFaker.Generate``1(System.Action{AutoBogus.IAutoGenerateConfigBuilder})">
+            <summary>
+            Generates an instance of type <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to generate.</typeparam>
+            <param name="configure">A handler to build the generate request configuration.</param>
+            <returns>The generated instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoFaker.Generate``1(System.Int32,System.Action{AutoBogus.IAutoGenerateConfigBuilder})">
+            <summary>
+            Generates a collection of instances of type <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to generate.</typeparam>
+            <param name="count">The number of instances to generate.</param>
+            <param name="configure">A handler to build the generate request configuration.</param>
+            <returns>The generated collection of instances.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoFaker.Generate``2(System.Action{AutoBogus.IAutoFakerConfigBuilder})">
+            <summary>
+            Generates an instance of type <typeparamref name="TType"/> based on the <typeparamref name="TFaker"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to generate.</typeparam>
+            <typeparam name="TFaker">The type of faker instance to use.</typeparam>
+            <param name="configure">A handler to build the generate request configuration.</param>
+            <returns>The generated instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoFaker.Generate``2(System.Int32,System.Action{AutoBogus.IAutoFakerConfigBuilder})">
+            <summary>
+            Generates a collection of instances of type <typeparamref name="TType"/> based on the <typeparamref name="TFaker"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to generate.</typeparam>
+            <typeparam name="TFaker">The type of faker instance to use.</typeparam>
+            <param name="count">The number of instances to generate.</param>
+            <param name="configure">A handler to build the generate request configuration.</param>
+            <returns>The generated collection of instances.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoFaker.Generate``2(System.Object[])">
+            <summary>
+            Generates an instance of type <typeparamref name="TType"/> based on the <typeparamref name="TFaker"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to generate.</typeparam>
+            <typeparam name="TFaker">The type of faker instance to use.</typeparam>
+            <param name="args">The constructor arguments used to instantiate the faker.</param>
+            <returns>The generated instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoFaker.Generate``2(System.Int32,System.Object[])">
+            <summary>
+            Generates a collection of instances of type <typeparamref name="TType"/> based on the <typeparamref name="TFaker"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to generate.</typeparam>
+            <typeparam name="TFaker">The type of faker instance to use.</typeparam>
+            <param name="count">The number of instances to generate.</param>
+            <param name="args">The constructor arguments used to instantiate the faker.</param>
+            <returns>The generated collection of instances.</returns>
+        </member>
+        <member name="T:AutoBogus.IAutoFakerConfigBuilder">
+            <summary>
+            An interface for building configurations for fakers.
+            </summary>
+        </member>
+        <member name="M:AutoBogus.IAutoFakerConfigBuilder.WithArgs(System.Object[])">
+            <summary>
+            Registers the args to use when constructing an <see cref="T:AutoBogus.AutoFaker`1"/> instance.
+            </summary>
+            <param name="args">The args to use for construction.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="T:AutoBogus.IAutoFakerDefaultConfigBuilder">
+            <summary>
+            An interface for building a default configuration for all fakers.
+            </summary>
+        </member>
+        <member name="T:AutoBogus.IAutoGenerateConfigBuilder">
+            <summary>
+            An interface for building configurations for generate requests.
+            </summary>
+        </member>
+        <member name="T:AutoBogus.AutoBinder">
+            <summary>
+            A class for binding auto generated instances.
+            </summary>
+        </member>
+        <member name="M:AutoBogus.AutoBinder.CreateInstance``1(AutoBogus.AutoGenerateContext)">
+            <summary>
+            Creates an instance of <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to create.</typeparam>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateContext"/> instance for the generate request.</param>
+            <returns>The created instance of <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoBinder.PopulateInstance``1(System.Object,AutoBogus.AutoGenerateContext,System.Collections.Generic.IEnumerable{System.Reflection.MemberInfo})">
+            <summary>
+            Populates the provided instance with auto generated values.
+            </summary>
+            <typeparam name="TType">The type of instance to populate.</typeparam>
+            <param name="instance">The instance to populate.</param>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateContext"/> instance for the generate request.</param>
+            <param name="members">An optional collection of members to populate. If null, all writable instance members are populated.</param>
+            <remarks>
+            Due to the boxing nature of value types, the <paramref name="instance"/> parameter is an object. This means the populated
+            values are applied to the provided instance and not a copy.
+            </remarks>
+        </member>
+        <member name="T:AutoBogus.AutoFaker">
+            <summary>
+            A class used to conveniently invoke generate requests.
+            </summary>
+        </member>
+        <member name="M:AutoBogus.AutoFaker.SetBinder``1">
+            <summary>
+            Sets the default binder used for binding auto generated instances.
+            </summary>
+            <typeparam name="TBinder">The binder type to use for generate requests.</typeparam>
+        </member>
+        <member name="M:AutoBogus.AutoFaker.SetBinder(AutoBogus.IAutoBinder)">
+            <summary>
+            Sets the default binder used for binding auto generated instances.
+            </summary>
+            <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use for generate requests.</param>
+        </member>
+        <member name="M:AutoBogus.AutoFaker.Create``1(System.String)">
+            <summary>
+            Creates a configured <see cref="T:AutoBogus.IAutoFaker"/> instance.
+            </summary>
+            <typeparam name="TBinder">The <see cref="T:AutoBogus.IAutoBinder"/> type of use for generate requests.</typeparam>
+            <param name="locale">The locale to use for value generation.</param>
+            <returns>The configured <see cref="T:AutoBogus.IAutoFaker"/> instance.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoFaker.Create(AutoBogus.IAutoBinder)">
+            <summary>
+            Creates a configured <see cref="T:AutoBogus.IAutoFaker"/> instance.
+            </summary>
+            <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use for generate requests.</param>
+            <returns>The configured <see cref="T:AutoBogus.IAutoFaker"/> instance.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoFaker.Create(System.String,AutoBogus.IAutoBinder)">
+            <summary>
+            Creates a configured <see cref="T:AutoBogus.IAutoFaker"/> instance.
+            </summary>
+            <param name="locale">The locale to use for value generation.</param>
+            <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use for generate requests.</param>
+            <returns>The configured <see cref="T:AutoBogus.IAutoFaker"/> instance.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoFaker.Generate``1(System.String)">
+            <summary>
+            Generates an instance of type <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to generate.</typeparam>
+            <param name="locale">The locale to use for value generation.</param>
+            <returns>The generated instance of type <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoFaker.Generate``1(System.Int32,System.String)">
+            <summary>
+            Generates a collection of instances of type <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to generate.</typeparam>
+            <param name="count">The number of instances to generate.</param>
+            <param name="locale">The locale to use for value generation.</param>
+            <returns>The collection of generated instances of type <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoFaker.Generate``2(System.Object[])">
+            <summary>
+            Generates an instance of type <typeparamref name="TType"/> based on the <typeparamref name="TFaker"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to generate.</typeparam>
+            <typeparam name="TFaker">The type of faker instance to use.</typeparam>
+            <param name="args">The constructor arguments used to instantiate type <typeparamref name="TFaker"/>.</param>
+            <returns>The generated instance of type <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoFaker.Generate``2(System.Int32,System.Object[])">
+            <summary>
+            Generates a collection of instances of type <typeparamref name="TType"/> based on the <typeparamref name="TFaker"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to generate.</typeparam>
+            <typeparam name="TFaker">The type of faker instance to use.</typeparam>
+            <param name="count">The number of instances to generate.</param>
+            <param name="args">The constructor arguments used to instantiate type <typeparamref name="TFaker"/>.</param>
+            <returns>The collection of generated instances of type <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="T:AutoBogus.AutoFaker`1">
+            <summary>
+            A class used to invoke generation requests of type <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to generate.</typeparam>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.#ctor">
+            <summary>
+            Instantiates an instance of the <see cref="T:AutoBogus.AutoFaker`1"/> class.
+            </summary>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.#ctor(System.String)">
+            <summary>
+            Instantiates an instance of the <see cref="T:AutoBogus.AutoFaker`1"/> class.
+            </summary>
+            <param name="locale">The locale to use for value generation.</param>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.#ctor(AutoBogus.IAutoBinder)">
+            <summary>
+            Instantiates an instance of the <see cref="T:AutoBogus.AutoFaker`1"/> class.
+            </summary>
+            <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use for the generation request.</param>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.#ctor(System.String,AutoBogus.IAutoBinder)">
+            <summary>
+            Instantiates an instance of the <see cref="T:AutoBogus.AutoFaker`1"/> class.
+            </summary>
+            <param name="locale">The locale to use for value generation.</param>
+            <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use for the generation request.</param>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.Generate(System.String)">
+            <summary>
+            Generates an instance of type <typeparamref name="TType"/>.
+            </summary>
+            <param name="ruleSets">An optional list of delimited rule sets to use for the generate request.</param>
+            <returns>The generated instance of type <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.Generate(System.Int32,System.String)">
+            <summary>
+            Generates a collection of instances of type <typeparamref name="TType"/>.
+            </summary>
+            <param name="count">The number of instances to generate.</param>
+            <param name="ruleSets">An optional list of delimited rule sets to use for the generate request.</param>
+            <returns>The collection of generated instances of type <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.Populate(`0,System.String)">
+            <summary>
+            Populates the provided instance with auto generated values.
+            </summary>
+            <param name="instance">The instance to populate.</param>
+            <param name="ruleSets">An optional list of delimited rule sets to use for the populate request.</param>
+        </member>
+        <member name="T:AutoBogus.AutoGeneratorOverride">
+            <summary>
+            An class for overriding generate requests.
+            </summary>
+        </member>
+        <member name="M:AutoBogus.AutoGeneratorOverride.CanOverride(AutoBogus.AutoGenerateContext)">
+            <summary>
+            Determines whether a generate request can be overridden based on an <see cref="T:AutoBogus.AutoGenerateContext"/> instance.
+            </summary>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateContext"/> instance.</param>
+            <returns>true if the generate reqest can be overridden; otherwise false.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoGeneratorOverride.Generate(AutoBogus.AutoGenerateOverrideContext)">
+            <summary>
+            Generates an override instance for a given type.
+            </summary>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateOverrideContext"/> instance.</param>
+        </member>
+        <member name="T:AutoBogus.AutoGeneratorTypeOverride`1">
+            <summary>
+            A class for overriding generate requests based on a type.
+            </summary>
+            <typeparam name="TType">The type of instance to override.</typeparam>
+        </member>
+        <member name="M:AutoBogus.AutoGeneratorTypeOverride`1.#ctor(System.Func{AutoBogus.AutoGenerateContext,`0})">
+            <summary>
+            Instantiates an instance of the <see cref="T:AutoBogus.AutoGeneratorTypeOverride`1"/> class.
+            </summary>
+            <param name="generator">A handler used to generate the override instance.</param>
+        </member>
+        <member name="M:AutoBogus.AutoGeneratorTypeOverride`1.CanOverride(AutoBogus.AutoGenerateContext)">
+            <summary>
+            Determines whether a generate request can be overridden based on an <see cref="T:AutoBogus.AutoGenerateContext"/> instance.
+            </summary>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateContext"/> instance.</param>
+            <returns>true if the generate reqest can be overridden; otherwise false.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoGeneratorTypeOverride`1.Generate(AutoBogus.AutoGenerateOverrideContext)">
+            <summary>
+            Generates an override instance for a given type.
+            </summary>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateOverrideContext"/> instance.</param>
+        </member>
+        <member name="T:AutoBogus.AutoGenerateContextExtensions">
+            <summary>
+            A class extending the <see cref="T:AutoBogus.AutoGenerateContext"/> class.
+            </summary>
+        </member>
+        <member name="M:AutoBogus.AutoGenerateContextExtensions.Generate``1(AutoBogus.AutoGenerateContext)">
+            <summary>
+            Generates an instance of type <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The instance type to generate.</typeparam>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateContext"/> instance for the current generate request.</param>
+            <returns>An instance of <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoGenerateContextExtensions.GenerateMany``1(AutoBogus.AutoGenerateContext,System.Nullable{System.Int32})">
+            <summary>
+            Generates a collection of instances of type <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The instance type to generate.</typeparam>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateContext"/> instance for the current generate request.</param>
+            <param name="count">The number of instances to generate.</param>
+            <returns>A collection of instances of <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoGenerateContextExtensions.GenerateUniqueMany``1(AutoBogus.AutoGenerateContext,System.Nullable{System.Int32})">
+            <summary>
+            Generates a collection of unique instances of type <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The instance type to generate.</typeparam>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateContext"/> instance for the current generate request.</param>
+            <param name="count">The number of instances to generate.</param>
+            <returns>A collection of unique instances of <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoGenerateContextExtensions.Populate``1(AutoBogus.AutoGenerateContext,``0)">
+            <summary>
+            Populates the provided instance with auto generated values.
+            </summary>
+            <typeparam name="TType">The type of instance to populate.</typeparam>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateContext"/> instance for the current generate request.</param>
+            <param name="instance">The instance to populate.</param>
+        </member>
+        <member name="T:AutoBogus.AutoGenerateOverrideContextExtensions">
+            <summary>
+            A class extending the <see cref="T:AutoBogus.AutoGenerateOverrideContext"/> class.
+            </summary>
+        </member>
+        <member name="M:AutoBogus.AutoGenerateOverrideContextExtensions.Generate``1(AutoBogus.AutoGenerateOverrideContext)">
+            <summary>
+            Generates an instance of type <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The instance type to generate.</typeparam>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateOverrideContext"/> instance for the current generate request.</param>
+            <returns>An instance of <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoGenerateOverrideContextExtensions.GenerateMany``1(AutoBogus.AutoGenerateOverrideContext,System.Nullable{System.Int32})">
+            <summary>
+            Generates a collection of instances of type <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The instance type to generate.</typeparam>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateOverrideContext"/> instance for the current generate request.</param>
+            <param name="count">The number of instances to generate.</param>
+            <returns>A collection of instances of <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoGenerateOverrideContextExtensions.GenerateUniqueMany``1(AutoBogus.AutoGenerateOverrideContext,System.Nullable{System.Int32})">
+            <summary>
+            Generates a collection of unique instances of type <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The instance type to generate.</typeparam>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateOverrideContext"/> instance for the current generate request.</param>
+            <param name="count">The number of instances to generate.</param>
+            <returns>A collection of unique instances of <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoGenerateOverrideContextExtensions.Populate``1(AutoBogus.AutoGenerateOverrideContext,``0)">
+            <summary>
+            Populates the provided instance with auto generated values.
+            </summary>
+            <typeparam name="TType">The type of instance to populate.</typeparam>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateOverrideContext"/> instance for the current generate request.</param>
+            <param name="instance">The instance to populate.</param>
+        </member>
+    </members>
+</doc>
