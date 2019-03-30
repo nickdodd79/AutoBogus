@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace AutoBogus.Util
@@ -18,16 +19,6 @@ namespace AutoBogus.Util
 #else
       var typeInfo = type.GetTypeInfo();
       return typeInfo.IsEnum;
-#endif
-    }
-
-    internal static bool IsClass(Type type)
-    {
-#if NET40
-      return type.IsClass;
-#else
-      var typeInfo = type.GetTypeInfo();
-      return typeInfo.IsClass;
 #endif
     }
 

@@ -48,6 +48,8 @@ namespace AutoBogus
       where TType : class
       where TFaker : AutoFaker<TType>;
 
+    #region Obsolete
+
     /// <summary>
     /// Generates an instance of type <typeparamref name="TType"/> based on the <typeparamref name="TFaker"/>.
     /// </summary>
@@ -72,6 +74,8 @@ namespace AutoBogus
     List<TType> Generate<TType, TFaker>(int count, object[] args)
       where TType : class
       where TFaker : AutoFaker<TType>;
+
+    #endregion
   }
 }
 

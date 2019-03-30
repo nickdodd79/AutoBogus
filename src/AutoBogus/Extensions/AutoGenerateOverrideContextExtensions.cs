@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace AutoBogus
 {
@@ -12,7 +12,7 @@ namespace AutoBogus
     /// </summary>
     /// <typeparam name="TType">The instance type to generate.</typeparam>
     /// <param name="context">The <see cref="AutoGenerateOverrideContext"/> instance for the current generate request.</param>
-    /// <returns>An instance of <typeparamref name="TType"/>.</returns>
+    /// <returns>The generated instance.</returns>
     public static TType Generate<TType>(this AutoGenerateOverrideContext context)
     {
       return context.GenerateContext.Generate<TType>();
@@ -24,7 +24,7 @@ namespace AutoBogus
     /// <typeparam name="TType">The instance type to generate.</typeparam>
     /// <param name="context">The <see cref="AutoGenerateOverrideContext"/> instance for the current generate request.</param>
     /// <param name="count">The number of instances to generate.</param>
-    /// <returns>A collection of instances of <typeparamref name="TType"/>.</returns>
+    /// <returns>The generated collection of instances.</returns>
     public static List<TType> GenerateMany<TType>(this AutoGenerateOverrideContext context, int? count = null)
     {
       return context.GenerateContext.GenerateMany<TType>(count);
@@ -36,14 +36,14 @@ namespace AutoBogus
     /// <typeparam name="TType">The instance type to generate.</typeparam>
     /// <param name="context">The <see cref="AutoGenerateOverrideContext"/> instance for the current generate request.</param>
     /// <param name="count">The number of instances to generate.</param>
-    /// <returns>A collection of unique instances of <typeparamref name="TType"/>.</returns>
+    /// <returns>The generated collection of unique instances.</returns>
     public static List<TType> GenerateUniqueMany<TType>(this AutoGenerateOverrideContext context, int? count = null)
     {
       return context.GenerateContext.GenerateUniqueMany<TType>(count);
     }
 
     /// <summary>
-    /// Populates the provided instance with auto generated values.
+    /// Populates the provided instance with generated values.
     /// </summary>
     /// <typeparam name="TType">The type of instance to populate.</typeparam>
     /// <param name="context">The <see cref="AutoGenerateOverrideContext"/> instance for the current generate request.</param>

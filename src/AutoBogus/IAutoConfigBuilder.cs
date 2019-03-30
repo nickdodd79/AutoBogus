@@ -28,14 +28,6 @@ namespace AutoBogus
     TBuilder WithRecursiveDepth(int depth);
 
     /// <summary>
-    /// Registers a binder type to use when generating values.
-    /// </summary>
-    /// <typeparam name="TBinder">The <see cref="IAutoBinder"/> type to use.</typeparam>
-    /// <returns>The current configuration builder instance.</returns>
-    TBuilder WithBinder<TBinder>()
-      where TBinder: IAutoBinder, new();
-
-    /// <summary>
     /// Registers a binder instance to use when generating values.
     /// </summary>
     /// <param name="binder">The <see cref="IAutoBinder"/> instance to use.</param>
