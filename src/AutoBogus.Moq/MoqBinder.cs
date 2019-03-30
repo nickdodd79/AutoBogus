@@ -1,4 +1,4 @@
-﻿using AutoBogus.Util;
+using AutoBogus.Util;
 using Moq;
 using System;
 using System.Reflection;
@@ -8,7 +8,7 @@ namespace AutoBogus.Moq
   /// <summary>
   /// A class that enables Moq binding for interface and abstract types.
   /// </summary>
-  public sealed class MoqBinder
+  public class MoqBinder
     : AutoBinder
   {
     private static MethodInfo Factory;

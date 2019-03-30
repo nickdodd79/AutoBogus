@@ -1,4 +1,4 @@
-﻿using AutoBogus.NSubstitute;
+using AutoBogus.NSubstitute;
 using AutoBogus.Tests.Models;
 using AutoBogus.Tests.Models.Complex;
 using AutoBogus.Tests.Models.Simple;
@@ -13,7 +13,10 @@ namespace AutoBogus.Tests
 
     public NSubstituteBinderFixture()
     {
-      _faker = AutoFaker.Create<NSubstituteBinder>();
+      _faker = AutoFaker.Create(builder =>
+      {
+        builder.WithBinder<NSubstituteBinder>();
+      });
     }
 
     [Fact]

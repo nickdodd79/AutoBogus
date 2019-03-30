@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,15 +14,20 @@ namespace AutoBogus
     /// </summary>
     /// <typeparam name="TType">The instance type to generate.</typeparam>
     /// <param name="context">The <see cref="AutoGenerateContext"/> instance for the current generate request.</param>
-    /// <returns>An instance of <typeparamref name="TType"/>.</returns>
+    /// <returns>The generated instance.</returns>
     public static TType Generate<TType>(this AutoGenerateContext context)
     {
-      // Set the generate type for the current request
-      context.GenerateType = typeof(TType);
+      if (context != null)
+      {
+        // Set the generate type for the current request
+        context.GenerateType = typeof(TType);
 
-      // Get the type generator and return a value
-      var generator = AutoGeneratorFactory.GetGenerator(context);
-      return (TType)generator.Generate(context);
+        // Get the type generator and return a value
+        var generator = AutoGeneratorFactory.GetGenerator(context);
+        return (TType)generator.Generate(context);
+      }
+
+      return default;
     }
 
     /// <summary>
@@ -31,11 +36,15 @@ namespace AutoBogus
     /// <typeparam name="TType">The instance type to generate.</typeparam>
     /// <param name="context">The <see cref="AutoGenerateContext"/> instance for the current generate request.</param>
     /// <param name="count">The number of instances to generate.</param>
-    /// <returns>A collection of instances of <typeparamref name="TType"/>.</returns>
+    /// <returns>The generated collection of instances.</returns>
     public static List<TType> GenerateMany<TType>(this AutoGenerateContext context, int? count = null)
     {
       var items = new List<TType>();
-      GenerateMany(context, count, items, false);
+
+      if (context != null)
+      {
+        GenerateMany(context, count, items, false);
+      }
 
       return items;
     }
@@ -46,30 +55,37 @@ namespace AutoBogus
     /// <typeparam name="TType">The instance type to generate.</typeparam>
     /// <param name="context">The <see cref="AutoGenerateContext"/> instance for the current generate request.</param>
     /// <param name="count">The number of instances to generate.</param>
-    /// <returns>A collection of unique instances of <typeparamref name="TType"/>.</returns>
+    /// <returns>The generated collection of unique instances.</returns>
     public static List<TType> GenerateUniqueMany<TType>(this AutoGenerateContext context, int? count = null)
     {
       var items = new List<TType>();
-      GenerateMany(context, count, items, true);
+
+      if (context != null)
+      {
+        GenerateMany(context, count, items, true);
+      }
 
       return items;
     }
-
+    
     /// <summary>
-    /// Populates the provided instance with auto generated values.
+    /// Populates the provided instance with generated values.
     /// </summary>
     /// <typeparam name="TType">The type of instance to populate.</typeparam>
     /// <param name="context">The <see cref="AutoGenerateContext"/> instance for the current generate request.</param>
     /// <param name="instance">The instance to populate.</param>
     public static void Populate<TType>(this AutoGenerateContext context, TType instance)
     {
-      context.Binder.PopulateInstance<TType>(instance, context);
+      if (context != null)
+      {
+        context.Binder.PopulateInstance<TType>(instance, context);
+      }
     }
 
     internal static void GenerateMany<TType>(AutoGenerateContext context, int? count, List<TType> items, bool unique, int attempt = 1, Func<TType> generate = null)
     {
       // Apply any defaults
-      count = count ?? AutoFaker.DefaultCount;
+      count = count ?? context.Config.RepeatCount;
       generate = generate ?? (() => context.Generate<TType>());
 
       // Generate a list of items
@@ -98,7 +114,7 @@ namespace AutoBogus
           items.AddRange(filtered);
 
           // Only continue to generate more if the attempts threshold is not reached
-          if (attempt < AutoFaker.GenerateAttemptsThreshold)
+          if (attempt < AutoConfig.GenerateAttemptsThreshold)
           {
             GenerateMany(context, count, items, unique, attempt + 1, generate);
           }

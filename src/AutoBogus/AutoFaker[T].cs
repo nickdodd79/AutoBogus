@@ -1,4 +1,4 @@
-﻿using Bogus;
+using Bogus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +14,8 @@ namespace AutoBogus
     : Faker<TType>
     where TType : class
   {
+    private AutoConfig _config;
+
     /// <summary>
     /// Instantiates an instance of the <see cref="AutoFaker{TType}"/> class.
     /// </summary>
@@ -43,9 +45,9 @@ namespace AutoBogus
     /// <param name="locale">The locale to use for value generation.</param>
     /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for the generation request.</param>
     public AutoFaker(string locale = null, IAutoBinder binder = null)
-      : base(locale ?? AutoFaker.DefaultLocale)
+      : base(locale ?? AutoConfig.DefaultLocale)
     {
-      Binder = binder ?? AutoFaker.DefaultBinder;
+      Binder = binder;
 
       // Ensure the default create action is cleared
       // This is so we can check whether it has been set externally
@@ -55,7 +57,18 @@ namespace AutoBogus
 
     private Type Type => typeof(TType);
 
-    internal IAutoBinder Binder { get; }
+    private IAutoBinder Binder { get; set; }
+
+    internal AutoConfig Config
+    {
+      set
+      {
+        _config = value;
+
+        Locale = _config.Locale;
+        Binder = _config.Binder;
+      }
+    }
 
     private bool CreateInitialized { get; set; }
     private bool FinishInitialized { get; set; }
@@ -108,10 +121,21 @@ namespace AutoBogus
     
     private AutoGenerateContext CreateContext(string ruleSets)
     {
-      return new AutoGenerateContext(FakerHub, Binder)
+      var config = new AutoConfig(_config ?? AutoFaker.DefaultConfig);
+
+      if (!string.IsNullOrWhiteSpace(Locale))
       {
-        RuleSets = ParseRuleSets(ruleSets),
-        Overrides = AutoFaker.Overrides.ToList()
+        config.Locale = Locale;
+      }
+      
+      if (Binder != null)
+      {
+        config.Binder = Binder;
+      }
+
+      return new AutoGenerateContext(FakerHub, config)
+      {
+        RuleSets = ParseRuleSets(ruleSets)
       };
     }
 

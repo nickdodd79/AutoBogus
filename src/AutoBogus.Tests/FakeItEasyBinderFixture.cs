@@ -13,7 +13,10 @@ namespace AutoBogus.Tests
 
     public FakeItEasyBinderFixture()
     {
-      _faker = AutoFaker.Create<FakeItEasyBinder>();
+      _faker = AutoFaker.Create(builder =>
+      {
+        builder.WithBinder<FakeItEasyBinder>();
+      });
     }
 
     [Fact]

@@ -1,4 +1,4 @@
-﻿using AutoBogus.Generators;
+using AutoBogus.Generators;
 using AutoBogus.Util;
 using System;
 using System.Collections.Generic;
@@ -46,7 +46,7 @@ namespace AutoBogus
       return generator;
     }
 
-    internal static IAutoGenerator ResolveGenerator(AutoGenerateContext context)
+    private static IAutoGenerator ResolveGenerator(AutoGenerateContext context)
     {
       // Do some type -> generator mapping
       var type = context.GenerateType;
