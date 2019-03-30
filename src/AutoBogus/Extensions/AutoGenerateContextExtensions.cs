@@ -17,12 +17,17 @@ namespace AutoBogus
     /// <returns>The generated instance.</returns>
     public static TType Generate<TType>(this AutoGenerateContext context)
     {
-      // Set the generate type for the current request
-      context.GenerateType = typeof(TType);
+      if (context != null)
+      {
+        // Set the generate type for the current request
+        context.GenerateType = typeof(TType);
 
-      // Get the type generator and return a value
-      var generator = AutoGeneratorFactory.GetGenerator(context);
-      return (TType)generator.Generate(context);
+        // Get the type generator and return a value
+        var generator = AutoGeneratorFactory.GetGenerator(context);
+        return (TType)generator.Generate(context);
+      }
+
+      return default;
     }
 
     /// <summary>
@@ -35,7 +40,11 @@ namespace AutoBogus
     public static List<TType> GenerateMany<TType>(this AutoGenerateContext context, int? count = null)
     {
       var items = new List<TType>();
-      GenerateMany(context, count, items, false);
+
+      if (context != null)
+      {
+        GenerateMany(context, count, items, false);
+      }
 
       return items;
     }
@@ -50,7 +59,11 @@ namespace AutoBogus
     public static List<TType> GenerateUniqueMany<TType>(this AutoGenerateContext context, int? count = null)
     {
       var items = new List<TType>();
-      GenerateMany(context, count, items, true);
+
+      if (context != null)
+      {
+        GenerateMany(context, count, items, true);
+      }
 
       return items;
     }
@@ -63,7 +76,10 @@ namespace AutoBogus
     /// <param name="instance">The instance to populate.</param>
     public static void Populate<TType>(this AutoGenerateContext context, TType instance)
     {
-      context.Binder.PopulateInstance<TType>(instance, context);
+      if (context != null)
+      {
+        context.Binder.PopulateInstance<TType>(instance, context);
+      }
     }
 
     internal static void GenerateMany<TType>(AutoGenerateContext context, int? count, List<TType> items, bool unique, int attempt = 1, Func<TType> generate = null)

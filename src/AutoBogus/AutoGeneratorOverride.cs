@@ -21,7 +21,10 @@ namespace AutoBogus
     /// <param name="context">The <see cref="AutoGenerateOverrideContext"/> instance for the current generate request.</param>
     public virtual void Generate(AutoGenerateOverrideContext context)
     {
-      context.Instance = ResolvedGenerator.Generate(context.GenerateContext);
+      if (context != null)
+      {
+        context.Instance = ResolvedGenerator.Generate(context.GenerateContext);
+      }
     }
 
     object IAutoGenerator.Generate(AutoGenerateContext context)

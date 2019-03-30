@@ -84,11 +84,10 @@
             <param name="configure">A handler to build the generate request configuration.</param>
             <returns>The generated collection of instances.</returns>
         </member>
-        <member name="M:AutoBogus.AutoFaker.Create``1(System.String)">
+        <member name="M:AutoBogus.AutoFaker.Create(System.String)">
             <summary>
             Creates a configured <see cref="T:AutoBogus.IAutoFaker"/> instance.
             </summary>
-            <typeparam name="TBinder">The <see cref="T:AutoBogus.IAutoBinder"/> type of use for generate requests.</typeparam>
             <param name="locale">The locale to use for value generation.</param>
             <returns>The configured <see cref="T:AutoBogus.IAutoFaker"/> instance.</returns>
         </member>
@@ -97,6 +96,14 @@
             Creates a configured <see cref="T:AutoBogus.IAutoFaker"/> instance.
             </summary>
             <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use for generate requests.</param>
+            <returns>The configured <see cref="T:AutoBogus.IAutoFaker"/> instance.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoFaker.Create``1(System.String)">
+            <summary>
+            Creates a configured <see cref="T:AutoBogus.IAutoFaker"/> instance.
+            </summary>
+            <typeparam name="TBinder">The <see cref="T:AutoBogus.IAutoBinder"/> type of use for generate requests.</typeparam>
+            <param name="locale">The locale to use for value generation.</param>
             <returns>The configured <see cref="T:AutoBogus.IAutoFaker"/> instance.</returns>
         </member>
         <member name="M:AutoBogus.AutoFaker.Create(System.String,AutoBogus.IAutoBinder)">
@@ -154,6 +161,58 @@
             <param name="count">The number of instances to generate.</param>
             <param name="args">The constructor arguments used to instantiate type <typeparamref name="TFaker"/>.</param>
             <returns>The collection of generated instances of type <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="T:AutoBogus.AutoFaker`1">
+            <summary>
+            A class used to invoke generation requests of type <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to generate.</typeparam>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.#ctor">
+            <summary>
+            Instantiates an instance of the <see cref="T:AutoBogus.AutoFaker`1"/> class.
+            </summary>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.#ctor(System.String)">
+            <summary>
+            Instantiates an instance of the <see cref="T:AutoBogus.AutoFaker`1"/> class.
+            </summary>
+            <param name="locale">The locale to use for value generation.</param>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.#ctor(AutoBogus.IAutoBinder)">
+            <summary>
+            Instantiates an instance of the <see cref="T:AutoBogus.AutoFaker`1"/> class.
+            </summary>
+            <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use for the generation request.</param>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.#ctor(System.String,AutoBogus.IAutoBinder)">
+            <summary>
+            Instantiates an instance of the <see cref="T:AutoBogus.AutoFaker`1"/> class.
+            </summary>
+            <param name="locale">The locale to use for value generation.</param>
+            <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use for the generation request.</param>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.Generate(System.String)">
+            <summary>
+            Generates an instance of type <typeparamref name="TType"/>.
+            </summary>
+            <param name="ruleSets">An optional list of delimited rule sets to use for the generate request.</param>
+            <returns>The generated instance of type <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.Generate(System.Int32,System.String)">
+            <summary>
+            Generates a collection of instances of type <typeparamref name="TType"/>.
+            </summary>
+            <param name="count">The number of instances to generate.</param>
+            <param name="ruleSets">An optional list of delimited rule sets to use for the generate request.</param>
+            <returns>The collection of generated instances of type <typeparamref name="TType"/>.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoFaker`1.Populate(`0,System.String)">
+            <summary>
+            Populates the provided instance with auto generated values.
+            </summary>
+            <param name="instance">The instance to populate.</param>
+            <param name="ruleSets">An optional list of delimited rule sets to use for the populate request.</param>
         </member>
         <member name="T:AutoBogus.AutoGenerateContext">
             <summary>
@@ -257,7 +316,7 @@
             <param name="builder">The current configuration builder instance.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
-        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithOverride``1(AutoBogus.IAutoFakerDefaultConfigBuilder,System.Func{AutoBogus.AutoGenerateContext,``0})">
+        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithOverride``1(AutoBogus.IAutoFakerDefaultConfigBuilder,System.Func{AutoBogus.AutoGenerateOverrideContext,``0})">
             <summary>
             Registers an override instance to use when generating values.
             </summary>
@@ -266,7 +325,7 @@
             <param name="generator">A handler used to generate the override.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
-        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithOverride``1(AutoBogus.IAutoGenerateConfigBuilder,System.Func{AutoBogus.AutoGenerateContext,``0})">
+        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithOverride``1(AutoBogus.IAutoGenerateConfigBuilder,System.Func{AutoBogus.AutoGenerateOverrideContext,``0})">
             <summary>
             Registers an override instance to use when generating values.
             </summary>
@@ -275,7 +334,7 @@
             <param name="generator">A handler used to generate the override.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
-        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithOverride``1(AutoBogus.IAutoFakerConfigBuilder,System.Func{AutoBogus.AutoGenerateContext,``0})">
+        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithOverride``1(AutoBogus.IAutoFakerConfigBuilder,System.Func{AutoBogus.AutoGenerateOverrideContext,``0})">
             <summary>
             Registers an override instance to use when generating values.
             </summary>
@@ -510,58 +569,6 @@
             <summary>
             An interface for building configurations for generate requests.
             </summary>
-        </member>
-        <member name="T:AutoBogus.AutoFaker`1">
-            <summary>
-            A class used to invoke generation requests of type <typeparamref name="TType"/>.
-            </summary>
-            <typeparam name="TType">The type of instance to generate.</typeparam>
-        </member>
-        <member name="M:AutoBogus.AutoFaker`1.#ctor">
-            <summary>
-            Instantiates an instance of the <see cref="T:AutoBogus.AutoFaker`1"/> class.
-            </summary>
-        </member>
-        <member name="M:AutoBogus.AutoFaker`1.#ctor(System.String)">
-            <summary>
-            Instantiates an instance of the <see cref="T:AutoBogus.AutoFaker`1"/> class.
-            </summary>
-            <param name="locale">The locale to use for value generation.</param>
-        </member>
-        <member name="M:AutoBogus.AutoFaker`1.#ctor(AutoBogus.IAutoBinder)">
-            <summary>
-            Instantiates an instance of the <see cref="T:AutoBogus.AutoFaker`1"/> class.
-            </summary>
-            <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use for the generation request.</param>
-        </member>
-        <member name="M:AutoBogus.AutoFaker`1.#ctor(System.String,AutoBogus.IAutoBinder)">
-            <summary>
-            Instantiates an instance of the <see cref="T:AutoBogus.AutoFaker`1"/> class.
-            </summary>
-            <param name="locale">The locale to use for value generation.</param>
-            <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use for the generation request.</param>
-        </member>
-        <member name="M:AutoBogus.AutoFaker`1.Generate(System.String)">
-            <summary>
-            Generates an instance of type <typeparamref name="TType"/>.
-            </summary>
-            <param name="ruleSets">An optional list of delimited rule sets to use for the generate request.</param>
-            <returns>The generated instance of type <typeparamref name="TType"/>.</returns>
-        </member>
-        <member name="M:AutoBogus.AutoFaker`1.Generate(System.Int32,System.String)">
-            <summary>
-            Generates a collection of instances of type <typeparamref name="TType"/>.
-            </summary>
-            <param name="count">The number of instances to generate.</param>
-            <param name="ruleSets">An optional list of delimited rule sets to use for the generate request.</param>
-            <returns>The collection of generated instances of type <typeparamref name="TType"/>.</returns>
-        </member>
-        <member name="M:AutoBogus.AutoFaker`1.Populate(`0,System.String)">
-            <summary>
-            Populates the provided instance with auto generated values.
-            </summary>
-            <param name="instance">The instance to populate.</param>
-            <param name="ruleSets">An optional list of delimited rule sets to use for the populate request.</param>
         </member>
     </members>
 </doc>

@@ -36,11 +36,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\AutoBogus.Tests\AutoConfigBuilderFixture.cs">
+      <Link>AutoConfigBuilderFixture.cs</Link>
+    </Compile>
     <Compile Include="..\AutoBogus.Tests\AutoFakerFixture.cs">
       <Link>AutoFakerFixture.cs</Link>
     </Compile>
-    <Compile Include="..\AutoBogus.Tests\AutoGenerateContextExtensionsFixture.cs">
-      <Link>AutoGenerateContextExtensionsFixture.cs</Link>
+    <Compile Include="..\AutoBogus.Tests\AutoGenerateContextFixture.cs">
+      <Link>AutoGenerateContextFixture.cs</Link>
     </Compile>
     <Compile Include="..\AutoBogus.Tests\AutoGeneratorsFixture.cs">
       <Link>AutoGeneratorsFixture.cs</Link>

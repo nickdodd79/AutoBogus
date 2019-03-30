@@ -53,7 +53,7 @@ namespace AutoBogus
     /// <param name="builder">The current configuration builder instance.</param>
     /// <param name="generator">A handler used to generate the override.</param>
     /// <returns>The current configuration builder instance.</returns>
-    public static IAutoFakerDefaultConfigBuilder WithOverride<TType>(this IAutoFakerDefaultConfigBuilder builder, Func<AutoGenerateContext, TType> generator)
+    public static IAutoFakerDefaultConfigBuilder WithOverride<TType>(this IAutoFakerDefaultConfigBuilder builder, Func<AutoGenerateOverrideContext, TType> generator)
     {
       var generatorOverride = new AutoGeneratorTypeOverride<TType>(generator);
       return builder.WithOverride(generatorOverride);
@@ -66,7 +66,7 @@ namespace AutoBogus
     /// <param name="builder">The current configuration builder instance.</param>
     /// <param name="generator">A handler used to generate the override.</param>
     /// <returns>The current configuration builder instance.</returns>
-    public static IAutoGenerateConfigBuilder WithOverride<TType>(this IAutoGenerateConfigBuilder builder, Func<AutoGenerateContext, TType> generator)
+    public static IAutoGenerateConfigBuilder WithOverride<TType>(this IAutoGenerateConfigBuilder builder, Func<AutoGenerateOverrideContext, TType> generator)
     {
       var generatorOverride = new AutoGeneratorTypeOverride<TType>(generator);
       return builder.WithOverride(generatorOverride);
@@ -79,7 +79,7 @@ namespace AutoBogus
     /// <param name="builder">The current configuration builder instance.</param>
     /// <param name="generator">A handler used to generate the override.</param>
     /// <returns>The current configuration builder instance.</returns>
-    public static IAutoFakerConfigBuilder WithOverride<TType>(this IAutoFakerConfigBuilder builder, Func<AutoGenerateContext, TType> generator)
+    public static IAutoFakerConfigBuilder WithOverride<TType>(this IAutoFakerConfigBuilder builder, Func<AutoGenerateOverrideContext, TType> generator)
     {
       var generatorOverride = new AutoGeneratorTypeOverride<TType>(generator);
       return builder.WithOverride(generatorOverride);

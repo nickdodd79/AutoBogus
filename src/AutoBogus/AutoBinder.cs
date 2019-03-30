@@ -1,4 +1,4 @@
-﻿using AutoBogus.Util;
+using AutoBogus.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using Binder = Bogus.Binder;
 namespace AutoBogus
 {
   /// <summary>
-  /// A class for binding auto generated instances.
+  /// A class for binding generated instances.
   /// </summary>
   public class AutoBinder
     : Binder, IAutoBinder
@@ -22,23 +22,26 @@ namespace AutoBogus
     /// <returns>The created instance of <typeparamref name="TType"/>.</returns>
     public virtual TType CreateInstance<TType>(AutoGenerateContext context)
     {
-      var constructor = GetConstructor<TType>();
-
-      if (constructor != null)
+      if (context != null)
       {
-        // If a constructor is found generate values for each of the parameters
-        var parameters = (from p in constructor.GetParameters()
-                          let g = GetParameterGenerator(p, context)
-                          select g.Generate(context)).ToArray();
+        var constructor = GetConstructor<TType>();
 
-        return (TType)constructor.Invoke(parameters);
+        if (constructor != null)
+        {
+          // If a constructor is found generate values for each of the parameters
+          var parameters = (from p in constructor.GetParameters()
+                            let g = GetParameterGenerator(p, context)
+                            select g.Generate(context)).ToArray();
+
+          return (TType)constructor.Invoke(parameters);
+        }
       }
 
       return default;
     }
 
     /// <summary>
-    /// Populates the provided instance with auto generated values.
+    /// Populates the provided instance with generated values.
     /// </summary>
     /// <typeparam name="TType">The type of instance to populate.</typeparam>
     /// <param name="instance">The instance to populate.</param>
@@ -54,7 +57,7 @@ namespace AutoBogus
 
       // We can only populate non-null instances 
       // Dictionaries and Enumerables are populated via their constructors
-      if (instance == null || IsDictionary(type) || IsEnumerable(type))
+      if (instance == null || context == null || IsDictionary(type) || IsEnumerable(type))
       {
         return;
       }
@@ -76,7 +79,7 @@ namespace AutoBogus
         {
           // Check if the type has already been generated as a parent
           // If so skip this generation otherwise track it for use later in the object tree
-          if (context.Types.Contains(memberType))
+          if (ShouldSkip(memberType, context))
           {
             continue;
           }
@@ -84,7 +87,7 @@ namespace AutoBogus
           context.GenerateType = memberType;
           context.GenerateName = member.Name;
 
-          context.Types.Push(memberType);
+          context.TypesStack.Push(memberType);
 
           // Generate a random value and bind it to the instance
           var generator = AutoGeneratorFactory.GetGenerator(context);
@@ -93,9 +96,15 @@ namespace AutoBogus
           memberSetter.Invoke(instance, value);
 
           // Remove the current type from the type stack so siblings can be created
-          context.Types.Pop();
+          context.TypesStack.Pop();
         }
       }
+    }
+
+    private bool ShouldSkip(Type type, AutoGenerateContext context)
+    {
+      var count = context.TypesStack.Count(t => t == type);
+      return count >= context.Config.RecursiveDepth;
     }
 
     private bool IsDictionary(Type type)

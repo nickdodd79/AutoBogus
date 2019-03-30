@@ -15,7 +15,7 @@ namespace AutoBogus
     /// <returns>The generated instance.</returns>
     public static TType Generate<TType>(this AutoGenerateOverrideContext context)
     {
-      return context.GenerateContext.Generate<TType>();
+      return context == null ? default : context.GenerateContext.Generate<TType>();
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ namespace AutoBogus
     /// <returns>The generated collection of instances.</returns>
     public static List<TType> GenerateMany<TType>(this AutoGenerateOverrideContext context, int? count = null)
     {
-      return context.GenerateContext.GenerateMany<TType>(count);
+      return context?.GenerateContext.GenerateMany<TType>(count) ?? new List<TType>();
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ namespace AutoBogus
     /// <returns>The generated collection of unique instances.</returns>
     public static List<TType> GenerateUniqueMany<TType>(this AutoGenerateOverrideContext context, int? count = null)
     {
-      return context.GenerateContext.GenerateUniqueMany<TType>(count);
+      return context?.GenerateContext.GenerateUniqueMany<TType>(count) ?? new List<TType>();
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ namespace AutoBogus
     /// <param name="instance">The instance to populate.</param>
     public static void Populate<TType>(this AutoGenerateOverrideContext context, TType instance)
     {
-      context.GenerateContext.Populate(instance);
+      context?.GenerateContext.Populate(instance);
     }
   }
 }
