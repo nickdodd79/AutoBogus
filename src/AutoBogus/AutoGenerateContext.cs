@@ -1,4 +1,4 @@
-﻿using Bogus;
+using Bogus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,19 +10,24 @@ namespace AutoBogus
   /// </summary>
   public sealed class AutoGenerateContext
   {
-    internal AutoGenerateContext(Faker faker, IAutoBinder binder)
+    internal AutoGenerateContext(AutoConfig config)
+      : this(null, config)
+    { }
+
+    internal AutoGenerateContext(Faker faker, AutoConfig config)
     {
-      Faker = faker;
-      Binder = binder;
+      Faker = faker ?? new Faker(config.Locale);
+      Config = config;
 
       RuleSets = Enumerable.Empty<string>();
-      Overrides = Enumerable.Empty<AutoGeneratorOverride>();
 
-      Types = new Stack<Type>();
+      TypesStack = new Stack<Type>();
     }
 
+    internal AutoConfig Config { get; }
+
     /// <summary>
-    /// The <see cref="System.Type"/> for the current generate request.
+    /// The type associated with the current generate request.
     /// </summary>
     public Type GenerateType { get; internal set; }
 
@@ -41,9 +46,9 @@ namespace AutoBogus
     /// </summary>
     public IEnumerable<string> RuleSets { get; internal set; }
 
-    internal Stack<Type> Types { get; }
-    internal IAutoBinder Binder { get;}
+    internal Stack<Type> TypesStack { get; }
 
-    internal IEnumerable<AutoGeneratorOverride> Overrides { get; set; }
+    internal IAutoBinder Binder => Config.Binder;
+    internal IEnumerable<AutoGeneratorOverride> Overrides => Config.Overrides;
   }
 }

@@ -1,4 +1,4 @@
-﻿using Bogus;
+using Bogus;
 using FluentAssertions;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,34 +6,47 @@ using Xunit;
 
 namespace AutoBogus.Tests
 {
-  public class AutoGenerateContextExtensionsFixture
+  public class AutoGenerateContextFixture
   {
     private Faker _faker;
     private IEnumerable<string> _ruleSets;
-    private AutoBinder _binder;
+    private AutoConfig _config;
     private AutoGenerateContext _context;
 
-    public AutoGenerateContextExtensionsFixture()
+    public AutoGenerateContextFixture()
     {
       _faker = new Faker();
       _ruleSets = Enumerable.Empty<string>();
-      _binder = new AutoBinder();
+      _config = new AutoConfig();
     }
 
     public class GenerateMany_Internal
-      : AutoGenerateContextExtensionsFixture
+      : AutoGenerateContextFixture
     {
       private int _value;
       private List<int> _items;
 
       public GenerateMany_Internal()
       {
-        _value = 1;
+        _value = _faker.Random.Int();
         _items = new List<int> { _value };
-        _context = new AutoGenerateContext(_faker, _binder)
+        _context = new AutoGenerateContext(_faker, _config)
         {
           RuleSets = _ruleSets
         };
+      }
+
+      [Fact]
+      public void Should_Generate_Configured_RepeatCount()
+      {
+        var count = _faker.Random.Int(3, 5);
+        var expected = Enumerable.Range(0, count).Select(i => _value).ToList();
+
+        _config.RepeatCount = count;
+
+        AutoGenerateContextExtensions.GenerateMany(_context, null, _items, false, 1, () => _value);
+
+        _items.Should().BeEquivalentTo(expected);
       }
 
       [Fact]
@@ -41,21 +54,24 @@ namespace AutoBogus.Tests
       {
         AutoGenerateContextExtensions.GenerateMany(_context, 2, _items, false, 1, () => _value);
 
-        _items.Should().BeEquivalentTo(new[] { 1, 1 });
+        _items.Should().BeEquivalentTo(new[] { _value, _value });
       }
 
       [Fact]
       public void Should_Not_Generate_Duplicates_If_Unique()
       {
+        var first = _value;
+        var second = _faker.Random.Int();
+
         AutoGenerateContextExtensions.GenerateMany(_context, 2, _items, true, 1, () =>
         {
           var item = _value;
-          _value = 2;
+          _value = second;
 
           return item;
         });
 
-        _items.Should().BeEquivalentTo(new[] { 1, 2 });
+        _items.Should().BeEquivalentTo(new[] { first, second });
       }
 
       [Fact]
@@ -69,9 +85,9 @@ namespace AutoBogus.Tests
           return _value;
         });
 
-        attempts.Should().Be(AutoFaker.GenerateAttemptsThreshold);
+        attempts.Should().Be(AutoConfig.GenerateAttemptsThreshold);
 
-        _items.Should().BeEquivalentTo(new[] { 1 });
+        _items.Should().BeEquivalentTo(new[] { _value });
       }
     }
   }

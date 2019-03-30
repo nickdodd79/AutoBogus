@@ -11,6 +11,10 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net40|AnyCPU'">
+    <DocumentationFile>D:\Projects\AutoBogus\src\AutoBogus.FakeItEasy\AutoBogus.FakeItEasy.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="4.9.1" />
   </ItemGroup>

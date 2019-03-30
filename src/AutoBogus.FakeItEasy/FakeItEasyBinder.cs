@@ -1,4 +1,4 @@
-﻿using AutoBogus.Util;
+using AutoBogus.Util;
 using FakeItEasy;
 
 namespace AutoBogus.FakeItEasy
@@ -6,7 +6,7 @@ namespace AutoBogus.FakeItEasy
   /// <summary>
   /// A class that enables FakeItEasy binding for interface and abstract types.
   /// </summary>
-  public sealed class FakeItEasyBinder
+  public class FakeItEasyBinder
     : AutoBinder
   {
     /// <summary>

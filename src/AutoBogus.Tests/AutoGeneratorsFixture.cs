@@ -1,4 +1,4 @@
-﻿using AutoBogus.Generators;
+using AutoBogus.Generators;
 using AutoBogus.Tests.Models.Simple;
 using AutoBogus.Util;
 using Bogus;
@@ -246,6 +246,70 @@ namespace AutoBogus.Tests
       }
     }
 
+    public class GeneratorOverrides
+      : AutoGeneratorsFixture
+    {
+      private IList<AutoGeneratorOverride> _overrides;
+
+      private class TestGeneratorOverride
+        : AutoGeneratorOverride
+      {
+        public TestGeneratorOverride(bool shouldOverride = false)
+        {
+          ShouldOverride = shouldOverride;
+        }
+
+        private bool ShouldOverride { get; }
+
+        public override bool CanOverride(AutoGenerateContext context)
+        {
+          return ShouldOverride;
+        }
+      }
+
+      public GeneratorOverrides()
+      {
+        _overrides = new List<AutoGeneratorOverride>
+        {
+          new TestGeneratorOverride(),
+          new TestGeneratorOverride(true),
+          new TestGeneratorOverride()
+        };
+      }
+
+      [Fact]
+      public void Should_Return_First_Matching_Override()
+      {
+        var generatorOverride = new TestGeneratorOverride(true);
+
+        _overrides.Insert(1, generatorOverride);
+
+        var context = CreateContext(typeof(string), _overrides);
+        AutoGeneratorFactory.GetGenerator(context).Should().Be(generatorOverride);
+      }
+
+      [Fact]
+      public void Should_Return_Generator_If_No_Matching_Override()
+      {
+        _overrides = new List<AutoGeneratorOverride>
+        {
+          new TestGeneratorOverride()
+        };
+
+        var context = CreateContext(typeof(int), _overrides);
+        AutoGeneratorFactory.GetGenerator(context).Should().BeOfType<IntGenerator>();
+      }
+
+      [Fact]
+      public void Should_Invoke_Generator()
+      {
+        var context = CreateContext(typeof(string), _overrides);
+        var generatorOverride = AutoGeneratorFactory.GetGenerator(context);
+
+        generatorOverride.Generate(context).Should().BeOfType<string>().And.Should().NotBeNull();
+      }
+    }
+
     private object InvokeGenerator(Type type, IAutoGenerator generator)
     {
       var context = CreateContext(type);
@@ -263,12 +327,17 @@ namespace AutoBogus.Tests
       return (IAutoGenerator)Activator.CreateInstance(type);
     }
 
-    private AutoGenerateContext CreateContext(Type type)
+    private AutoGenerateContext CreateContext(Type type, IList<AutoGeneratorOverride> generatorOverrides = null)
     {
       var faker = new Faker();
-      var binder = new AutoBinder();
+      var config = new AutoConfig();
 
-      return new AutoGenerateContext(faker, binder)
+      if (generatorOverrides != null)
+      {
+        config.Overrides = generatorOverrides;
+      }
+
+      return new AutoGenerateContext(faker, config)
       {
         GenerateType = type
       };

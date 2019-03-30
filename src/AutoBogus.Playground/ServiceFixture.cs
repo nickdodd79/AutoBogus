@@ -1,4 +1,4 @@
-﻿using AutoBogus.Playground.Model;
+using AutoBogus.Playground.Model;
 using FluentAssertions;
 using NSubstitute;
 using System;
@@ -18,38 +18,12 @@ namespace AutoBogus.Playground
     private Service _service;
     private ITestOutputHelper _output;
 
-    private class ProductGeneratorOverride
-      : AutoGeneratorOverride
-    {
-      public override bool CanOverride(AutoGenerateContext context)
-      {
-        return context.GenerateType.IsGenericType &&
-               context.GenerateType.GetGenericTypeDefinition() == typeof(Product<>);
-      }
-
-      public override void Generate(AutoGenerateOverrideContext context)
-      {
-        base.Generate(context);
-
-        // Get the code and apply a serial number value
-        var serialNumber = AutoFaker.Generate<string>();
-        var codeProperty = context.GenerateType.GetProperty("Code");
-        var codeInstance = codeProperty.GetValue(context.Instance);
-        var serialNumberProperty = codeProperty.PropertyType.GetProperty("SerialNumber");
-
-        serialNumberProperty.SetValue(codeInstance, serialNumber);
-      }
-    }
-
     public ServiceFixture(ITestOutputHelper output)
     {
       var id = Faker.Generate<Guid>();
-      var productOverride = new ProductGeneratorOverride();
       var generator = new AutoFaker<Item>()
         .RuleFor(item => item.Id, () => id)
         .RuleFor(item => item.Name, faker => faker.Person.FullName);
-
-      AutoFaker.SetGeneratorOverrides(productOverride);
 
       _item = generator;
       _items = generator.Generate(5);
@@ -106,8 +80,8 @@ namespace AutoBogus.Playground
       var item = AutoFaker.Generate<Item>();
       var items = new List<Item>
       {
-        Faker.Generate<Item, ItemFaker>(new object[] { id }),
-        AutoFaker.Generate<Item, ItemFaker>(new object[] { id })
+        Faker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id)),
+        AutoFaker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id))
       };
 
       item.Status = ItemStatus.Pending;

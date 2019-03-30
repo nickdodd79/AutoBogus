@@ -1,4 +1,4 @@
-﻿using Bogus;
+using Bogus;
 using System;
 using System.Collections.Generic;
 
@@ -25,7 +25,7 @@ namespace AutoBogus
     public object Instance { get; set; }
 
     /// <summary>
-    /// The <see cref="System.Type"/> for the current generate request.
+    /// The type associated with the current generate request.
     /// </summary>
     public Type GenerateType { get; }
     

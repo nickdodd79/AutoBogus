@@ -11,6 +11,10 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
+    <DocumentationFile>D:\Projects\AutoBogus\src\AutoBogus.Moq\AutoBogus.Moq.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Moq" Version="4.10.0" />
   </ItemGroup>

@@ -13,7 +13,10 @@ namespace AutoBogus.Tests
 
     public MoqBinderFixture()
     {
-      _faker = AutoFaker.Create<MoqBinder>();
+      _faker = AutoFaker.Create(builder =>
+      {
+        builder.WithBinder<MoqBinder>();
+      });
     }
 
     [Fact]

@@ -21,7 +21,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoBogus.Playground", "Aut
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBogus.Tests.NET45", "AutoBogus.Tests.NET45\AutoBogus.Tests.NET45.csproj", "{3B164BF3-25C4-4290-879B-DEDD83DC64E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBogus.Conventions", "AutoBogus.Conventions\AutoBogus.Conventions.csproj", "{D8B22B1E-7A73-4F50-A987-7296647BFDDE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{834F615A-F90D-4A2E-9068-F67D8761942C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

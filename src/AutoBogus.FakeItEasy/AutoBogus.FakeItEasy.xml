@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AutoBogus.FakeItEasy</name>
+    </assembly>
+    <members>
+        <member name="T:AutoBogus.FakeItEasy.FakeItEasyBinder">
+            <summary>
+            A class that enables FakeItEasy binding for interface and abstract types.
+            </summary>
+        </member>
+        <member name="M:AutoBogus.FakeItEasy.FakeItEasyBinder.CreateInstance``1(AutoBogus.AutoGenerateContext)">
+            <summary>
+            Creates an instance of <typeparamref name="TType"/>.
+            </summary>
+            <typeparam name="TType">The type of instance to create.</typeparam>
+            <param name="context">The <see cref="T:AutoBogus.AutoGenerateContext"/> instance for the generate request.</param>
+            <returns>The created instance of <typeparamref name="TType"/>.</returns>
+        </member>
+    </members>
+</doc>
