@@ -17,7 +17,7 @@ namespace AutoBogus
       where TBinder : IAutoBinder, new()
     {
       var binder = new TBinder();
-      return builder.WithBinder(binder);
+      return builder?.WithBinder(binder);
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ namespace AutoBogus
       where TBinder : IAutoBinder, new()
     {
       var binder = new TBinder();
-      return builder.WithBinder(binder);
+      return builder?.WithBinder(binder);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ namespace AutoBogus
       where TBinder : IAutoBinder, new()
     {
       var binder = new TBinder();
-      return builder.WithBinder(binder);
+      return builder?.WithBinder(binder);
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ namespace AutoBogus
     public static IAutoFakerDefaultConfigBuilder WithOverride<TType>(this IAutoFakerDefaultConfigBuilder builder, Func<AutoGenerateOverrideContext, TType> generator)
     {
       var generatorOverride = new AutoGeneratorTypeOverride<TType>(generator);
-      return builder.WithOverride(generatorOverride);
+      return builder?.WithOverride(generatorOverride);
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ namespace AutoBogus
     public static IAutoGenerateConfigBuilder WithOverride<TType>(this IAutoGenerateConfigBuilder builder, Func<AutoGenerateOverrideContext, TType> generator)
     {
       var generatorOverride = new AutoGeneratorTypeOverride<TType>(generator);
-      return builder.WithOverride(generatorOverride);
+      return builder?.WithOverride(generatorOverride);
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ namespace AutoBogus
     public static IAutoFakerConfigBuilder WithOverride<TType>(this IAutoFakerConfigBuilder builder, Func<AutoGenerateOverrideContext, TType> generator)
     {
       var generatorOverride = new AutoGeneratorTypeOverride<TType>(generator);
-      return builder.WithOverride(generatorOverride);
+      return builder?.WithOverride(generatorOverride);
     }
   }
 }

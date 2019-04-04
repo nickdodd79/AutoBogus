@@ -11,6 +11,29 @@ namespace AutoBogus.Playground
   public class ServiceFixture
     : FixtureBase
   {
+    private class ProductCodeOverride
+      : AutoGeneratorOverride
+    {
+      public override bool CanOverride(AutoGenerateContext context)
+      {
+        return context.GenerateType.IsGenericType &&
+               context.GenerateType.GetGenericTypeDefinition() == typeof(Product<>);
+      }
+
+      public override void Generate(AutoGenerateOverrideContext context)
+      {
+        base.Generate(context);
+
+        var type = typeof(ProductCode);
+        var value = context.Faker.Random.Word();
+        var productCodeProperty = context.GenerateType.GetProperty("Code");
+        var productCode = productCodeProperty.GetValue(context.Instance);
+        var serialNoProperty = type.GetProperty("SerialNumber");
+
+        serialNoProperty.SetValue(productCode, value);
+      }
+    }
+
     private Item _item;
     private IEnumerable<Item> _items;
 
@@ -80,7 +103,7 @@ namespace AutoBogus.Playground
       var item = AutoFaker.Generate<Item>();
       var items = new List<Item>
       {
-        Faker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id)),
+        Faker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(new ProductCodeOverride())),
         AutoFaker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id))
       };
 
