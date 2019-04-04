@@ -1,34 +1,38 @@
-﻿using AutoBogus.Conventions;
-using System;
+using AutoBogus.Conventions;
+using FluentAssertions;
 using Xunit;
 
 namespace AutoBogus.Tests
 {
   public class AutoConventionsFixture
-    : IDisposable
   {
     private class TestClass
     {
       public string FirstName { get; set; }
-      public string Byname { get; set; }
+      public string Surname { get; set; }
       public string FullName { get; set; }
+      public string Email { get; set; }
     }
+
+    private IAutoFaker _faker;
 
     public AutoConventionsFixture()
     {
-      AutoFaker.SetGeneratorOverrides(
-        new AutoGeneratorConventionsOverride());
-    }
-
-    public void Dispose()
-    {
-      AutoFaker.SetGeneratorOverrides();
+      _faker = AutoFaker.Create(builder =>
+      {
+        builder.WithConventions();
+      });
     }
 
     [Fact]
     public void Should_Apply_Conventions()
     {
-      var instance = AutoFaker.Generate<TestClass>();
+      var instance = _faker.Generate<TestClass>();
+
+      instance.FirstName.Should().NotBeNull();
+      instance.Surname.Should().NotBeNull();
+      instance.FullName.Should().NotBeNull();
+      instance.Email.Should().Contain("@");
     }
   }
 }

@@ -1,19 +1,20 @@
-﻿using AutoBogus.Conventions.Generators;
+using AutoBogus.Conventions.Generators;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace AutoBogus.Conventions
 {
-  public sealed class AutoGeneratorConventionsOverride
+  internal sealed class AutoGeneratorConventionsOverride
     : AutoGeneratorOverride
   {
-    public AutoGeneratorConventionsOverride()
+    internal AutoGeneratorConventionsOverride()
     {
       Generators = new List<IAutoConventionGenerator>
       {
         new FirstNameGenerator(),
         new LastNameGenerator(),
-        new FullNameGenerator()
+        new FullNameGenerator(),
+        new EmailGenerator()
       };
     }
 
@@ -26,11 +27,15 @@ namespace AutoBogus.Conventions
 
     public override void Generate(AutoGenerateOverrideContext context)
     {
-      var generator = Generators.FirstOrDefault(g => g.CanGenerate(context.GenerateContext)); 
+      base.Generate(context);
 
-      context.Instance = generator == null 
-        ? ResolvedGenerator.Generate(context.GenerateContext)
-        : context.Instance = generator.Generate(context.GenerateContext);
+      // Find the convention generator and populate the instance
+      var generator = Generators.FirstOrDefault(g => g.CanGenerate(context.GenerateContext));
+
+      if (generator != null)
+      {
+        context.Instance = generator.Generate(context.GenerateContext);
+      } 
     }
   }
 }

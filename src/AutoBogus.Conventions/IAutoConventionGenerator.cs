@@ -1,4 +1,4 @@
-﻿namespace AutoBogus.Conventions
+namespace AutoBogus.Conventions
 {
   internal interface IAutoConventionGenerator
   {
