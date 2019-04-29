@@ -1,4 +1,4 @@
-﻿using AutoBogus.Util;
+using AutoBogus.Util;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
@@ -50,7 +50,7 @@ namespace AutoBogus.Tests.Models
       Assertions.Add(IsNullable, AssertNullable);
     }
 
-    private AssertionScope Scope { get; set; }
+    private IAssertionScope Scope { get; set; }
 
     protected override string Identifier => "Generate";
 

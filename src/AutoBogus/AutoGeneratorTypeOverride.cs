@@ -21,7 +21,6 @@ namespace AutoBogus
 
     public override void Generate(AutoGenerateOverrideContext context)
     {
-      base.Generate(context);
       context.Instance = Generator.Invoke(context);
     }
   }

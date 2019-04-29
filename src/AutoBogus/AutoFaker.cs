@@ -147,7 +147,7 @@ namespace AutoBogus
       var type = typeof(TFaker);
       var faker = (AutoFaker<TType>)Activator.CreateInstance(type, builder.Args);
 
-      faker.Config = config;
+      faker.Config = builder.Config;
 
       return faker;
     }
