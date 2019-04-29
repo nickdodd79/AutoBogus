@@ -34,13 +34,12 @@ namespace AutoBogus
     {
       var generator = ResolveGenerator(context);
 
-      // Check if an overrides is available for this generate request
-      var generatorOverride = context.Overrides.FirstOrDefault(o => o.CanOverride(context));
+      // Check if any overrides are available for this generate request
+      var overrides = context.Overrides.Where(o => o.CanOverride(context)).ToList();
 
-      if (generatorOverride != null)
+      if (overrides.Any())
       {
-        generatorOverride.ResolvedGenerator = generator;
-        return generatorOverride;
+        return new AutoGeneratorOverrideInvoker(generator, overrides);
       }
 
       return generator;

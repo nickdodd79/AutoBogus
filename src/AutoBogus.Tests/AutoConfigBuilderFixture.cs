@@ -107,6 +107,9 @@ namespace AutoBogus.Tests
         {
           return false;
         }
+
+        public override void Generate(AutoGenerateOverrideContext context)
+        { }
       }
 
       [Fact]
@@ -131,8 +134,8 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Add_Override_If_Equivalency_Is_Different()
       {
-        var generatorOverride1 = new TestGeneratorOverride() { ResolvedGenerator = new IntGenerator() };
-        var generatorOverride2 = new TestGeneratorOverride() { ResolvedGenerator = new StringGenerator() };
+        var generatorOverride1 = new TestGeneratorOverride();
+        var generatorOverride2 = new TestGeneratorOverride();
 
         _config.Overrides.Add(generatorOverride1);
 

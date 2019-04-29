@@ -3,6 +3,7 @@ using FluentAssertions;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -14,6 +15,13 @@ namespace AutoBogus.Playground
     private class ProductCodeOverride
       : AutoGeneratorOverride
     {
+      public ProductCodeOverride()
+      {
+        Code = AutoFaker.Generate<string>();
+      }
+
+      public string Code { get; set; }
+
       public override bool CanOverride(AutoGenerateContext context)
       {
         return context.GenerateType.IsGenericType &&
@@ -22,15 +30,12 @@ namespace AutoBogus.Playground
 
       public override void Generate(AutoGenerateOverrideContext context)
       {
-        base.Generate(context);
-
         var type = typeof(ProductCode);
-        var value = context.Faker.Random.Word();
         var productCodeProperty = context.GenerateType.GetProperty("Code");
         var productCode = productCodeProperty.GetValue(context.Instance);
         var serialNoProperty = type.GetProperty("SerialNumber");
 
-        serialNoProperty.SetValue(productCode, value);
+        serialNoProperty.SetValue(productCode, Code);
       }
     }
 
@@ -101,18 +106,28 @@ namespace AutoBogus.Playground
     {
       var id = Faker.Generate<Guid>();
       var item = AutoFaker.Generate<Item>();
+      var item1Override = new ProductCodeOverride();
+      var item2Override = new ProductCodeOverride();
       var items = new List<Item>
       {
-        Faker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(new ProductCodeOverride())),
-        AutoFaker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id))
+        Faker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(item1Override)),
+        AutoFaker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(item2Override))
       };
 
       item.Status = ItemStatus.Pending;
       items.Add(item);
 
       _repository.GetFiltered(Service.PendingFilter).Returns(items);
+      _service.GetPending().Should().BeSameAs(items); 
 
-      _service.GetPending().Should().BeSameAs(items);
+      items.ElementAt(0).ProductInt.Code.SerialNumber.Should().Be(item1Override.Code);
+      items.ElementAt(0).ProductString.Code.SerialNumber.Should().Be(item1Override.Code);
+
+      items.ElementAt(1).ProductInt.Code.SerialNumber.Should().Be(item2Override.Code);
+      items.ElementAt(1).ProductString.Code.SerialNumber.Should().Be(item2Override.Code);
+
+      items.ElementAt(2).ProductInt.Code.SerialNumber.Should().BeNull();
+      items.ElementAt(2).ProductString.Code.SerialNumber.Should().BeNull();
     }
   }
 }

@@ -132,10 +132,6 @@ public class PersonOverride : AutoGeneratorOverride
 
   public override void Generate(AutoGenerateOverrideContext context)
   {
-    // Invoke the base implementation so the instance property is set
-    // This uses the default generate workflow
-    base.Generate(context);
-
     // Apply an email value to the person
     var person = context.Instance as Person;
     person.Email = context.Faker.Internet.Email();

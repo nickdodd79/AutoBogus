@@ -16,8 +16,6 @@ namespace AutoBogus.Playground
 
       public override void Generate(AutoGenerateOverrideContext context)
       {
-        base.Generate(context);
-
         // Get the code and apply a serial number value
         var serialNumber = AutoFaker.Generate<string>();
         var codeProperty = context.GenerateType.GetProperty("Code");

@@ -249,6 +249,7 @@ namespace AutoBogus.Tests
     public class GeneratorOverrides
       : AutoGeneratorsFixture
     {
+      private AutoGeneratorOverride _generatorOverride;
       private IList<AutoGeneratorOverride> _overrides;
 
       private class TestGeneratorOverride
@@ -259,33 +260,39 @@ namespace AutoBogus.Tests
           ShouldOverride = shouldOverride;
         }
 
-        private bool ShouldOverride { get; }
+        public bool ShouldOverride { get; }
 
         public override bool CanOverride(AutoGenerateContext context)
         {
           return ShouldOverride;
         }
+
+        public override void Generate(AutoGenerateOverrideContext context)
+        { }
       }
 
       public GeneratorOverrides()
       {
+        _generatorOverride = new TestGeneratorOverride(true);
         _overrides = new List<AutoGeneratorOverride>
         {
           new TestGeneratorOverride(),
-          new TestGeneratorOverride(true),
+          _generatorOverride,
           new TestGeneratorOverride()
         };
       }
 
       [Fact]
-      public void Should_Return_First_Matching_Override()
+      public void Should_Return_All_Matching_Overrides()
       {
         var generatorOverride = new TestGeneratorOverride(true);
 
         _overrides.Insert(1, generatorOverride);
 
         var context = CreateContext(typeof(string), _overrides);
-        AutoGeneratorFactory.GetGenerator(context).Should().Be(generatorOverride);
+        var invoker = AutoGeneratorFactory.GetGenerator(context) as AutoGeneratorOverrideInvoker;
+
+        invoker.Overrides.Should().BeEquivalentTo(new[] { generatorOverride, _generatorOverride });
       }
 
       [Fact]
