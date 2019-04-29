@@ -17,9 +17,9 @@ namespace AutoBogus.Conventions.Generators
       "Patronymic"
     };
 
-    protected override object Generate(AutoGenerateContext context)
+    protected override object Generate(AutoConventionContext context)
     {
-      return context.Faker.Name.LastName();
+      return GenerateUsing(context, () => context.Faker.Name.LastName());
     }
   }
 }

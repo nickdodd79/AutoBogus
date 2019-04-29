@@ -11,9 +11,9 @@ namespace AutoBogus.Conventions.Generators
       "EmailAddress"
     };
 
-    protected override object Generate(AutoGenerateContext context)
+    protected override object Generate(AutoConventionContext context)
     {
-      return context.Faker.Internet.Email();
+      return GenerateUsing(context, () => context.Faker.Internet.Email());
     }
   }
 }

@@ -15,9 +15,9 @@ namespace AutoBogus.Conventions.Generators
       "Forename"
     };
 
-    protected override object Generate(AutoGenerateContext context)
+    protected override object Generate(AutoConventionContext context)
     {
-      return context.Faker.Name.FirstName();
+      return GenerateUsing(context, () => context.Faker.Name.FirstName());
     }
   }
 }

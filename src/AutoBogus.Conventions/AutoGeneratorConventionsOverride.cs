@@ -7,8 +7,9 @@ namespace AutoBogus.Conventions
   internal sealed class AutoGeneratorConventionsOverride
     : AutoGeneratorOverride
   {
-    internal AutoGeneratorConventionsOverride()
+    internal AutoGeneratorConventionsOverride(AutoConventionConfig config)
     {
+      Config = config;
       Generators = new List<IAutoConventionGenerator>
       {
         new FirstNameGenerator(),
@@ -18,6 +19,7 @@ namespace AutoBogus.Conventions
       };
     }
 
+    private AutoConventionConfig Config { get; }
     private IEnumerable<IAutoConventionGenerator> Generators { get; }
 
     public override bool CanOverride(AutoGenerateContext context)
@@ -27,14 +29,17 @@ namespace AutoBogus.Conventions
 
     public override void Generate(AutoGenerateOverrideContext context)
     {
-      base.Generate(context);
-
       // Find the convention generator and populate the instance
       var generator = Generators.FirstOrDefault(g => g.CanGenerate(context.GenerateContext));
 
       if (generator != null)
       {
-        context.Instance = generator.Generate(context.GenerateContext);
+        var conventionContext = new AutoConventionContext(Config, context.Faker)
+        {
+          Instance = context.Instance
+        };
+
+        context.Instance = generator.Generate(conventionContext);
       } 
     }
   }

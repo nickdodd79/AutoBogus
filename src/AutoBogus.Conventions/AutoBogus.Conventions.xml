@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AutoBogus.Conventions</name>
+    </assembly>
+    <members>
+        <member name="T:AutoBogus.Conventions.AutoConfigBuilderExtensions">
+            <summary>
+            A class extending the config builder interfaces.
+            </summary>
+        </member>
+        <member name="M:AutoBogus.Conventions.AutoConfigBuilderExtensions.WithConventions(AutoBogus.IAutoFakerDefaultConfigBuilder,System.Action{AutoBogus.Conventions.AutoConventionConfig})">
+            <summary>
+            Registers the conventions overrides.
+            </summary>
+            <param name="builder">The current configuration builder instance.</param>
+            <param name="configure">A handler for configuring the conventions.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.Conventions.AutoConfigBuilderExtensions.WithConventions(AutoBogus.IAutoGenerateConfigBuilder,System.Action{AutoBogus.Conventions.AutoConventionConfig})">
+            <summary>
+            Registers the conventions overrides.
+            </summary>
+            <param name="builder">The current configuration builder instance.</param>
+            <param name="configure">A handler for configuring the conventions.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.Conventions.AutoConfigBuilderExtensions.WithConventions(AutoBogus.IAutoFakerConfigBuilder,System.Action{AutoBogus.Conventions.AutoConventionConfig})">
+            <summary>
+            Registers the conventions overrides.
+            </summary>
+            <param name="builder">The current configuration builder instance.</param>
+            <param name="configure">A handler for configuring the conventions.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+    </members>
+</doc>

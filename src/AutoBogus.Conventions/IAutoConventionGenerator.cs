@@ -4,6 +4,6 @@ namespace AutoBogus.Conventions
   {
     bool CanGenerate(AutoGenerateContext context);
 
-    object Generate(AutoGenerateContext context);
+    object Generate(AutoConventionContext context);
   }
 }

@@ -11,9 +11,9 @@ namespace AutoBogus.Conventions.Generators
       "Name"
     };
        
-    protected override object Generate(AutoGenerateContext context)
+    protected override object Generate(AutoConventionContext context)
     {
-      return context.Faker.Name.FullName();
+      return GenerateUsing(context, () => context.Faker.Name.FullName());
     }
   }
 }
