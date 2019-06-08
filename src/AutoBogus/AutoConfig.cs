@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,6 +17,7 @@ namespace AutoBogus
       RepeatCount = DefaultRepeatCount;
       RecursiveDepth = DefaultRecursiveCount;
       Binder = new AutoBinder();
+      Skips = new List<string>();
       Overrides = new List<AutoGeneratorOverride>();
     }
 
@@ -25,6 +27,7 @@ namespace AutoBogus
       RepeatCount = config.RepeatCount;
       RecursiveDepth = config.RecursiveDepth;
       Binder = config.Binder;
+      Skips = config.Skips.ToList();
       Overrides = config.Overrides.ToList();
     }
 
@@ -32,6 +35,7 @@ namespace AutoBogus
     internal int RepeatCount { get; set; }
     internal int RecursiveDepth { get; set; }
     internal IAutoBinder Binder { get; set; }
+    internal IList<string> Skips { get; set; }
     internal IList<AutoGeneratorOverride> Overrides { get; set; }
   }
 }

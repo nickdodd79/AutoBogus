@@ -1,9 +1,12 @@
+using System;
+using System.Linq.Expressions;
+
 namespace AutoBogus
 {
   /// <summary>
   /// An interface for building configurations.
   /// </summary>
-  /// <typeparam name="TBuilder"></typeparam>
+  /// <typeparam name="TBuilder">The builder type.</typeparam>
   public interface IAutoConfigBuilder<TBuilder>
   {
     /// <summary>
@@ -33,6 +36,14 @@ namespace AutoBogus
     /// <param name="binder">The <see cref="IAutoBinder"/> instance to use.</param>
     /// <returns>The current configuration builder instance.</returns>
     TBuilder WithBinder(IAutoBinder binder);
+
+    /// <summary>
+    /// Registers a member to skip for a given type when generating values.
+    /// </summary>
+    /// <typeparam name="TType">The parent type containing the member.</typeparam>
+    /// <param name="member">The member to skip.</param>
+    /// <returns>The current configuration builder instance.</returns>
+    TBuilder WithSkip<TType>(Expression<Func<TType, object>> member);
 
     /// <summary>
     /// Registers an override instance to use when generating values.

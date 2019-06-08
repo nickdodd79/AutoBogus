@@ -1,4 +1,3 @@
-using AutoBogus.Generators;
 using AutoBogus.NSubstitute;
 using Bogus;
 using FluentAssertions;
@@ -94,6 +93,59 @@ namespace AutoBogus.Tests
         _builder.WithBinder<ITestBuilder>(null, null);
 
         _config.Binder.Should().BeOfType<AutoBinder>();
+      }
+    }
+
+    public class WithSkip
+      : AutoConfigBuilderFixture
+    {
+      private sealed class TestSkip
+      {
+        public string Value { get; set; }
+      }
+
+      [Fact]
+      public void Should_Not_Add_Null_Expression()
+      {
+        _builder.WithSkip<ITestBuilder, TestSkip>(null, null);
+
+        _config.Skips.Should().BeEmpty();
+      }
+
+      [Fact]
+      public void Should_Not_Add_Method_Expression()
+      {
+        _builder.WithSkip<ITestBuilder, TestSkip>(s => s.GetType(), null);
+
+        _config.Skips.Should().BeEmpty();
+      }
+
+      [Fact]
+      public void Should_Not_Add_Member_If_Already_Added()
+      {
+        var type = typeof(TestSkip);
+        _config.Skips.Add($"{type.FullName}.Value");
+
+        _builder.WithSkip<ITestBuilder, TestSkip>(s => s.Value, null);
+
+        _config.Skips.Should().ContainSingle();
+      }
+
+      [Fact]
+      public void Should_Add_Member_To_Skip()
+      {
+        var type = typeof(TestSkip);
+        var path = _faker.Random.String();
+
+        _config.Skips.Add(path);
+
+        _builder.WithSkip<ITestBuilder, TestSkip>(s => s.Value, null);
+
+        _config.Skips.Should().BeEquivalentTo(new[]
+        {
+          path,
+          $"{type.FullName}.Value"
+        });
       }
     }
 

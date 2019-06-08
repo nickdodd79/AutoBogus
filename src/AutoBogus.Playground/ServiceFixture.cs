@@ -111,23 +111,29 @@ namespace AutoBogus.Playground
       var items = new List<Item>
       {
         Faker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(item1Override)),
-        AutoFaker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(item2Override))
+        AutoFaker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(item2Override)),
+        AutoFaker.Generate<Item>()
       };
 
       item.Status = ItemStatus.Pending;
       items.Add(item);
 
       _repository.GetFiltered(Service.PendingFilter).Returns(items);
-      _service.GetPending().Should().BeSameAs(items); 
+      _service.GetPending().Should().BeSameAs(items);
 
+      items.ElementAt(0).ProcessedBy.Should().NotBeNull();
       items.ElementAt(0).ProductInt.Code.SerialNumber.Should().Be(item1Override.Code);
       items.ElementAt(0).ProductString.Code.SerialNumber.Should().Be(item1Override.Code);
 
+      items.ElementAt(1).ProcessedBy.Should().NotBeNull();
       items.ElementAt(1).ProductInt.Code.SerialNumber.Should().Be(item2Override.Code);
       items.ElementAt(1).ProductString.Code.SerialNumber.Should().Be(item2Override.Code);
 
+      items.ElementAt(2).ProcessedBy.Should().NotBeNull();
       items.ElementAt(2).ProductInt.Code.SerialNumber.Should().BeNull();
       items.ElementAt(2).ProductString.Code.SerialNumber.Should().BeNull();
+
+      items.ElementAt(3).ProcessedBy.Should().BeNull();
     }
   }
 }
