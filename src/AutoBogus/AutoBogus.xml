@@ -271,7 +271,7 @@
         </member>
         <member name="T:AutoBogus.AutoGeneratorOverride">
             <summary>
-            An class for overriding generate requests.
+            A class for overriding generate requests.
             </summary>
         </member>
         <member name="M:AutoBogus.AutoGeneratorOverride.CanOverride(AutoBogus.AutoGenerateContext)">

@@ -4,15 +4,15 @@ namespace AutoBogus.Conventions
 {
   internal sealed class AutoConventionContext
   {
-    internal AutoConventionContext(AutoConventionConfig config, Faker faker)
+    internal AutoConventionContext(AutoGenerateOverrideContext context)
     {
-      Config = config;
-      Faker = faker;
+      GenerateContext = context.GenerateContext;
+      Faker = context.Faker;
     }
 
     internal object Instance { get; set; }
-
-    internal AutoConventionConfig Config { get; }
+    
+    internal AutoGenerateContext GenerateContext { get; }
     internal Faker Faker { get; }
   }
 }

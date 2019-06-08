@@ -1,7 +1,7 @@
 namespace AutoBogus
 {
   /// <summary>
-  /// An class for overriding generate requests.
+  /// A class for overriding generate requests.
   /// </summary>
   public abstract class AutoGeneratorOverride
   {

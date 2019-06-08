@@ -1,5 +1,3 @@
-using System;
-
 namespace AutoBogus.Conventions
 {
   /// <summary>
@@ -11,11 +9,10 @@ namespace AutoBogus.Conventions
     /// Registers the conventions overrides.
     /// </summary>
     /// <param name="builder">The current configuration builder instance.</param>
-    /// <param name="configure">A handler for configuring the conventions.</param>
     /// <returns>The current configuration builder instance.</returns>
-    public static IAutoFakerDefaultConfigBuilder WithConventions(this IAutoFakerDefaultConfigBuilder builder, Action<AutoConventionConfig> configure = null)
+    public static IAutoFakerDefaultConfigBuilder WithConventions(this IAutoFakerDefaultConfigBuilder builder)
     {
-      var conventions = CreateConventionsOverride(configure);
+      var conventions = CreateConventionsOverride();
       return builder?.WithOverride(conventions);
     }
 
@@ -23,11 +20,10 @@ namespace AutoBogus.Conventions
     /// Registers the conventions overrides.
     /// </summary>
     /// <param name="builder">The current configuration builder instance.</param>
-    /// <param name="configure">A handler for configuring the conventions.</param>
     /// <returns>The current configuration builder instance.</returns>
-    public static IAutoGenerateConfigBuilder WithConventions(this IAutoGenerateConfigBuilder builder, Action<AutoConventionConfig> configure = null)
+    public static IAutoGenerateConfigBuilder WithConventions(this IAutoGenerateConfigBuilder builder)
     {
-      var conventions = CreateConventionsOverride(configure);
+      var conventions = CreateConventionsOverride();
       return builder?.WithOverride(conventions);
     }
 
@@ -35,20 +31,16 @@ namespace AutoBogus.Conventions
     /// Registers the conventions overrides.
     /// </summary>
     /// <param name="builder">The current configuration builder instance.</param>
-    /// <param name="configure">A handler for configuring the conventions.</param>
     /// <returns>The current configuration builder instance.</returns>
-    public static IAutoFakerConfigBuilder WithConventions(this IAutoFakerConfigBuilder builder, Action<AutoConventionConfig> configure = null)
+    public static IAutoFakerConfigBuilder WithConventions(this IAutoFakerConfigBuilder builder)
     {
-      var conventions = CreateConventionsOverride(configure);
+      var conventions = CreateConventionsOverride();
       return builder?.WithOverride(conventions);
     }
 
-    private static AutoGeneratorConventionsOverride CreateConventionsOverride(Action<AutoConventionConfig> configure)
+    private static AutoGeneratorConventionsOverride CreateConventionsOverride()
     {
-      var config = new AutoConventionConfig();
-      configure?.Invoke(config);
-
-      return new AutoGeneratorConventionsOverride(config);
+      return new AutoGeneratorConventionsOverride();
     }
   }
 }

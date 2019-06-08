@@ -28,10 +28,6 @@ namespace AutoBogus.Tests
     public void Should_Apply_Conventions()
     {
       var instance = _faker.Generate<TestClass>();
-
-      instance.FirstName.Should().NotBeNull();
-      instance.Surname.Should().NotBeNull();
-      instance.FullName.Should().NotBeNull();
       instance.Email.Should().Contain("@");
     }
   }
