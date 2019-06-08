@@ -77,9 +77,9 @@ namespace AutoBogus
 
         if (memberType != null && memberSetter != null)
         {
-          // Check if the type has already been generated as a parent
+          // Check if the member has a skip config or the type has already been generated as a parent
           // If so skip this generation otherwise track it for use later in the object tree
-          if (ShouldSkip(memberType, context))
+          if (ShouldSkip(memberType, $"{type.FullName}.{member.Name}", context))
           {
             continue;
           }
@@ -101,10 +101,10 @@ namespace AutoBogus
       }
     }
 
-    private bool ShouldSkip(Type type, AutoGenerateContext context)
+    private bool ShouldSkip(Type type, string path, AutoGenerateContext context)
     {
       var count = context.TypesStack.Count(t => t == type);
-      return count >= context.Config.RecursiveDepth;
+      return context.Config.Skips.Contains(path) || count >= context.Config.RecursiveDepth;
     }
 
     private bool IsDictionary(Type type)

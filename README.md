@@ -22,6 +22,7 @@ AutoFaker.Configure(builder =>
     .WithRepeatCount()    // Configures the number of items in a collection
     .WithRecursiveDepth() // Configures how deep nested types should recurse
     .WithBinder()         // Configures the binder to use
+    .WithSkip()           // Configures members to be skipped for a type
     .WithOverride();      // Configures the generator overrides to use - can be called multiple times
 });
 
@@ -118,6 +119,18 @@ A default `IAutoBinder` implementation is included with **AutoBogus**, but it wi
 * [AutoBogus.FakeItEasy](https://www.nuget.org/packages/AutoBogus.FakeItEasy)
 * [AutoBogus.Moq](https://www.nuget.org/packages/AutoBogus.Moq)
 * [AutoBogus.NSubstitute](https://www.nuget.org/packages/AutoBogus.NSubstitute)
+
+## Skipping
+For a given type, members can be skipped when generating values and will result in the default for their defined type.
+
+```c#
+AutoFaker.Configure(builder => 
+{
+  builder
+    .WithSkip<Person>(person => person.Name)
+    .WithSkip<Person>(person => person.Age);
+});
+```
 
 ## Overrides
 In some cases, custom rules are needed to generate a type and for this, **AutoBogus** provides generator overrides. By implementating a class that inherits `AutoGeneratorOverride` and registering it via a configuration, these custom rules can be invoked as part of a generate request.

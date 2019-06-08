@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace AutoBogus.Playground.Model
@@ -15,5 +15,6 @@ namespace AutoBogus.Playground.Model
     public ItemStatus Status { get; set; }
     public Uri InfoLink { get; set; }
     public ICollection<string> Comments { get; set; }
+    public string ProcessedBy { get; set; }
   }
 }

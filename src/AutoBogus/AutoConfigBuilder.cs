@@ -1,4 +1,8 @@
+using AutoBogus.Util;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace AutoBogus
 {
@@ -18,21 +22,24 @@ namespace AutoBogus
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithRepeatCount(int count) => WithRepeatCount<IAutoFakerDefaultConfigBuilder>(count, this);
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithRecursiveDepth(int depth) => WithRecursiveDepth<IAutoFakerDefaultConfigBuilder>(depth, this);
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithBinder(IAutoBinder binder) => WithBinder<IAutoFakerDefaultConfigBuilder>(binder, this);
+    IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithSkip<TType>(Expression<Func<TType, object>> member) => WithSkip<IAutoFakerDefaultConfigBuilder, TType>(member, this);
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithOverride(AutoGeneratorOverride generatorOverride) => WithOverride<IAutoFakerDefaultConfigBuilder>(generatorOverride, this);
-
+    
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithLocale(string locale) => WithLocale<IAutoGenerateConfigBuilder>(locale, this);
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithRepeatCount(int count) => WithRepeatCount<IAutoGenerateConfigBuilder>(count, this);
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithRecursiveDepth(int depth) => WithRecursiveDepth<IAutoGenerateConfigBuilder>(depth, this);
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithBinder(IAutoBinder binder) => WithBinder<IAutoGenerateConfigBuilder>(binder, this);
+    IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithSkip<TType>(Expression<Func<TType, object>> member) => WithSkip<IAutoGenerateConfigBuilder, TType>(member, this);
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithOverride(AutoGeneratorOverride generatorOverride) => WithOverride<IAutoGenerateConfigBuilder>(generatorOverride, this);
-
+    
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithLocale(string locale) => WithLocale<IAutoFakerConfigBuilder>(locale, this);
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithRepeatCount(int count) => WithRepeatCount<IAutoFakerConfigBuilder>(count, this);
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithRecursiveDepth(int depth) => WithRecursiveDepth<IAutoFakerConfigBuilder>(depth, this);
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithBinder(IAutoBinder binder) => WithBinder<IAutoFakerConfigBuilder>(binder, this);
+    IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithSkip<TType>(Expression<Func<TType, object>> member) => WithSkip<IAutoFakerConfigBuilder, TType>(member, this);
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithOverride(AutoGeneratorOverride generatorOverride) => WithOverride<IAutoFakerConfigBuilder>(generatorOverride, this);
     IAutoFakerConfigBuilder IAutoFakerConfigBuilder.WithArgs(params object[] args) => WithArgs<IAutoFakerConfigBuilder>(args, this);
-
+    
     internal TBuilder WithLocale<TBuilder>(string locale, TBuilder builder)
     {
       Config.Locale = locale ?? AutoConfig.DefaultLocale;
@@ -57,6 +64,25 @@ namespace AutoBogus
       return builder;
     }
 
+    internal TBuilder WithSkip<TBuilder, TType>(Expression<Func<TType, object>> member, TBuilder builder)
+    {
+      var type = typeof(TType);
+      var memberName = GetMemberName(member);
+
+      if (!string.IsNullOrWhiteSpace(memberName))
+      {
+        var path = $"{type.FullName}.{memberName}";
+        var existing = Config.Skips.Any(s => s == path);
+
+        if (!existing)
+        {
+          Config.Skips.Add(path);
+        }
+      }
+
+      return builder;
+    }
+
     internal TBuilder WithOverride<TBuilder>(AutoGeneratorOverride generatorOverride, TBuilder builder)
     {
       if (generatorOverride != null)
@@ -76,6 +102,35 @@ namespace AutoBogus
     {
       Args = args;
       return builder;
+    }
+
+    private string GetMemberName<TType>(Expression<Func<TType, object>> member)
+    {
+      if (member != null)
+      {
+        MemberExpression expression;
+
+        if (member.Body is UnaryExpression unary)
+        {
+          expression = unary.Operand as MemberExpression;
+        }
+        else
+        {
+          expression = member.Body as MemberExpression;
+        }
+
+        if (expression != null)
+        {
+          var memberInfo = expression.Member;
+
+          if (ReflectionHelper.IsField(memberInfo) || ReflectionHelper.IsProperty(memberInfo))
+          {
+            return memberInfo.Name;
+          }
+        }
+      }
+
+      return null;     
     }
   }
 }
