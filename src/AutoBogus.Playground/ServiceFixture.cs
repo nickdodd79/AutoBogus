@@ -112,7 +112,7 @@ namespace AutoBogus.Playground
       {
         Faker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(item1Override)),
         AutoFaker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(item2Override)),
-        AutoFaker.Generate<Item>()
+        AutoFaker.Generate<Item>(builder => builder.WithSkip<Item>(i => i.ProcessedBy))
       };
 
       item.Status = ItemStatus.Pending;
@@ -129,11 +129,13 @@ namespace AutoBogus.Playground
       items.ElementAt(1).ProductInt.Code.SerialNumber.Should().Be(item2Override.Code);
       items.ElementAt(1).ProductString.Code.SerialNumber.Should().Be(item2Override.Code);
 
-      items.ElementAt(2).ProcessedBy.Should().NotBeNull();
+      items.ElementAt(2).ProcessedBy.Should().BeNull();
       items.ElementAt(2).ProductInt.Code.SerialNumber.Should().BeNull();
       items.ElementAt(2).ProductString.Code.SerialNumber.Should().BeNull();
 
-      items.ElementAt(3).ProcessedBy.Should().BeNull();
+      items.ElementAt(3).ProcessedBy.Should().NotBeNull();
+      items.ElementAt(3).ProductInt.Code.SerialNumber.Should().BeNull();
+      items.ElementAt(3).ProductString.Code.SerialNumber.Should().BeNull();
     }
   }
 }
