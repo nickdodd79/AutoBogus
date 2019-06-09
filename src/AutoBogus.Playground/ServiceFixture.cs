@@ -1,3 +1,4 @@
+using AutoBogus.Conventions;
 using AutoBogus.Playground.Model;
 using FluentAssertions;
 using NSubstitute;
@@ -112,7 +113,8 @@ namespace AutoBogus.Playground
       {
         Faker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(item1Override)),
         AutoFaker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(item2Override)),
-        AutoFaker.Generate<Item>(builder => builder.WithSkip<Item>(i => i.ProcessedBy))
+        AutoFaker.Generate<Item>(builder => builder.WithSkip<Item>(i => i.ProcessedBy)),
+        AutoFaker.Generate<Item>(builder => builder.WithConventions())
       };
 
       item.Status = ItemStatus.Pending;
@@ -121,11 +123,11 @@ namespace AutoBogus.Playground
       _repository.GetFiltered(Service.PendingFilter).Returns(items);
       _service.GetPending().Should().BeSameAs(items);
 
-      items.ElementAt(0).ProcessedBy.Should().NotBeNull();
+      items.ElementAt(0).ProcessedBy.Email.Should().NotContain("@");
       items.ElementAt(0).ProductInt.Code.SerialNumber.Should().Be(item1Override.Code);
       items.ElementAt(0).ProductString.Code.SerialNumber.Should().Be(item1Override.Code);
 
-      items.ElementAt(1).ProcessedBy.Should().NotBeNull();
+      items.ElementAt(1).ProcessedBy.Email.Should().NotContain("@");
       items.ElementAt(1).ProductInt.Code.SerialNumber.Should().Be(item2Override.Code);
       items.ElementAt(1).ProductString.Code.SerialNumber.Should().Be(item2Override.Code);
 
@@ -133,9 +135,13 @@ namespace AutoBogus.Playground
       items.ElementAt(2).ProductInt.Code.SerialNumber.Should().BeNull();
       items.ElementAt(2).ProductString.Code.SerialNumber.Should().BeNull();
 
-      items.ElementAt(3).ProcessedBy.Should().NotBeNull();
+      items.ElementAt(3).ProcessedBy.Email.Should().Contain("@");
       items.ElementAt(3).ProductInt.Code.SerialNumber.Should().BeNull();
       items.ElementAt(3).ProductString.Code.SerialNumber.Should().BeNull();
+
+      items.ElementAt(4).ProcessedBy.Email.Should().NotContain("@");
+      items.ElementAt(4).ProductInt.Code.SerialNumber.Should().BeNull();
+      items.ElementAt(4).ProductString.Code.SerialNumber.Should().BeNull();
     }
   }
 }
