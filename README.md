@@ -161,4 +161,23 @@ The following underlying behaviors are in place in **AutoBogus**:
 * Interface and abstract class types are not auto generated - they will result in `null` values. A custom binder would be needed, like one of the packages listed above.
 * Rescursive types - a nested member with the same parent type - will be generated to **2** levels by default to avoid a `StackOverflowException` - `Person.Parent -> Person.Parent -> null`
 
+## Conventions
+The [AutoBogus.Conventions](https://www.nuget.org/packages/AutoBogus.Conventions) package provides conventions for generating values, currently based on generation type and name. As an example, a property named `Email` and of type `string` will be assigned a value using the `Faker.Internet.Email()` generator.
 
+To include the conventions in your project, apply the following configuration at the required level:
+
+```c#
+AutoFaker.Configure(builder => 
+{
+  builder.WithConventions();
+});
+```
+
+Note that each convention generator maps to a **Bogus** generator method and can be enabled individually.
+
+```c#
+AutoFaker.Configure(builder => 
+{
+  builder.WithConventions(config => config.Email.Enabled = false);
+});
+```

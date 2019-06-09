@@ -8,6 +8,8 @@
 namespace AutoBogus.Conventions.Generators
 {
 <#
+  const string classSuffix = "ByNameGenerator";
+
   var fakerType = typeof(Faker);
   var generators = new List<string>();
   var fakerProperties = fakerType.GetProperties();
@@ -36,7 +38,7 @@ namespace AutoBogus.Conventions.Generators
       {
         if (generatorMethod.DeclaringType != typeof(object) && !generatorMethod.IsSpecialName && generatorMethod.ReturnType != typeof(void))
         {
-          var generator = $"{generatorMethod.Name}Generator";
+          var generator = generatorMethod.Name;
 
           if (fakerProperty.Name == "Commerce" && generatorMethod.Name == "Categories")
           {
@@ -49,9 +51,14 @@ namespace AutoBogus.Conventions.Generators
 #>
 
   // <#= fakerProperty.Name #>.<#= generatorMethod.Name #>
-  internal sealed class <#= generator #>
+  internal sealed class <#= generator #><#= classSuffix #>
     : IAutoConventionGenerator
-  {
+  {  
+    bool IAutoConventionGenerator.Enabled(AutoConventionConfig config)
+    {
+      return config.<#= generatorMethod.Name #>.Enabled;
+    }
+
     bool IAutoConventionGenerator.CanGenerate(AutoGenerateContext context)
     {
       return context.GenerateType == typeof(<#= generatorMethod.ReturnType.FullName #>) &&
@@ -60,7 +67,14 @@ namespace AutoBogus.Conventions.Generators
 
     object IAutoConventionGenerator.Generate(AutoConventionContext context)
     {
-      return context.Faker.<#= fakerProperty.Name #>.<#= generatorMethod.Name #>();
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.<#= generatorMethod.Name #>.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.<#= fakerProperty.Name #>.<#= generatorMethod.Name #>();
+      }
+
+      return context.Instance;
     }
   }
 <#
@@ -71,7 +85,7 @@ namespace AutoBogus.Conventions.Generators
   }
 #>
 
-  internal static class GeneratorRegistry
+  internal static class ByNameGeneratorRegistry
   {
     internal static System.Collections.Generic.IList<IAutoConventionGenerator> Generators = new System.Collections.Generic.List<IAutoConventionGenerator>
     {
@@ -79,10 +93,30 @@ namespace AutoBogus.Conventions.Generators
   foreach (var generator in generators)
   {
 #>
-      new <#= generator #>(),
+      new <#= generator #><#= classSuffix #>(),
 <#
   }
 #>   
     };
+  }
+}
+
+namespace AutoBogus.Conventions
+{
+  public sealed partial class AutoConventionConfig
+  {
+<#
+  foreach (var generator in generators)
+  {
+#>
+
+    /// <summary>
+    /// Configures the <#= generator #> convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig <#= generator #> { get; } = new AutoConventionGeneratorConfig();
+<#
+  }
+#>
+
   }
 }

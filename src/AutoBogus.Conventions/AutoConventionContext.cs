@@ -1,18 +1,16 @@
-using Bogus;
-
 namespace AutoBogus.Conventions
 {
   internal sealed class AutoConventionContext
   {
-    internal AutoConventionContext(AutoGenerateOverrideContext context)
+    internal AutoConventionContext(AutoConventionConfig config, AutoGenerateOverrideContext context)
     {
-      GenerateContext = context.GenerateContext;
-      Faker = context.Faker;
+      Config = config;
+      OverrideContext = context;
     }
 
     internal object Instance { get; set; }
-    
-    internal AutoGenerateContext GenerateContext { get; }
-    internal Faker Faker { get; }
+
+    internal AutoConventionConfig Config { get; }
+    internal AutoGenerateOverrideContext OverrideContext { get; }
   }
 }

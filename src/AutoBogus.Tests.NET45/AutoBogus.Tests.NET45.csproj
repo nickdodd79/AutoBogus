@@ -39,11 +39,17 @@
     <Compile Include="..\AutoBogus.Tests\AutoConfigBuilderFixture.cs">
       <Link>AutoConfigBuilderFixture.cs</Link>
     </Compile>
+    <Compile Include="..\AutoBogus.Tests\AutoConventionsFixture.cs">
+      <Link>AutoConventionsFixture.cs</Link>
+    </Compile>
     <Compile Include="..\AutoBogus.Tests\AutoFakerFixture.cs">
       <Link>AutoFakerFixture.cs</Link>
     </Compile>
     <Compile Include="..\AutoBogus.Tests\AutoGenerateContextFixture.cs">
       <Link>AutoGenerateContextFixture.cs</Link>
+    </Compile>
+    <Compile Include="..\AutoBogus.Tests\AutoGeneratorOverridesFixture.cs">
+      <Link>AutoGeneratorOverridesFixture.cs</Link>
     </Compile>
     <Compile Include="..\AutoBogus.Tests\AutoGeneratorsFixture.cs">
       <Link>AutoGeneratorsFixture.cs</Link>
@@ -109,6 +115,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AutoBogus.Conventions\AutoBogus.Conventions.csproj">
+      <Project>{793b0dc7-908d-42d5-9626-3bd6b557af5c}</Project>
+      <Name>AutoBogus.Conventions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AutoBogus.FakeItEasy\AutoBogus.FakeItEasy.csproj">
       <Project>{49bdb96c-cb9c-49fb-baec-4d6c564bedd4}</Project>
       <Name>AutoBogus.FakeItEasy</Name>
