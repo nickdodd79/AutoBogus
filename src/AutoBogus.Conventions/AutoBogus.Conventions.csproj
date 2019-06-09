@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="AutoBogus.Conventions.xml">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AutoBogus.Conventions.cs</LastGenOutput>
+    </None>
     <None Update="ConventionByNameGenerators.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ConventionByNameGenerators.cs</LastGenOutput>
@@ -32,6 +36,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="AutoBogus.Conventions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AutoBogus.Conventions.xml</DependentUpon>
+    </Compile>
     <Compile Update="ConventionByNameGenerators.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
