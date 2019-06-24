@@ -2,9 +2,7 @@ namespace AutoBogus.Conventions
 {
   internal interface IAutoConventionGenerator
   {
-    bool Enabled(AutoConventionConfig config);
-
-    bool CanGenerate(AutoGenerateContext context);
+    bool CanGenerate(AutoConventionConfig config, AutoGenerateContext context);
 
     object Generate(AutoConventionContext context);
   }

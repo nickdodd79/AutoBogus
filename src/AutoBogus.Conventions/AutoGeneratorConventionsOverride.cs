@@ -42,7 +42,7 @@ namespace AutoBogus.Conventions
 
     private IAutoConventionGenerator GetGenerator(AutoGenerateContext context)
     {
-      return Generators.FirstOrDefault(g => g.Enabled(Config) && g.CanGenerate(context));
+      return Generators.FirstOrDefault(g => g.CanGenerate(Config, context));
     }
   }
 }

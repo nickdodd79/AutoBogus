@@ -9,6 +9,7 @@ namespace AutoBogus.Tests
     private class TestClass
     {
       public string Email { get; set; }
+      public string AnotherEmail { get; set; }
     }
 
     private class TestGeneratorOverride
@@ -37,6 +38,18 @@ namespace AutoBogus.Tests
 
       var instance = _faker.Generate<TestClass>();
       instance.Email.Should().Contain("@");
+    }
+
+    [Fact]
+    public void Should_Apply_Conventions_For_Alias()
+    {
+      _faker = AutoFaker.Create(builder =>
+      {
+        builder.WithConventions(c => c.Email.Aliases("anotheremail", "  "));
+      });
+
+      var instance = _faker.Generate<TestClass>();
+      instance.AnotherEmail.Should().Contain("@");
     }
 
     [Fact]

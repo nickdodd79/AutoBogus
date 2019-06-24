@@ -513,5 +513,11 @@
             Whether values should always be generated, even is already assigned.
             </summary>
         </member>
+        <member name="M:AutoBogus.Conventions.AutoConventionGeneratorConfig.Aliases(System.String[])">
+            <summary>
+            Adds custom aliases for a generator.
+            </summary>
+            <param name="aliases">The collection of aliases.</param>
+        </member>
     </members>
 </doc>

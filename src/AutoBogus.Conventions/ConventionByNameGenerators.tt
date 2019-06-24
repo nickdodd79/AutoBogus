@@ -5,6 +5,8 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
+using System.Linq;
+
 namespace AutoBogus.Conventions.Generators
 {
 <#
@@ -54,15 +56,11 @@ namespace AutoBogus.Conventions.Generators
   internal sealed class <#= generator #><#= classSuffix #>
     : IAutoConventionGenerator
   {  
-    bool IAutoConventionGenerator.Enabled(AutoConventionConfig config)
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
     {
-      return config.<#= generatorMethod.Name #>.Enabled;
-    }
-
-    bool IAutoConventionGenerator.CanGenerate(AutoGenerateContext context)
-    {
-      return context.GenerateType == typeof(<#= generatorMethod.ReturnType.FullName #>) &&
-             "<#= generatorMethod.Name #>".Equals(context.GenerateName, System.StringComparison.OrdinalIgnoreCase);
+      return config.<#= generatorMethod.Name #>.Enabled &&
+             config.<#= generatorMethod.Name #>.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(<#= generatorMethod.ReturnType.FullName #>);
     }
 
     object IAutoConventionGenerator.Generate(AutoConventionContext context)
@@ -113,7 +111,7 @@ namespace AutoBogus.Conventions
     /// <summary>
     /// Configures the <#= generator #> convention generator.
     /// </summary>
-    public AutoConventionGeneratorConfig <#= generator #> { get; } = new AutoConventionGeneratorConfig();
+    public AutoConventionGeneratorConfig <#= generator #> { get; } = new AutoConventionGeneratorConfig("<#= generator #>");
 <#
   }
 #>
