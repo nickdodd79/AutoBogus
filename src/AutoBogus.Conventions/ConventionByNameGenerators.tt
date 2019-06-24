@@ -5,8 +5,6 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-using System.Linq;
-
 namespace AutoBogus.Conventions.Generators
 {
 <#

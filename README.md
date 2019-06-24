@@ -173,11 +173,16 @@ AutoFaker.Configure(builder =>
 });
 ```
 
-Note that each convention generator maps to a **Bogus** generator method and can be enabled individually.
+Each convention generator maps to a **Bogus** generator method and can be configured individually.
 
 ```c#
 AutoFaker.Configure(builder => 
 {
-  builder.WithConventions(config => config.Email.Enabled = false);
+  builder.WithConventions(config => 
+  {
+    config.FirstName.Enabled = false;      // Disables the FirstName generator
+    config.LastName.AlwaysGenerate = true; // Overrides any LastName values previously generated
+    config.Email.Aliases("AnotherEmail");  // Generates an email value for members named AnotherEmail
+  });
 });
 ```
