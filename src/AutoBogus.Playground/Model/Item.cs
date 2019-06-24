@@ -16,5 +16,6 @@ namespace AutoBogus.Playground.Model
     public Uri InfoLink { get; set; }
     public ICollection<string> Comments { get; set; }
     public User ProcessedBy { get; set; }
+    public string SupplierEmail { get; set; }
   }
 }
