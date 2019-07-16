@@ -6,14 +6,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoBogus.Conventions" Version="2.5.0" />
-    <PackageReference Include="AutoBogus.NSubstitute" Version="2.5.0" />
     <PackageReference Include="FluentAssertions" Version="5.7.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AutoBogus.Conventions\AutoBogus.Conventions.csproj" />
+    <ProjectReference Include="..\AutoBogus.FakeItEasy\AutoBogus.FakeItEasy.csproj" />
+    <ProjectReference Include="..\AutoBogus.Moq\AutoBogus.Moq.csproj" />
+    <ProjectReference Include="..\AutoBogus.NSubstitute\AutoBogus.NSubstitute.csproj" />
   </ItemGroup>
 
 </Project>

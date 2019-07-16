@@ -1,5 +1,7 @@
 using AutoBogus.Util;
 using FakeItEasy;
+using System;
+using System.Reflection;
 
 namespace AutoBogus.FakeItEasy
 {
@@ -9,6 +11,15 @@ namespace AutoBogus.FakeItEasy
   public class FakeItEasyBinder
     : AutoBinder
   {
+    private static readonly MethodInfo Factory;
+
+    static FakeItEasyBinder()
+    {
+      // Cache the fake factory method
+      var type = typeof(A);
+      Factory = type.GetMethod("Fake", new Type[0]);
+    }
+
     /// <summary>
     /// Creates an instance of <typeparamref name="TType"/>.
     /// </summary>
@@ -21,7 +32,10 @@ namespace AutoBogus.FakeItEasy
 
       if (ReflectionHelper.IsInterface(type) || ReflectionHelper.IsAbstract(type))
       {
-        return A.Fake<TType>();
+        // Take the cached factory method and make it generic based on the requested type
+        // Because this method supports struct and class types, and FakeItEasy only supports class types we need to put this 'hack' into place
+        var factory = Factory.MakeGenericMethod(type);
+        return (TType)factory.Invoke(null, new object[0]);
       }
 
       return base.CreateInstance<TType>(context);

@@ -11,7 +11,7 @@ namespace AutoBogus.Moq
   public class MoqBinder
     : AutoBinder
   {
-    private static MethodInfo Factory;
+    private static readonly MethodInfo Factory;
 
     static MoqBinder()
     {

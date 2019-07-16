@@ -17,5 +17,6 @@ namespace AutoBogus.Playground.Model
     public ICollection<string> Comments { get; set; }
     public User ProcessedBy { get; set; }
     public string SupplierEmail { get; set; }
+    public ITimestamp Timestamp { get; set; }
   }
 }

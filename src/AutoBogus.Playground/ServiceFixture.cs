@@ -10,9 +10,29 @@ using Xunit.Abstractions;
 
 namespace AutoBogus.Playground
 {
-  public class ServiceFixture
-    : FixtureBase
+  public abstract class ServiceFixture
   {
+    private class ProductGeneratorOverride
+      : AutoGeneratorOverride
+    {
+      public override bool CanOverride(AutoGenerateContext context)
+      {
+        return context.GenerateType.IsGenericType &&
+               context.GenerateType.GetGenericTypeDefinition() == typeof(Product<>);
+      }
+
+      public override void Generate(AutoGenerateOverrideContext context)
+      {
+        // Get the code and apply a serial number value
+        var serialNumber = AutoFaker.Generate<string>();
+        var codeProperty = context.GenerateType.GetProperty("Code");
+        var codeInstance = codeProperty.GetValue(context.Instance);
+        var serialNumberProperty = codeProperty.PropertyType.GetProperty("SerialNumber");
+
+        serialNumberProperty.SetValue(codeInstance, serialNumber);
+      }
+    }
+
     private class ProductCodeOverride
       : AutoGeneratorOverride
     {
@@ -40,24 +60,37 @@ namespace AutoBogus.Playground
       }
     }
 
-    private Item _item;
-    private IEnumerable<Item> _items;
+    protected IAutoFaker _faker;
 
-    private IRepository _repository;
-    private Service _service;
-    private ITestOutputHelper _output;
+    protected Item _item;
+    protected IEnumerable<Item> _items;
 
-    public ServiceFixture(ITestOutputHelper output)
+    protected IRepository _repository;
+    protected Service _service;
+    protected ITestOutputHelper _output;
+
+    protected ServiceFixture(ITestOutputHelper output, IAutoBinder binder)
     {
-      var id = Faker.Generate<Guid>();
-      var generator = new AutoFaker<Item>()
+      _faker = AutoFaker.Create(builder =>
+      {
+        builder.WithOverride(new ProductGeneratorOverride());
+
+        if (binder != null)
+        {
+          builder.WithBinder(binder);
+        }
+      });
+
+      // Setup
+      var id = _faker.Generate<Guid>();
+      var generator = new AutoFaker<Item>(binder)
         .RuleFor(item => item.Id, () => id)
         .RuleFor(item => item.Name, faker => faker.Person.FullName);
 
       _item = generator;
       _items = generator.Generate(5);
 
-      _repository = Faker.Generate<IRepository>();
+      _repository = Substitute.For<IRepository>();
 
       _repository.Get(id).Returns(_item);
       _repository.GetAll().Returns(_items);
@@ -65,6 +98,13 @@ namespace AutoBogus.Playground
       _service = new Service(_repository);
       _output = output;
     }
+
+    [Fact]
+    public void Should_Set_Timestamp()
+    {
+      _item.Timestamp.Should().NotBeNull();
+    }
+
 
     [Fact]
     public void Service_Get_Should_Call_Repository_Get()
@@ -105,13 +145,13 @@ namespace AutoBogus.Playground
     [Fact]
     public void Service_GetPending_Should_Return_Items()
     {
-      var id = Faker.Generate<Guid>();
+      var id = _faker.Generate<Guid>();
       var item = AutoFaker.Generate<Item>();
       var item1Override = new ProductCodeOverride();
       var item2Override = new ProductCodeOverride();
       var items = new List<Item>
       {
-        Faker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(item1Override)),
+        _faker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(item1Override)),
         AutoFaker.Generate<Item, ItemFaker>(builder => builder.WithArgs(id).WithOverride(item2Override)),
         AutoFaker.Generate<Item>(builder => builder.WithSkip<Item>(i => i.ProcessedBy)),
         AutoFaker.Generate<Item>(builder => builder.WithConventions(c => c.Email.Aliases("SupplierEmail")))
@@ -121,6 +161,7 @@ namespace AutoBogus.Playground
       items.Add(item);
 
       _repository.GetFiltered(Service.PendingFilter).Returns(items);
+
       _service.GetPending().Should().BeSameAs(items);
 
       items.ElementAt(0).ProcessedBy.Email.Should().NotContain("@");
