@@ -7,7 +7,7 @@
     <Product>AutoBogus</Product>
     <Description>A C# library complementing the Bogus generator by adding auto creation and population capabilities. This package includes mocking options using NSubtitute.</Description>
     <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
-    <Version>2.5.0</Version>
+    <Version>2.6.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageIconUrl>https://raw.githubusercontent.com/nickdodd79/AutoBogus/master/logo.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/nickdodd79/AutoBogus</RepositoryUrl>
