@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net40|AnyCPU'">
-    <DocumentationFile>D:\Projects\AutoBogus\src\AutoBogus\AutoBogus.xml</DocumentationFile>
+    <DocumentationFile>$(MSBuildProjectDirectory)\AutoBogus.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -9,6 +9,12 @@
             A class for binding generated instances.
             </summary>
         </member>
+        <member name="M:AutoBogus.AutoBinder.GetMembers(System.Type)">
+            <summary>
+            Allow read-only IList members because they can be set by adding items to the list.
+            </summary>
+            <returns>The full set of MemberInfos for injection.</returns>
+        </member>
         <member name="M:AutoBogus.AutoBinder.CreateInstance``1(AutoBogus.AutoGenerateContext)">
             <summary>
             Creates an instance of <typeparamref name="TType"/>.

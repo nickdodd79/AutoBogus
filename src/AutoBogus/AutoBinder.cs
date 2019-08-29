@@ -15,6 +15,35 @@ namespace AutoBogus
     : Binder, IAutoBinder
   {
     /// <summary>
+    /// Allow read-only IList members because they can be set by adding items to the list.
+    /// </summary>
+    /// <returns>The full set of MemberInfos for injection.</returns>
+    public override Dictionary<string, MemberInfo> GetMembers(Type t)
+    {
+      var memberDictionary = base.GetMembers(t);
+
+      // Find the read-only IList members
+      var group = t.GetMembers(BindingFlags)
+         .Where(m =>
+         {
+           if (m is PropertyInfo pi)
+           {
+             return !pi.CanWrite && pi.PropertyType.GetInterfaces().Contains(typeof(IList));
+           }
+           return false;
+         })
+         .GroupBy(mi => mi.Name);
+
+      // Add them to the dictionary from the base implementation
+      foreach (var item in group.ToDictionary(k => k.Key, g => g.First()))
+      {
+        memberDictionary[item.Key] = item.Value;
+      }
+
+      return memberDictionary;
+    }
+
+    /// <summary>
     /// Creates an instance of <typeparamref name="TType"/>.
     /// </summary>
     /// <typeparam name="TType">The type of instance to create.</typeparam>
@@ -56,9 +85,42 @@ namespace AutoBogus
       var type = typeof(TType);
 
       // We can only populate non-null instances 
-      // Dictionaries and Enumerables are populated via their constructors
-      if (instance == null || context == null || IsDictionary(type) || IsEnumerable(type))
+      // Dictionaries are populated via their constructors
+      if (instance == null || context == null || IsDictionary(type))
       {
+        return;
+      }
+
+      // If the Enumerable instance was not populated via constructor,
+      // populate it via IList.Add(), if available.
+      if (IsEnumerable(type))
+      {
+        var instanceAsList = instance as IList;
+        if (instanceAsList != null && instanceAsList.Count == 0)
+        {
+          // TType is a RepeatedField<EmbeddedType>, construct a List<EmbeddedType>,
+          // populate it via the AutoGenerator, then copy the contents to the RepeatedField
+          var genericType = type.GetGenericArguments().ElementAt(0);
+          var listType = typeof(List<>).MakeGenericType(new[] { genericType });
+
+          context.GenerateType = listType;
+          context.GenerateName = listType.Name;
+
+          context.TypesStack.Push(listType);
+
+          // Generate random values for a List
+          var generator = AutoGeneratorFactory.GetGenerator(context);
+          var value = generator.Generate(context);
+
+          // Add them to the RepeatedField instance
+          foreach (var v in (value as IList))
+          {
+            instanceAsList.Add(v);
+          }
+
+          // Remove the current type from the type stack so siblings can be created
+          context.TypesStack.Pop();
+        }
         return;
       }
 
@@ -130,7 +192,11 @@ namespace AutoBogus
 
       if (IsEnumerable(type))
       {
-        return ResolveTypedConstructor(typeof(IEnumerable<>), constructors);
+        var constructorInfo = ResolveTypedConstructor(typeof(IEnumerable<>), constructors);
+        if (constructorInfo != null)
+        {
+          return constructorInfo;
+        }
       }
 
       // Attempt to find a default constructor
@@ -182,7 +248,20 @@ namespace AutoBogus
         var propertyInfo = member as PropertyInfo;
 
         memberType = propertyInfo.PropertyType;
-        memberSetter = (obj, value) => propertyInfo.SetValue(obj, value, new object[0]);
+        memberSetter = (obj, value) =>
+        {
+          if (propertyInfo.CanWrite)
+          {
+            propertyInfo.SetValue(obj, value, new object[0]);
+          }
+          else
+          {
+            foreach (var v in (value as IList))
+            {
+              (propertyInfo.GetValue(obj, new object[0]) as IList).Add(v);
+            }
+          }
+        };
       }
     }
   }
