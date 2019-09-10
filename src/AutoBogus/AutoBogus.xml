@@ -9,12 +9,6 @@
             A class for binding generated instances.
             </summary>
         </member>
-        <member name="M:AutoBogus.AutoBinder.GetMembers(System.Type)">
-            <summary>
-            Allow read-only IList members because they can be set by adding items to the list.
-            </summary>
-            <returns>The full set of MemberInfos for injection.</returns>
-        </member>
         <member name="M:AutoBogus.AutoBinder.CreateInstance``1(AutoBogus.AutoGenerateContext)">
             <summary>
             Creates an instance of <typeparamref name="TType"/>.
@@ -485,6 +479,14 @@
             Registers a binder instance to use when generating values.
             </summary>
             <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithSkip``1(System.String)">
+            <summary>
+            Registers a member to skip for a given type when generating values.
+            </summary>
+            <typeparam name="TType">The parent type containing the member.</typeparam>
+            <param name="memberName">The name of the member to skip.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
         <member name="M:AutoBogus.IAutoConfigBuilder`1.WithSkip``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">

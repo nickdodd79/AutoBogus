@@ -1,6 +1,8 @@
 using AutoBogus.NSubstitute;
 using Bogus;
 using FluentAssertions;
+using System;
+using System.Linq.Expressions;
 using Xunit;
 
 namespace AutoBogus.Tests
@@ -107,7 +109,9 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Not_Add_Null_Expression()
       {
-        _builder.WithSkip<ITestBuilder, TestSkip>(null, null);
+        Expression<Func<TestSkip, object>> member = null;
+
+        _builder.WithSkip<ITestBuilder, TestSkip>(member, null);
 
         _config.Skips.Should().BeEmpty();
       }
@@ -140,6 +144,23 @@ namespace AutoBogus.Tests
         _config.Skips.Add(path);
 
         _builder.WithSkip<ITestBuilder, TestSkip>(s => s.Value, null);
+
+        _config.Skips.Should().BeEquivalentTo(new[]
+        {
+          path,
+          $"{type.FullName}.Value"
+        });
+      }
+
+      [Fact]
+      public void Should_Add_MemberName_To_Skip()
+      {
+        var type = typeof(TestSkip);
+        var path = _faker.Random.String();
+
+        _config.Skips.Add(path);
+
+        _builder.WithSkip<ITestBuilder, TestSkip>("Value", null);
 
         _config.Skips.Should().BeEquivalentTo(new[]
         {
