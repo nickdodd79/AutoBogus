@@ -15,35 +15,6 @@ namespace AutoBogus
     : Binder, IAutoBinder
   {
     /// <summary>
-    /// Allow read-only IList members because they can be set by adding items to the list.
-    /// </summary>
-    /// <returns>The full set of MemberInfos for injection.</returns>
-    public override Dictionary<string, MemberInfo> GetMembers(Type t)
-    {
-      var memberDictionary = base.GetMembers(t);
-
-      // Find the read-only IList members
-      var group = t.GetMembers(BindingFlags)
-         .Where(m =>
-         {
-           if (m is PropertyInfo pi)
-           {
-             return !pi.CanWrite && pi.PropertyType.GetInterfaces().Contains(typeof(IList));
-           }
-           return false;
-         })
-         .GroupBy(mi => mi.Name);
-
-      // Add them to the dictionary from the base implementation
-      foreach (var item in group.ToDictionary(k => k.Key, g => g.First()))
-      {
-        memberDictionary[item.Key] = item.Value;
-      }
-
-      return memberDictionary;
-    }
-
-    /// <summary>
     /// Creates an instance of <typeparamref name="TType"/>.
     /// </summary>
     /// <typeparam name="TType">The type of instance to create.</typeparam>
@@ -85,77 +56,46 @@ namespace AutoBogus
       var type = typeof(TType);
 
       // We can only populate non-null instances 
-      // Dictionaries are populated via their constructors
-      if (instance == null || context == null || IsDictionary(type))
+      if (instance == null || context == null)
       {
         return;
       }
 
-      // If the Enumerable instance was not populated via constructor,
-      // populate it via IList.Add(), if available.
-      if (IsEnumerable(type))
-      {
-        var instanceAsList = instance as IList;
-        if (instanceAsList != null && instanceAsList.Count == 0)
-        {
-          // TType is a RepeatedField<EmbeddedType>, construct a List<EmbeddedType>,
-          // populate it via the AutoGenerator, then copy the contents to the RepeatedField
-          var genericType = type.GetGenericArguments().ElementAt(0);
-          var listType = typeof(List<>).MakeGenericType(new[] { genericType });
-
-          context.GenerateType = listType;
-          context.GenerateName = listType.Name;
-
-          context.TypesStack.Push(listType);
-
-          // Generate random values for a List
-          var generator = AutoGeneratorFactory.GetGenerator(context);
-          var value = generator.Generate(context);
-
-          // Add them to the RepeatedField instance
-          foreach (var v in (value as IList))
-          {
-            instanceAsList.Add(v);
-          }
-
-          // Remove the current type from the type stack so siblings can be created
-          context.TypesStack.Pop();
-        }
-        return;
-      }
-
-      // If no members are provided, get all value candidates for the instance
-      if (members == null)
-      {
-        members = (from m in GetMembers(type)
-                   select m.Value);
-      }
-      
       // Iterate the members and bind a generated value
-      foreach (var member in members)
-      {
-        // We may be resolving a field or property, but both provide a type and setter action
-        ExtractMemberInfo(member, out Type memberType, out Action<object, object> memberSetter);
+      var autoMembers = GetMembersToPopulate(type, members);
 
-        if (memberType != null && memberSetter != null)
+      foreach (var member in autoMembers)
+      {
+        if (member.Type != null)
         {
           // Check if the member has a skip config or the type has already been generated as a parent
           // If so skip this generation otherwise track it for use later in the object tree
-          if (ShouldSkip(memberType, $"{type.FullName}.{member.Name}", context))
+          if (ShouldSkip(member.Type, $"{type.FullName}.{member.Name}", context))
           {
             continue;
           }
 
-          context.GenerateType = memberType;
+          context.GenerateType = member.Type;
           context.GenerateName = member.Name;
 
-          context.TypesStack.Push(memberType);
+          context.TypesStack.Push(member.Type);
 
           // Generate a random value and bind it to the instance
           var generator = AutoGeneratorFactory.GetGenerator(context);
           var value = generator.Generate(context);
 
-          memberSetter.Invoke(instance, value);
+          if (!member.IsReadOnly)
+          {
+            member.Setter.Invoke(instance, value);
+          }
+          else if (ReflectionHelper.IsDictionary(member.Type))
+          {
+            PopulateDictionary(value, instance, member);
+          }
+          else if (ReflectionHelper.IsCollection(member.Type))
+          {
+            PopulateCollection(value, instance, member);
+          }
 
           // Remove the current type from the type stack so siblings can be created
           context.TypesStack.Pop();
@@ -169,34 +109,20 @@ namespace AutoBogus
       return context.Config.Skips.Contains(path) || count >= context.Config.RecursiveDepth;
     }
 
-    private bool IsDictionary(Type type)
-    {
-      return ReflectionHelper.IsAssignableFrom(typeof(IDictionary), type);
-    }
-
-    private bool IsEnumerable(Type type)
-    {
-      return ReflectionHelper.IsAssignableFrom(typeof(IEnumerable), type);
-    }
-
     private ConstructorInfo GetConstructor<TType>()
     {
       var type = typeof(TType);
       var constructors = type.GetConstructors();
 
       // For dictionaries and enumerables locate a constructor that is used for populating as well
-      if (IsDictionary(type))
+      if (ReflectionHelper.IsDictionary(type))
       {
         return ResolveTypedConstructor(typeof(IDictionary<,>), constructors);
       }
 
-      if (IsEnumerable(type))
+      if (ReflectionHelper.IsEnumerable(type))
       {
-        var constructorInfo = ResolveTypedConstructor(typeof(IEnumerable<>), constructors);
-        if (constructorInfo != null)
-        {
-          return constructorInfo;
-        }
+        return ResolveTypedConstructor(typeof(IEnumerable<>), constructors);
       }
 
       // Attempt to find a default constructor
@@ -209,14 +135,6 @@ namespace AutoBogus
       return defaultConstructor ?? constructors.FirstOrDefault();
     }
 
-    private IAutoGenerator GetParameterGenerator(ParameterInfo parameter, AutoGenerateContext context)
-    {
-      context.GenerateType = parameter.ParameterType;
-      context.GenerateName = parameter.Name;
-
-      return AutoGeneratorFactory.GetGenerator(context);
-    }
-
     private ConstructorInfo ResolveTypedConstructor(Type type, IEnumerable<ConstructorInfo> constructors)
     {
       // Find the first constructor that matches the passed generic definition
@@ -225,44 +143,96 @@ namespace AutoBogus
               where p.Count() == 1
               let m = p.Single()
               where ReflectionHelper.IsGenericType(m.ParameterType)
-              let d = m.ParameterType.GetGenericTypeDefinition()
+              let d = ReflectionHelper.GetGenericTypeDefinition(m.ParameterType)
               where d == type
               select c).SingleOrDefault();
     }
 
-    private void ExtractMemberInfo(MemberInfo member, out Type memberType, out Action<object, object> memberSetter)
+    private IAutoGenerator GetParameterGenerator(ParameterInfo parameter, AutoGenerateContext context)
     {
-      memberType = null;
-      memberSetter = null;
+      context.GenerateType = parameter.ParameterType;
+      context.GenerateName = parameter.Name;
 
-      // Extract the member type and setter action
-      if (ReflectionHelper.IsField(member))
+      return AutoGeneratorFactory.GetGenerator(context);
+    }
+
+    private IEnumerable<AutoMember> GetMembersToPopulate(Type type, IEnumerable<MemberInfo> members)
+    {
+      // If a list of members is provided, no others should be populated
+      if (members != null)
       {
-        var fieldInfo = member as FieldInfo;
-
-        memberType = fieldInfo.FieldType;
-        memberSetter = fieldInfo.SetValue;
+        return members.Select(member => new AutoMember(member));
       }
-      else if (ReflectionHelper.IsProperty(member))
-      {
-        var propertyInfo = member as PropertyInfo;
 
-        memberType = propertyInfo.PropertyType;
-        memberSetter = (obj, value) =>
+      // Get the baseline members resolved by Bogus
+      var autoMembers = (from m in GetMembers(type)
+                         select new AutoMember(m.Value)).ToList();
+
+      foreach (var member in type.GetMembers(BindingFlags))
+      {
+        // Then check if any other members can be populated
+        var autoMember = new AutoMember(member);
+
+        if (!autoMembers.Any(baseMember => autoMember.Name == baseMember.Name))
         {
-          if (propertyInfo.CanWrite)
+          // A readonly dictionary or collection member can use the Add() method
+          if (autoMember.IsReadOnly && ReflectionHelper.IsDictionary(autoMember.Type))
           {
-            propertyInfo.SetValue(obj, value, new object[0]);
+            autoMembers.Add(autoMember);
           }
-          else
+          else if (autoMember.IsReadOnly && ReflectionHelper.IsCollection(autoMember.Type))
           {
-            foreach (var v in (value as IList))
-            {
-              (propertyInfo.GetValue(obj, new object[0]) as IList).Add(v);
-            }
+            autoMembers.Add(autoMember);
           }
-        };
+        }
       }
+
+      return autoMembers;
+    }
+
+    private void PopulateDictionary(object value, object parent, AutoMember member)
+    {
+      var instance = member.Getter(parent);
+      var addMethod = GetAddMethod(member.Type);
+
+      if (instance != null && addMethod != null && value is IDictionary dictionary)
+      {
+        foreach (var key in dictionary.Keys)
+        {
+          addMethod.Invoke(instance, new[] { key, dictionary[key] });
+        }
+      }
+    }
+
+    private void PopulateCollection(object value, object parent, AutoMember member)
+    {
+      var instance = member.Getter(parent);
+      var addMethod = GetAddMethod(member.Type);
+
+      if (instance != null && addMethod != null && value is ICollection collection)
+      {
+        foreach (var item in collection)
+        {
+          addMethod.Invoke(instance, new[] { item });
+        }
+      }
+    }
+
+    private MethodInfo GetAddMethod(Type type)
+    {
+      // First try directly on the type
+      var method = type.GetMethod("Add");
+
+      if (method == null)
+      {
+        // Then traverse the type interfaces
+        return (from i in type.GetInterfaces()
+                let m = GetAddMethod(i)
+                where m != null
+                select m).FirstOrDefault();
+      }
+
+      return method;
     }
   }
 }

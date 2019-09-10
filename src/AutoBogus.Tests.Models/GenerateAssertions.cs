@@ -337,6 +337,7 @@ namespace AutoBogus.Tests.Models
 
     private object GetDefaultValue<TType>()
     {
+      // This method is used via reflection above
       return default(TType);
     }
 
@@ -358,7 +359,7 @@ namespace AutoBogus.Tests.Models
 
     private IEnumerable<MemberInfo> GetMemberInfos(Type type)
     {
-      return (from m in type.GetMembers()
+      return (from m in type.GetMembers(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
               where ReflectionHelper.IsField(m) || ReflectionHelper.IsProperty(m)
               select m);
     }

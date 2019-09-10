@@ -1,17 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 
 namespace AutoBogus.Util
 {
   internal static class ReflectionHelper
   {
-    internal static IEnumerable<Type> GetGenericArguments(Type type)
-    {
-      return type.GetGenericArguments();
-    }
-
     internal static bool IsEnum(Type type)
     {
 #if NET40
@@ -80,6 +75,62 @@ namespace AutoBogus.Util
 #else
       return member is PropertyInfo;
 #endif
+    }
+
+    internal static IEnumerable<Type> GetGenericArguments(Type type)
+    {
+      return type.GetGenericArguments();
+    }
+
+    internal static Type GetGenericTypeDefinition(Type type)
+    {
+      return type.GetGenericTypeDefinition();
+    }
+
+    internal static bool IsDictionary(Type type)
+    {
+      var baseType = typeof(IDictionary<,>);
+      return IsGenericTypeDefinition(baseType, type);
+    }
+
+    internal static bool IsCollection(Type type)
+    {
+      var baseType = typeof(ICollection<>);
+      return IsGenericTypeDefinition(baseType, type);
+    }
+
+    internal static bool IsEnumerable(Type type)
+    {
+      var baseType = typeof(IEnumerable<>);
+      return IsGenericTypeDefinition(baseType, type);
+    }
+
+    internal static bool IsNullable(Type type)
+    {
+      return IsGenericTypeDefinition(typeof(Nullable<>), type);
+    }
+
+    private static bool IsGenericTypeDefinition(Type baseType, Type type)
+    {
+      if (IsGenericType(type))
+      {
+        var definition = GetGenericTypeDefinition(type);
+
+        // Do an assignable query first
+        if (IsAssignableFrom(baseType, definition))
+        {
+          return true;
+        }
+
+        // If that don't work use the more complex interface checks
+        var interfaces = (from i in type.GetInterfaces()
+                          where IsGenericTypeDefinition(baseType, i)
+                          select i);
+
+        return interfaces.Any();
+      }
+
+      return false;
     }
   }
 }

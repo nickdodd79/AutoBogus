@@ -12,6 +12,15 @@ namespace AutoBogus.Playground
 {
   public abstract class ServiceFixture
   {
+    private class TestProduct
+      : Product<int>
+    {
+      public IEnumerable<string> GetNotes()
+      {
+        return Notes;
+      }
+    }
+
     private class ProductGeneratorOverride
       : AutoGeneratorOverride
     {
@@ -105,6 +114,23 @@ namespace AutoBogus.Playground
       _item.Timestamp.Should().NotBeNull();
     }
 
+    [Fact]
+    public void Should_Set_Product_Notes()
+    {
+      var product = AutoFaker.Generate<TestProduct>();
+      product.GetNotes().Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public void Should_Not_Set_Product_Notes()
+    {
+      var product = AutoFaker.Generate<TestProduct>(builder =>
+      {
+        builder.WithSkip<TestProduct>("Notes");
+      });
+
+      product.GetNotes().Should().BeEmpty();
+    }
 
     [Fact]
     public void Service_Get_Should_Call_Repository_Get()
@@ -188,6 +214,6 @@ namespace AutoBogus.Playground
       items.ElementAt(4).SupplierEmail.Should().NotContain("@");
       items.ElementAt(4).ProductInt.Code.SerialNumber.Should().BeNull();
       items.ElementAt(4).ProductString.Code.SerialNumber.Should().BeNull();
-    }
+    }    
   }
 }

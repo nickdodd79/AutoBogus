@@ -109,6 +109,8 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IDictionary<int, TestClass>))]
       [InlineData(typeof(IDictionary<int, ITestInterface>))]
       [InlineData(typeof(IDictionary<int, TestAbstractClass>))]
+      [InlineData(typeof(Dictionary<int, TestClass>))]
+      [InlineData(typeof(SortedList<int, TestClass>))]
       public void Generate_Should_Return_Dictionary(Type type)
       {
         var genericTypes = ReflectionHelper.GetGenericArguments(type);
@@ -134,6 +136,8 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IDictionary<int, TestClass>))]
       [InlineData(typeof(IDictionary<int, ITestInterface>))]
       [InlineData(typeof(IDictionary<int, TestAbstractClass>))]
+      [InlineData(typeof(Dictionary<int, TestClass>))]
+      [InlineData(typeof(SortedList<int, TestClass>))]
       public void GetGenerator_Should_Return_DictionaryGenerator(Type type)
       {
         var context = CreateContext(type);
@@ -156,6 +160,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IEnumerable<ITestInterface>))]
       [InlineData(typeof(IEnumerable<TestAbstractClass>))]
       [InlineData(typeof(ICollection<TestAbstractClass>))]
+      [InlineData(typeof(List<TestClass>))]
       public void Generate_Should_Return_Enumerable(Type type)
       {
         var genericTypes = ReflectionHelper.GetGenericArguments(type);
@@ -173,6 +178,7 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IEnumerable<ITestInterface>))]
       [InlineData(typeof(IEnumerable<TestAbstractClass>))]
       [InlineData(typeof(ICollection<TestAbstractClass>))]
+      [InlineData(typeof(List<TestClass>))]
       public void GetGenerator_Should_Return_EnumerableGenerator(Type type)
       {
         var context = CreateContext(type);
@@ -214,8 +220,6 @@ namespace AutoBogus.Tests
       [InlineData(typeof(TestClass))]
       [InlineData(typeof(ITestInterface))]
       [InlineData(typeof(TestAbstractClass))]
-      [InlineData(typeof(List<TestClass>))]
-      [InlineData(typeof(SortedList<int, TestClass>))]
       public void Generate_Should_Return_Value(Type type)
       {
         var generator = CreateGenerator(typeof(TypeGenerator<>), type);
@@ -235,8 +239,6 @@ namespace AutoBogus.Tests
       [InlineData(typeof(TestClass))]
       [InlineData(typeof(ITestInterface))]
       [InlineData(typeof(TestAbstractClass))]
-      [InlineData(typeof(List<TestClass>))]
-      [InlineData(typeof(SortedList<int, TestClass>))]
       public void GetGenerator_Should_Return_TypeGenerator(Type type)
       {
         var context = CreateContext(type);

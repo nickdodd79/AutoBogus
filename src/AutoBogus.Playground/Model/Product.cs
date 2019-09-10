@@ -1,6 +1,8 @@
-﻿namespace AutoBogus.Playground.Model
+using System.Collections.Generic;
+
+namespace AutoBogus.Playground.Model
 {
-  public sealed class Product<TId>
+  public class Product<TId>
   {
     public Product()
     {
@@ -11,5 +13,7 @@
     public ProductCode Code { get; }
     public string Name { get; set; }
     public Product<TId> Parent { get; set; }
+
+    protected ICollection<string> Notes { get; } = new List<string>();
   }
 }
