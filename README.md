@@ -6,7 +6,7 @@ There are several levels of configuration available.
 
 - `Global` > this is scoped as the default configuration across all generate requests.
 - `Faker` > this is scoped as the configuration applied to all generate requests for an `AutoFaker` instance.
-- `Generate` > this is scoped as the configuration for a specific generate request. 
+- `Generate` > this is scoped as the configuration for a specific generate request.
 
 The above levels are hierarchical and in the order listed. Therefore, if a setting is **not** set for a `Generate` configuration, then the `Faker` value is used and then the `Global`.
 
@@ -15,7 +15,7 @@ A configuration is defined via a builder action that invokes the relevant setup 
 
 ```c#
 // Configure globally
-AutoFaker.Configure(builder => 
+AutoFaker.Configure(builder =>
 {
   builder
     .WithLocale()         // Configures the locale to use
@@ -42,7 +42,7 @@ The `Generate<TType, TFaker>()` methods also include `WithArgs()` so constructor
 ## Usage
 
 ### AutoFaker
-The non-generic `AutoFaker` class provides convenience methods to generate type instances. 
+The non-generic `AutoFaker` class provides convenience methods to generate type instances.
 
 It can be used statically or as a configured instance. The static methods provide a means of quickly generating types on-the-fly and the instance can be reused across multiple generate requests.
 
@@ -124,11 +124,11 @@ A default `IAutoBinder` implementation is included with **AutoBogus**, but it wi
 For a given type, members can be skipped when generating values and will result in the default for their defined type.
 
 ```c#
-AutoFaker.Configure(builder => 
+AutoFaker.Configure(builder =>
 {
   builder
-    .WithSkip<Person>(person => person.Name)
-    .WithSkip<Person>(person => person.Age);
+    .WithSkip<Person>(person => person.Name); // Define using an expression for public members
+    .WithSkip<Person>("Age");                 // Define using a string for protected, internal, etc. members
 });
 ```
 
@@ -160,6 +160,7 @@ The following underlying behaviors are in place in **AutoBogus**:
 
 * Interface and abstract class types are not auto generated - they will result in `null` values. A custom binder would be needed, like one of the packages listed above.
 * Rescursive types - a nested member with the same parent type - will be generated to **2** levels by default to avoid a `StackOverflowException` - `Person.Parent -> Person.Parent -> null`
+* Read only properties - if a property is read only but can be resolved as an `ICollection<>` or `IDictionary<,>`, then it will be populated via the `Add()` method.
 
 ## Conventions
 The [AutoBogus.Conventions](https://www.nuget.org/packages/AutoBogus.Conventions) package provides conventions for generating values, currently based on generation type and name. As an example, a property named `Email` and of type `string` will be assigned a value using the `Faker.Internet.Email()` generator.
@@ -167,7 +168,7 @@ The [AutoBogus.Conventions](https://www.nuget.org/packages/AutoBogus.Conventions
 To include the conventions in your project, apply the following configuration at the required level:
 
 ```c#
-AutoFaker.Configure(builder => 
+AutoFaker.Configure(builder =>
 {
   builder.WithConventions();
 });
@@ -176,9 +177,9 @@ AutoFaker.Configure(builder =>
 Each convention generator maps to a **Bogus** generator method and can be configured individually.
 
 ```c#
-AutoFaker.Configure(builder => 
+AutoFaker.Configure(builder =>
 {
-  builder.WithConventions(config => 
+  builder.WithConventions(config =>
   {
     config.FirstName.Enabled = false;      // Disables the FirstName generator
     config.LastName.AlwaysGenerate = true; // Overrides any LastName values previously generated
