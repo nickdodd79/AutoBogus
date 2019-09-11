@@ -221,7 +221,7 @@ namespace AutoBogus
     private MethodInfo GetAddMethod(Type type)
     {
       // First try directly on the type
-      var method = type.GetMethod("Add");
+      var method = type.GetMethod("Add", new[] { typeof(ICollection) });
 
       if (method == null)
       {
