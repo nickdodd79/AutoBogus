@@ -193,7 +193,8 @@ namespace AutoBogus
     private void PopulateDictionary(object value, object parent, AutoMember member)
     {
       var instance = member.Getter(parent);
-      var addMethod = GetAddMethod(member.Type);
+      var argTypes = GetAddMethodArgumentTypes(member.Type);
+      var addMethod = GetAddMethod(member.Type, argTypes);
 
       if (instance != null && addMethod != null && value is IDictionary dictionary)
       {
@@ -207,7 +208,8 @@ namespace AutoBogus
     private void PopulateCollection(object value, object parent, AutoMember member)
     {
       var instance = member.Getter(parent);
-      var addMethod = GetAddMethod(member.Type);
+      var argTypes = GetAddMethodArgumentTypes(member.Type);
+      var addMethod = GetAddMethod(member.Type, argTypes);
 
       if (instance != null && addMethod != null && value is ICollection collection)
       {
@@ -218,21 +220,34 @@ namespace AutoBogus
       }
     }
 
-    private MethodInfo GetAddMethod(Type type)
+    private MethodInfo GetAddMethod(Type type, Type[] argTypes)
     {
       // First try directly on the type
-      var method = type.GetMethod("Add", new[] { typeof(ICollection) });
+      var method = type.GetMethod("Add", argTypes);
 
       if (method == null)
       {
         // Then traverse the type interfaces
         return (from i in type.GetInterfaces()
-                let m = GetAddMethod(i)
+                let m = GetAddMethod(i, argTypes)
                 where m != null
                 select m).FirstOrDefault();
       }
 
       return method;
+    }
+
+    private Type[] GetAddMethodArgumentTypes(Type type)
+    {
+      var types = new[] { typeof(object) };
+
+      if (ReflectionHelper.IsGenericType(type))
+      {
+        var generics = ReflectionHelper.GetGenericArguments(type);
+        types = generics.ToArray();
+      }
+
+      return types;
     }
   }
 }
