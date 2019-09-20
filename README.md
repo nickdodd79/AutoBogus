@@ -1,3 +1,6 @@
+![Nuget](https://img.shields.io/nuget/v/AutoBogus?style=for-the-badge)
+![Nuget](https://img.shields.io/nuget/dt/AutoBogus?style=for-the-badge)
+
 # AutoBogus
 A C# library complementing the [Bogus](https://github.com/bchavez/Bogus) generator by adding auto creation and population capabilities.
 
