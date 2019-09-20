@@ -4,6 +4,14 @@
 # AutoBogus
 A C# library complementing the [Bogus](https://github.com/bchavez/Bogus) generator by adding auto creation and population capabilities.
 
+The following packages are available for download from NuGet:
+
+- [AutoBogus](https://www.nuget.org/packages/AutoBogus)
+- [AutoBogus.Conventions](https://www.nuget.org/packages/AutoBogus.Conventions)
+- [AutoBogus.FakeItEasy](https://www.nuget.org/packages/AutoBogus.FakeItEasy)
+- [AutoBogus.Moq](https://www.nuget.org/packages/AutoBogus.Moq)
+- [AutoBogus.NSubstitute](https://www.nuget.org/packages/AutoBogus.NSubstitute)
+
 ## Configuration
 There are several levels of configuration available.
 
@@ -119,9 +127,9 @@ Note that, should a rule set be used to generate a type, then only members **not
 ## Binders
 A default `IAutoBinder` implementation is included with **AutoBogus**, but it will not generate interfaces or abstract classes. For this, the following packages are available:
 
-* [AutoBogus.FakeItEasy](https://www.nuget.org/packages/AutoBogus.FakeItEasy)
-* [AutoBogus.Moq](https://www.nuget.org/packages/AutoBogus.Moq)
-* [AutoBogus.NSubstitute](https://www.nuget.org/packages/AutoBogus.NSubstitute)
+- [AutoBogus.FakeItEasy](https://www.nuget.org/packages/AutoBogus.FakeItEasy)
+- [AutoBogus.Moq](https://www.nuget.org/packages/AutoBogus.Moq)
+- [AutoBogus.NSubstitute](https://www.nuget.org/packages/AutoBogus.NSubstitute)
 
 ## Skipping
 For a given type, members can be skipped when generating values and will result in the default for their defined type.
@@ -161,9 +169,9 @@ AutoFaker.Configure(builder => builder.WithOverride(new PersonOverride()));
 ## Behaviors
 The following underlying behaviors are in place in **AutoBogus**:
 
-* Interface and abstract class types are not auto generated - they will result in `null` values. A custom binder would be needed, like one of the packages listed above.
-* Rescursive types - a nested member with the same parent type - will be generated to **2** levels by default to avoid a `StackOverflowException` - `Person.Parent -> Person.Parent -> null`
-* Read only properties - if a property is read only but can be resolved as an `ICollection<>` or `IDictionary<,>`, then it will be populated via the `Add()` method.
+- Interface and abstract class types are not auto generated - they will result in `null` values. A custom binder would be needed, like one of the packages listed above.
+- Rescursive types - a nested member with the same parent type - will be generated to **2** levels by default to avoid a `StackOverflowException` - `Person.Parent -> Person.Parent -> null`
+- Read only properties - if a property is read only but can be resolved as an `ICollection<>` or `IDictionary<,>`, then it will be populated via the `Add()` method.
 
 ## Conventions
 The [AutoBogus.Conventions](https://www.nuget.org/packages/AutoBogus.Conventions) package provides conventions for generating values, currently based on generation type and name. As an example, a property named `Email` and of type `string` will be assigned a value using the `Faker.Internet.Email()` generator.
