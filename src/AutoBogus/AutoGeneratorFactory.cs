@@ -74,6 +74,12 @@ namespace AutoBogus
           return CreateGenericGenerator(typeof(DictionaryGenerator<,>), keyType, valueType);
         }
 
+        if (ReflectionHelper.IsSet(type))
+        {
+          type = generics.Single();
+          return CreateGenericGenerator(typeof(SetGenerator<>), type);
+        }
+
         if (ReflectionHelper.IsEnumerable(type))
         {
           type = generics.Single();

@@ -94,7 +94,8 @@ namespace AutoBogus.Playground
       var id = _faker.Generate<Guid>();
       var generator = new AutoFaker<Item>(binder)
         .RuleFor(item => item.Id, () => id)
-        .RuleFor(item => item.Name, faker => faker.Person.FullName);
+        .RuleFor(item => item.Name, faker => faker.Person.FullName)
+        .RuleFor(item => item.Amendments, faker => new HashSet<string> { "1", "2", "3" });
 
       _item = generator;
       _items = generator.Generate(5);

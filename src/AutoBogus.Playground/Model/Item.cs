@@ -18,5 +18,6 @@ namespace AutoBogus.Playground.Model
     public User ProcessedBy { get; set; }
     public string SupplierEmail { get; set; }
     public ITimestamp Timestamp { get; set; }
+    public ISet<string> Amendments { get; set; }
   }
 }

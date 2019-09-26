@@ -93,6 +93,12 @@ namespace AutoBogus.Util
       return IsGenericTypeDefinition(baseType, type);
     }
 
+    internal static bool IsSet(Type type)
+    {
+      var baseType = typeof(ISet<>);
+      return IsGenericTypeDefinition(baseType, type);
+    }
+
     internal static bool IsCollection(Type type)
     {
       var baseType = typeof(ICollection<>);

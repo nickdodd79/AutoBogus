@@ -150,6 +150,44 @@ namespace AutoBogus.Tests
       }
     }
 
+    public class SetGenerator
+      : AutoGeneratorsFixture
+    {
+      [Theory]
+      [InlineData(typeof(ISet<TestEnum>))]
+      [InlineData(typeof(ISet<TestStruct>))]
+      [InlineData(typeof(ISet<TestClass>))]
+      [InlineData(typeof(ISet<ITestInterface>))]
+      [InlineData(typeof(ISet<TestAbstractClass>))]
+      [InlineData(typeof(HashSet<TestClass>))]
+      public void Generate_Should_Return_Set(Type type)
+      {
+        var genericTypes = ReflectionHelper.GetGenericArguments(type);
+        var itemType = genericTypes.ElementAt(0);
+        var generator = CreateGenerator(typeof(SetGenerator<>), itemType);
+        var set = InvokeGenerator(type, generator) as IEnumerable;
+
+        set.Should().NotBeNull().And.NotContainNulls();
+      }
+
+      [Theory]
+      [InlineData(typeof(ISet<TestEnum>))]
+      [InlineData(typeof(ISet<TestStruct>))]
+      [InlineData(typeof(ISet<TestClass>))]
+      [InlineData(typeof(ISet<ITestInterface>))]
+      [InlineData(typeof(ISet<TestAbstractClass>))]
+      [InlineData(typeof(HashSet<TestClass>))]
+      public void GetGenerator_Should_Return_SetGenerator(Type type)
+      {
+        var context = CreateContext(type);
+        var genericTypes = ReflectionHelper.GetGenericArguments(type);
+        var itemType = genericTypes.ElementAt(0);
+        var generatorType = GetGeneratorType(typeof(SetGenerator<>), itemType);
+
+        AutoGeneratorFactory.GetGenerator(context).Should().BeOfType(generatorType);
+      }
+    }
+
     public class EnumerableGenerator
       : AutoGeneratorsFixture
     {
