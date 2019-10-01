@@ -74,6 +74,16 @@ namespace AutoBogus
           return CreateGenericGenerator(typeof(DictionaryGenerator<,>), keyType, valueType);
         }
 
+#if NETSTANDARD1_3 || NETSTANDARD2_0
+        if (ReflectionHelper.IsReadOnlyDictionary(type))
+        {
+          var keyType = generics.ElementAt(0);
+          var valueType = generics.ElementAt(1);
+
+          return CreateGenericGenerator(typeof(ReadOnlyDictionaryGenerator<,>), keyType, valueType);
+        }
+#endif
+
         if (ReflectionHelper.IsSet(type))
         {
           type = generics.Single();

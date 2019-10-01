@@ -93,6 +93,14 @@ namespace AutoBogus.Util
       return IsGenericTypeDefinition(baseType, type);
     }
 
+#if NETSTANDARD1_3 || NETSTANDARD2_0
+    internal static bool IsReadOnlyDictionary(Type type)
+    {
+      var baseType = typeof(IReadOnlyDictionary<,>);
+      return IsGenericTypeDefinition(baseType, type);
+    }
+#endif
+
     internal static bool IsSet(Type type)
     {
       var baseType = typeof(ISet<>);
