@@ -93,13 +93,23 @@ namespace AutoBogus.Util
       return IsGenericTypeDefinition(baseType, type);
     }
 
-#if NETSTANDARD1_3 || NETSTANDARD2_0
     internal static bool IsReadOnlyDictionary(Type type)
     {
+#if NET40
+      return false;
+#else
       var baseType = typeof(IReadOnlyDictionary<,>);
-      return IsGenericTypeDefinition(baseType, type);
-    }
+
+      if (IsGenericTypeDefinition(baseType, type))
+      {
+        // Read only dictionaries don't have an Add() method
+        var method = type.GetMethod("Add");
+        return method == null;
+      }
+
+      return false;
 #endif
+    }
 
     internal static bool IsSet(Type type)
     {

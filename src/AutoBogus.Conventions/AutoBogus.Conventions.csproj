@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net40;netstandard1.3;netstandard2.0</TargetFrameworks>
@@ -10,12 +10,13 @@
     <Version>2.7.3</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <LangVersion>latest</LangVersion>
-    <PackageIconUrl>https://raw.githubusercontent.com/nickdodd79/AutoBogus/master/logo.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/nickdodd79/AutoBogus</RepositoryUrl>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageIconUrl />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net40|AnyCPU'">
-    <DocumentationFile>D:\Projects\AutoBogus\src\AutoBogus.Conventions\AutoBogus.Conventions.xml</DocumentationFile>
+    <DocumentationFile>AutoBogus.Conventions.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,6 +40,13 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ConventionByNameGenerators.tt</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

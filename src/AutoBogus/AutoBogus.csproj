@@ -10,8 +10,9 @@
     <Version>2.7.3</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <LangVersion>latest</LangVersion>
-    <PackageIconUrl>https://raw.githubusercontent.com/nickdodd79/AutoBogus/master/logo.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/nickdodd79/AutoBogus</RepositoryUrl>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageIconUrl />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net40|AnyCPU'">
@@ -20,6 +21,13 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="28.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

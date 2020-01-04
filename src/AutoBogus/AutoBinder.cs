@@ -84,18 +84,23 @@ namespace AutoBogus
           var generator = AutoGeneratorFactory.GetGenerator(context);
           var value = generator.Generate(context);
 
-          if (!member.IsReadOnly)
+          try
           {
-            member.Setter.Invoke(instance, value);
+            if (!member.IsReadOnly)
+            {
+              member.Setter.Invoke(instance, value);
+            }
+            else if (ReflectionHelper.IsDictionary(member.Type))
+            {
+              PopulateDictionary(value, instance, member);
+            }
+            else if (ReflectionHelper.IsCollection(member.Type))
+            {
+              PopulateCollection(value, instance, member);
+            }
           }
-          else if (ReflectionHelper.IsDictionary(member.Type))
-          {
-            PopulateDictionary(value, instance, member);
-          }
-          else if (ReflectionHelper.IsCollection(member.Type))
-          {
-            PopulateCollection(value, instance, member);
-          }
+          catch
+          { }
 
           // Remove the current type from the type stack so siblings can be created
           context.TypesStack.Pop();

@@ -1,4 +1,3 @@
-#if NETSTANDARD1_3 || NETSTANDARD2_0
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -13,8 +12,12 @@ namespace AutoBogus.Generators
 
       // Generate a standard dictionary and create the read only dictionary
       var items = generator.Generate(context) as IDictionary<TKey, TValue>;
+
+#if NET40
+      return null;
+#else
       return new ReadOnlyDictionary<TKey, TValue>(items);
+#endif
     }
   }
 }
-#endif

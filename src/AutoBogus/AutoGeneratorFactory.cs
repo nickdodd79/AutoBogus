@@ -66,15 +66,6 @@ namespace AutoBogus
         // For generic types we need to interrogate the inner types
         var generics = ReflectionHelper.GetGenericArguments(type);
 
-        if (ReflectionHelper.IsDictionary(type))
-        {
-          var keyType = generics.ElementAt(0);
-          var valueType = generics.ElementAt(1);
-
-          return CreateGenericGenerator(typeof(DictionaryGenerator<,>), keyType, valueType);
-        }
-
-#if NETSTANDARD1_3 || NETSTANDARD2_0
         if (ReflectionHelper.IsReadOnlyDictionary(type))
         {
           var keyType = generics.ElementAt(0);
@@ -82,7 +73,14 @@ namespace AutoBogus
 
           return CreateGenericGenerator(typeof(ReadOnlyDictionaryGenerator<,>), keyType, valueType);
         }
-#endif
+
+        if (ReflectionHelper.IsDictionary(type))
+        {
+          var keyType = generics.ElementAt(0);
+          var valueType = generics.ElementAt(1);
+
+          return CreateGenericGenerator(typeof(DictionaryGenerator<,>), keyType, valueType);
+        }
 
         if (ReflectionHelper.IsSet(type))
         {
