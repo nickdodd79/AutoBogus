@@ -231,6 +231,8 @@ namespace AutoBogus.Tests
       public void Should_Use_Custom_Instantiator()
       {
         var binder = Substitute.For<IAutoBinder>();
+        binder.GetMembers(typeof(Order)).Returns(new Dictionary<string, MemberInfo>());
+
         var order = new AutoFaker<Order>(binder)
           .CustomInstantiator(faker => new Order(default(int), default(ICalculator)))
           .Generate();
@@ -261,6 +263,18 @@ namespace AutoBogus.Tests
         });
 
         _faker.Generate("test").Should().NotBeGenerated();
+      }
+
+      [Fact]
+      public void Should_Call_FinishWith()
+      {
+        Order instance = null;
+        var order = new AutoFaker<Order>()
+          .FinishWith((f, i) => instance = i)
+          .Generate();
+        
+        order.Should().BeGeneratedWithoutMocks();
+        instance.Should().Be(order);
       }
     }
 

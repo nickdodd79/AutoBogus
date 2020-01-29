@@ -45,7 +45,7 @@ namespace AutoBogus
     /// <param name="locale">The locale to use for value generation.</param>
     /// <param name="binder">The <see cref="IAutoBinder"/> instance to use for the generation request.</param>
     public AutoFaker(string locale = null, IAutoBinder binder = null)
-      : base(locale ?? AutoConfig.DefaultLocale)
+      : base(locale ?? AutoConfig.DefaultLocale, binder)
     {
       Binder = binder;
 
@@ -54,9 +54,7 @@ namespace AutoBogus
       DefaultCreateAction = CreateActions[currentRuleSet];
       CreateActions[currentRuleSet] = null;
     }
-
-    private Type Type => typeof(TType);
-
+    
     private IAutoBinder Binder { get; set; }
 
     internal AutoConfig Config
@@ -67,13 +65,16 @@ namespace AutoBogus
 
         Locale = _config.Locale;
         Binder = _config.Binder;
+
+        // Also pass the binder set up to the underlying Faker
+        binder = _config.Binder;
       }
     }
 
     private bool CreateInitialized { get; set; }
     private bool FinishInitialized { get; set; }
     private Func<Faker, TType> DefaultCreateAction { get; set; }
-        
+
     /// <summary>
     /// Generates an instance of type <typeparamref name="TType"/>.
     /// </summary>
@@ -185,6 +186,10 @@ namespace AutoBogus
     {
       if (!FinishInitialized)
       {
+        // Try and get the registered finish with for the current rule
+        FinalizeActions.TryGetValue(currentRuleSet, out FinalizeAction<TType> finishWith);
+
+        // Add an internal finish to auto populate any remaining values
         FinishWith((faker, instance) =>
         {
           // First resolve the values being set
@@ -212,6 +217,12 @@ namespace AutoBogus
 
           // Finalize the instance population
           context.Binder.PopulateInstance<TType>(instance, context, members);
+
+          // Ensure the default finish with is invoke
+          if (finishWith != null)
+          {
+            finishWith.Action(faker, instance);
+          }
         });
 
         FinishInitialized = true;
