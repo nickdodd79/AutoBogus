@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 
 namespace AutoBogus.Generators
 {
@@ -7,11 +8,11 @@ namespace AutoBogus.Generators
   {
     object IAutoGenerator.Generate(AutoGenerateContext context)
     {
-      var items = new Dictionary<TKey, TValue>();
-      
+      var items = (IDictionary<TKey, TValue>)Activator.CreateInstance(context.GenerateType);
+
       // Get a list of keys
       var keys = context.GenerateUniqueMany<TKey>();
-      
+
       foreach (var key in keys)
       {
         // Get a matching value for the current key and add to the dictionary
