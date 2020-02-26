@@ -8,8 +8,16 @@ namespace AutoBogus.Generators
   {
     object IAutoGenerator.Generate(AutoGenerateContext context)
     {
-      var items = (IDictionary<TKey, TValue>)Activator.CreateInstance(context.GenerateType);
-
+      IDictionary<TKey, TValue> items;
+      try
+      {
+        items = (IDictionary<TKey, TValue>)Activator.CreateInstance(context.GenerateType, true);
+      }
+      catch
+      {
+        items = new Dictionary<TKey, TValue>();
+      }
+      
       // Get a list of keys
       var keys = context.GenerateUniqueMany<TKey>();
 
