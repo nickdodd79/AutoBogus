@@ -103,8 +103,8 @@ namespace AutoBogus.Util
       if (IsGenericTypeDefinition(baseType, type))
       {
         // Read only dictionaries don't have an Add() method
-        var method = type.GetMethod("Add");
-        return method == null;
+        var methods = type.GetMethods().Where(m => m.Name.Equals("Add"));
+        return !methods.Any();
       }
 
       return false;
