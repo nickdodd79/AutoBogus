@@ -8,6 +8,7 @@ namespace AutoBogus.Generators
   {
     object IAutoGenerator.Generate(AutoGenerateContext context)
     {
+      // Create an instance of a dictionary (public and non-public)
       IDictionary<TKey, TValue> items;
       try
       {
