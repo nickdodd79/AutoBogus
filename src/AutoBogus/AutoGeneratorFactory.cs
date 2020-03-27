@@ -27,7 +27,8 @@ namespace AutoBogus
       {typeof(uint), new UIntGenerator()},
       {typeof(ulong), new ULongGenerator()},
       {typeof(Uri), new UriGenerator()},
-      {typeof(ushort), new UShortGenerator()}
+      {typeof(ushort), new UShortGenerator()},
+      {typeof(Version), new VersionGenerator()}
     };
 
     internal static IAutoGenerator GetGenerator(AutoGenerateContext context)

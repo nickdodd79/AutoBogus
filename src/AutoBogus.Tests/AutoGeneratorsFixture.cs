@@ -286,6 +286,21 @@ namespace AutoBogus.Tests
       }
     }
 
+    public class VersionGenerator
+      : AutoGeneratorsFixture
+    {
+      [Fact]
+      public void Should_Populate_Version_Object()
+      {
+        var version = AutoFaker.Generate<Version>();
+
+        version.Major.Should().BeGreaterOrEqualTo(0);
+        version.Minor.Should().BeGreaterOrEqualTo(0);
+        version.Build.Should().BeGreaterOrEqualTo(0);
+        version.Revision.Should().BeGreaterOrEqualTo(0);
+      }
+    }
+
     public class GeneratorOverrides
       : AutoGeneratorsFixture
     {
