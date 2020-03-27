@@ -453,6 +453,13 @@
             </summary>
             <typeparam name="TBuilder">The builder type.</typeparam>
         </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithFakerHub(Bogus.Faker)">
+            <summary>
+            Registers the Faker hub to use in underlying calls to Bogus.
+            </summary>
+            <param name="fakerHub">The Faker object to use as the faker hub</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
         <member name="M:AutoBogus.IAutoConfigBuilder`1.WithLocale(System.String)">
             <summary>
             Registers the locale to use when generating values.

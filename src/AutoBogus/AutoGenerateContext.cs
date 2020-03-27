@@ -11,7 +11,7 @@ namespace AutoBogus
   public sealed class AutoGenerateContext
   {
     internal AutoGenerateContext(AutoConfig config)
-      : this(null, config)
+      : this(config.FakerHub, config)
     { }
 
     internal AutoGenerateContext(Faker faker, AutoConfig config)
