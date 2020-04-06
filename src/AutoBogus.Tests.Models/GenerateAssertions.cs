@@ -43,6 +43,8 @@ namespace AutoBogus.Tests.Models
       Assertions.Add(IsUri, AssertUri);
       Assertions.Add(IsUShort, AssertUShort);
 
+      Assertions.Add(IsVersion, AssertVersion);
+
       Assertions.Add(IsArray, AssertArray);
       Assertions.Add(IsEnum, AssertEnum);
       Assertions.Add(IsDictionary, AssertDictionary);
@@ -178,6 +180,7 @@ namespace AutoBogus.Tests.Models
     private static bool IsUri(Type type) => type == typeof(Uri);
     private static bool IsUShort(Type type) => type == typeof(ushort);
     private static bool IsArray(Type type) => type.IsArray;
+    private static bool IsVersion(Type type) => type == typeof(Version);
     private static bool IsEnum(Type type) => ReflectionHelper.IsEnum(type);
     private static bool IsDictionary(Type type) => IsType(type, typeof(IDictionary<,>));
     private static bool IsEnumerable(Type type) => IsType(type, typeof(IEnumerable<>));
@@ -229,6 +232,31 @@ namespace AutoBogus.Tests.Models
       // Assert via assignment rather than explicit checks (the actual instance could be a sub class)
       var valueType = value.GetType();
       return type.IsAssignableFrom(valueType) ? null : GetAssertionMessage(path, type, value);
+    }
+
+    private string AssertVersion(string path, Type type, object value)
+    {
+      string Assertion(string fieldName, object fieldValue)
+      {
+        bool pass =
+          (fieldValue is int intValue) &&
+          intValue >= 0;
+
+        if (pass)
+          return null;
+        else
+          return $"Excepted a version component for {fieldName} -> {fieldValue} (not positive integer)";
+      }
+
+      if (!(value is Version version))
+        return GetAssertionMessage(path, type, value);
+
+      // MajorRevision and MinorRevision are computed properties.
+      return
+        Assertion(nameof(version.Major), version.Major) ??
+        Assertion(nameof(version.Minor), version.Minor) ??
+        Assertion(nameof(version.Build), version.Build) ??
+        Assertion(nameof(version.Revision), version.Revision);
     }
 
     private string AssertArray(string path, Type type, object value)
