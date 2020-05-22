@@ -172,9 +172,28 @@ namespace AutoBogus
           // This is because any specific rule sets are expected to handle the full creation
           if (context.RuleSets.Contains(currentRuleSet))
           {
+            var type = typeof(TType);
+
             // Set the current type being generated
-            context.GenerateType = typeof(TType);
+            context.GenerateType = type;
             context.GenerateName = null;
+
+            // Get the members that should not be set during construction
+            var memberNames = GetRuleSetsMemberNames(context);
+
+            foreach (var memberName in TypeProperties.Keys)
+            {
+              if (memberNames.Contains(memberName))
+              {
+                var path = $"{type.FullName}.{memberName}";
+                var existing = context.Config.Skips.Any(s => s == path);
+
+                if (!existing)
+                {
+                  context.Config.Skips.Add(path);
+                }
+              }
+            }
 
             // Get the type generator
             var generator = AutoGeneratorFactory.GetGenerator(context);
@@ -198,20 +217,9 @@ namespace AutoBogus
         // Add an internal finish to auto populate any remaining values
         FinishWith((faker, instance) =>
         {
-          // First resolve the values being set
-          // This is from all the rule sets being used to generate the instance
-          var memberNames = new List<string>();
-
-          foreach (var ruleSetName in context.RuleSets)
-          {
-            if (Actions.TryGetValue(ruleSetName, out var ruleSet))
-            {
-              memberNames.AddRange(ruleSet.Keys);
-            }
-          }
-
           // Extract the unpopulated member infos
           var members = new List<MemberInfo>();
+          var memberNames = GetRuleSetsMemberNames(context);
 
           foreach (var member in TypeProperties)
           {
@@ -233,6 +241,22 @@ namespace AutoBogus
 
         FinishInitialized = true;
       }
+    }
+
+    private IEnumerable<string> GetRuleSetsMemberNames(AutoGenerateContext context)
+    {
+      // Get the member names from all the rule sets being used to generate the instance
+      var members = new List<string>();
+
+      foreach (var ruleSetName in context.RuleSets)
+      {
+        if (Actions.TryGetValue(ruleSetName, out var ruleSet))
+        {
+          members.AddRange(ruleSet.Keys);
+        }
+      }
+
+      return members;
     }
   }
 }
