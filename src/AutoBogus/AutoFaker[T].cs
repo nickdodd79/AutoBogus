@@ -63,14 +63,17 @@ namespace AutoBogus
       {
         _config = value;
 
-        if (_config.FakerHub != null)
-          FakerHub = _config.FakerHub;
-
         Locale = _config.Locale;
         Binder = _config.Binder;
 
         // Also pass the binder set up to the underlying Faker
         binder = _config.Binder;
+
+        // Apply a configured faker if set
+        if (_config.FakerHub != null)
+        {
+          FakerHub = _config.FakerHub;
+        }
       }
     }
 

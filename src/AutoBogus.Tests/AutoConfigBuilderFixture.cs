@@ -22,20 +22,6 @@ namespace AutoBogus.Tests
       _builder = new AutoConfigBuilder(_config);
     }
 
-    public class WithFakerHub
-      : AutoConfigBuilderFixture
-    {
-      [Fact]
-      public void Should_Set_Config_FakerHub()
-      {
-        var fakerHub = new Faker();
-
-        _builder.WithFakerHub<ITestBuilder>(fakerHub, null);
-
-        _config.FakerHub.Should().Be(fakerHub);
-      }
-    }
-
     public class WithLocale
       : AutoConfigBuilderFixture
     {
@@ -109,6 +95,20 @@ namespace AutoBogus.Tests
         _builder.WithBinder<ITestBuilder>(null, null);
 
         _config.Binder.Should().BeOfType<AutoBinder>();
+      }
+    }
+
+    public class WithFakerHub
+      : AutoConfigBuilderFixture
+    {
+      [Fact]
+      public void Should_Set_Config_FakerHub()
+      {
+        var fakerHub = new Faker();
+
+        _builder.WithFakerHub<ITestBuilder>(fakerHub, null);
+
+        _config.FakerHub.Should().Be(fakerHub);
       }
     }
 

@@ -11,13 +11,6 @@ namespace AutoBogus
   public interface IAutoConfigBuilder<TBuilder>
   {
     /// <summary>
-    /// Registers the Faker hub to use in underlying calls to Bogus.
-    /// </summary>
-    /// <param name="fakerHub">The Faker object to use as the faker hub</param>
-    /// <returns>The current configuration builder instance.</returns>
-    TBuilder WithFakerHub(Faker fakerHub);
-
-    /// <summary>
     /// Registers the locale to use when generating values.
     /// </summary>
     /// <param name="locale">The locale to use.</param>
@@ -44,6 +37,13 @@ namespace AutoBogus
     /// <param name="binder">The <see cref="IAutoBinder"/> instance to use.</param>
     /// <returns>The current configuration builder instance.</returns>
     TBuilder WithBinder(IAutoBinder binder);
+
+    /// <summary>
+    /// Registers the <see cref="Bogus.Faker"/> hub to use in underlying calls to Bogus.
+    /// </summary>
+    /// <param name="fakerHub">The <see cref="Bogus.Faker"/> instance to use as the hub.</param>
+    /// <returns>The current configuration builder instance.</returns>
+    TBuilder WithFakerHub(Faker fakerHub);
 
     /// <summary>
     /// Registers a member to skip for a given type when generating values.

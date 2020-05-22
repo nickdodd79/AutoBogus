@@ -23,20 +23,20 @@ namespace AutoBogus
 
     internal AutoConfig(AutoConfig config)
     {
-      FakerHub = config.FakerHub;
       Locale = config.Locale;
       RepeatCount = config.RepeatCount;
       RecursiveDepth = config.RecursiveDepth;
       Binder = config.Binder;
+      FakerHub = config.FakerHub;
       Skips = config.Skips.ToList();
       Overrides = config.Overrides.ToList();
     }
 
-    internal Faker FakerHub { get; set; }
     internal string Locale { get; set; }
     internal int RepeatCount { get; set; }
     internal int RecursiveDepth { get; set; }
     internal IAutoBinder Binder { get; set; }
+    internal Faker FakerHub { get; set; }
     internal IList<string> Skips { get; set; }
     internal IList<AutoGeneratorOverride> Overrides { get; set; }
   }

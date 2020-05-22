@@ -278,6 +278,39 @@ namespace AutoBogus.Tests
       }
     }
 
+    public class AutoFaker_WithFakerHub
+      : AutoFakerFixture
+    {
+      [Fact]
+      public void Should_Use_Caller_Supplied_FakerHub()
+      {
+        // We infer that our FakerHub was used by reseeding it and testing that we get the same sequence both times.
+        var fakerHub = new Faker();
+
+        var configure = CreateConfigure<IAutoGenerateConfigBuilder>(
+          AutoFaker.DefaultConfig,
+          builder => builder.WithFakerHub(fakerHub));
+
+        var faker = AutoFaker.Create(configure);
+
+        fakerHub.Random = new Randomizer(1);
+
+        var instance1 = faker.Generate<TestObject>();
+
+        fakerHub.Random = new Randomizer(1);
+
+        var instance2 = faker.Generate<TestObject>();
+
+        instance1.Should().BeEquivalentTo(instance2);
+      }
+
+      class TestObject
+      {
+        public int IntegerValue;
+        public string StringValue;
+      }
+    }
+
     public class Behaviors_Skip
       : AutoFakerFixture
     {
@@ -355,39 +388,6 @@ namespace AutoBogus.Tests
         _instance.Sub.Value.Sub.Should().NotBeNull();
         _instance.Sub.Value.Sub.Value.Sub.Should().NotBeNull();
         _instance.Sub.Value.Sub.Value.Sub.Value.Sub.Should().BeNull();
-      }
-    }
-
-    public class Caller_Supplied_FakerHub
-      : AutoFakerFixture
-    {
-      [Fact]
-      public void Should_Use_Caller_Supplied_FakerHub()
-      {
-        // We infer that our FakerHub was used by reseeding it and testing that we get the same sequence both times.
-        var fakerHub = new Faker();
-
-        var configure = CreateConfigure<IAutoGenerateConfigBuilder>(
-          AutoFaker.DefaultConfig,
-          builder => builder.WithFakerHub(fakerHub));
-
-        var faker = AutoFaker.Create(configure);
-
-        fakerHub.Random = new Randomizer(1);
-
-        var instance1 = faker.Generate<TestObject>();
-
-        fakerHub.Random = new Randomizer(1);
-
-        var instance2 = faker.Generate<TestObject>();
-
-        instance1.Should().BeEquivalentTo(instance2);
-      }
-
-      class TestObject
-      {
-        public int IntegerValue;
-        public string StringValue;
       }
     }
 
