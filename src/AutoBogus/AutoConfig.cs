@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Bogus;
 
 namespace AutoBogus
 {
@@ -22,6 +23,7 @@ namespace AutoBogus
 
     internal AutoConfig(AutoConfig config)
     {
+      FakerHub = config.FakerHub;
       Locale = config.Locale;
       RepeatCount = config.RepeatCount;
       RecursiveDepth = config.RecursiveDepth;
@@ -30,6 +32,7 @@ namespace AutoBogus
       Overrides = config.Overrides.ToList();
     }
 
+    internal Faker FakerHub { get; set; }
     internal string Locale { get; set; }
     internal int RepeatCount { get; set; }
     internal int RecursiveDepth { get; set; }

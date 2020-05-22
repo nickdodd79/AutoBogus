@@ -63,6 +63,9 @@ namespace AutoBogus
       {
         _config = value;
 
+        if (_config.FakerHub != null)
+          FakerHub = _config.FakerHub;
+
         Locale = _config.Locale;
         Binder = _config.Binder;
 
