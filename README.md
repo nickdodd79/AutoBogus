@@ -33,6 +33,7 @@ AutoFaker.Configure(builder =>
     .WithRepeatCount()    // Configures the number of items in a collection
     .WithRecursiveDepth() // Configures how deep nested types should recurse
     .WithBinder()         // Configures the binder to use
+    .WithFakerHub()       // Configures a Bogus.Faker instance to be used - instead of a default instance
     .WithSkip()           // Configures members to be skipped for a type
     .WithOverride();      // Configures the generator overrides to use - can be called multiple times
 });
