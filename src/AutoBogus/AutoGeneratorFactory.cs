@@ -76,10 +76,7 @@ namespace AutoBogus
 
         if (ReflectionHelper.IsDictionary(type))
         {
-          var keyType = generics.ElementAt(0);
-          var valueType = generics.ElementAt(1);
-
-          return CreateGenericGenerator(typeof(DictionaryGenerator<,>), keyType, valueType);
+          return CreateDicitonaryGenerator(generics);
         }
 
         if (ReflectionHelper.IsSet(type))
@@ -90,6 +87,14 @@ namespace AutoBogus
 
         if (ReflectionHelper.IsEnumerable(type))
         {
+          // If the type has more than one generic use a dictionary (hasn't been resolved by dictionary check above)
+          // Example is a Dictionary<T, U>.KeyCollection
+          if (generics.Count() == 2)
+          {
+            return CreateDicitonaryGenerator(generics);
+          }
+
+          // Otherwise it is a list type
           type = generics.Single();
           return CreateGenericGenerator(typeof(EnumerableGenerator<>), type);
         }
@@ -108,6 +113,14 @@ namespace AutoBogus
       }
 
       return CreateGenericGenerator(typeof(TypeGenerator<>), type);
+    }
+
+    private static IAutoGenerator CreateDicitonaryGenerator(IEnumerable<Type> generics)
+    {
+      var keyType = generics.ElementAt(0);
+      var valueType = generics.ElementAt(1);
+
+      return CreateGenericGenerator(typeof(DictionaryGenerator<,>), keyType, valueType);
     }
 
     private static IAutoGenerator CreateGenericGenerator(Type generatorType, params Type[] genericTypes)
