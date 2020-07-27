@@ -47,9 +47,15 @@ namespace AutoBogus
 
     private static IAutoGenerator ResolveGenerator(AutoGenerateContext context)
     {
-      // Do some type -> generator mapping
       var type = context.GenerateType;
 
+      // Need check if the type is an in/out parameter and adjusted accordingly
+      if (type.IsByRef)
+      {
+        type = type.GetElementType();
+      }
+
+      // Do some type -> generator mapping
       if (type.IsArray)
       {
         type = type.GetElementType();
