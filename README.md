@@ -133,11 +133,17 @@ A default `IAutoBinder` implementation is included with **AutoBogus**, but it wi
 - [AutoBogus.NSubstitute](https://www.nuget.org/packages/AutoBogus.NSubstitute)
 
 ## Skipping
-For a given type, members can be skipped when generating values and will result in the default for their defined type.
+The generating of values can be skipped based on either a type or the member path of a type. 
 
 ```c#
 AutoFaker.Configure(builder =>
 {
+  // Types
+  builder
+    .WithSkip<Address>()                      // Define a generic type
+    .WithSkip(typeof(Country));               // Define a type
+
+  // Type members
   builder
     .WithSkip<Person>(person => person.Name); // Define using an expression for public members
     .WithSkip<Person>("Age");                 // Define using a string for protected, internal, etc. members
