@@ -2,6 +2,7 @@ using AutoBogus.Generators;
 using AutoBogus.Tests.Models.Simple;
 using AutoBogus.Util;
 using Bogus;
+using FakeItEasy.Sdk;
 using FluentAssertions;
 using System;
 using System.Collections;
@@ -13,6 +14,28 @@ namespace AutoBogus.Tests
 {
   public partial class AutoGeneratorsFixture
   {
+    public class ReferenceTypes
+      : AutoGeneratorsFixture
+    {
+      private sealed class TestClass
+      {
+        public TestClass(in int value)
+        { }
+      }
+
+      [Fact]
+      public void Should_Not_Throw_For_Reference_Types()
+      {
+        var type = typeof(TestClass);
+        var constructor = type.GetConstructors().Single();
+        var parameter = constructor.GetParameters().Single();
+        var context = CreateContext(parameter.ParameterType);
+
+        Action action = () => AutoGeneratorFactory.GetGenerator(context);
+        action.Should().NotThrow();
+      }
+    }
+
     public class RegisteredGenerator
       : AutoGeneratorsFixture
     {
