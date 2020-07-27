@@ -46,6 +46,20 @@ namespace AutoBogus
     TBuilder WithFakerHub(Faker fakerHub);
 
     /// <summary>
+    /// Registers a type to skip when generating values.
+    /// </summary>
+    /// <param name="type">The type to skip.</param>
+    /// <returns>The current configuration builder instance.</returns>
+    TBuilder WithSkip(Type type);
+
+    /// <summary>
+    /// Registers a type to skip when generating values.
+    /// </summary>
+    /// <typeparam name="TType">The type to skip.</typeparam>
+    /// <returns>The current configuration builder instance.</returns>
+    TBuilder WithSkip<TType>();
+
+    /// <summary>
     /// Registers a member to skip for a given type when generating values.
     /// </summary>
     /// <typeparam name="TType">The parent type containing the member.</typeparam>

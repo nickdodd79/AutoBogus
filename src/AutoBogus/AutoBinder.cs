@@ -110,8 +110,21 @@ namespace AutoBogus
 
     private bool ShouldSkip(Type type, string path, AutoGenerateContext context)
     {
+      // Skip if the type is found
+      if (context.Config.SkipTypes.Contains(type))
+      {
+        return true;
+      }
+
+      // Skip if the path is found
+      if (context.Config.SkipPaths.Contains(path))
+      {
+        return true;
+      }
+
+      // Finally check if the recursive depth has been reached
       var count = context.TypesStack.Count(t => t == type);
-      return context.Config.Skips.Contains(path) || count >= context.Config.RecursiveDepth;
+      return count >= context.Config.RecursiveDepth;
     }
 
     private ConstructorInfo GetConstructor<TType>()

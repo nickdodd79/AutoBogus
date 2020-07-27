@@ -488,6 +488,20 @@
             <param name="fakerHub">The <see cref="T:Bogus.Faker"/> instance to use as the hub.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithSkip(System.Type)">
+            <summary>
+            Registers a type to skip when generating values.
+            </summary>
+            <param name="type">The type to skip.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithSkip``1">
+            <summary>
+            Registers a type to skip when generating values.
+            </summary>
+            <typeparam name="TType">The type to skip.</typeparam>
+            <returns>The current configuration builder instance.</returns>
+        </member>
         <member name="M:AutoBogus.IAutoConfigBuilder`1.WithSkip``1(System.String)">
             <summary>
             Registers a member to skip for a given type when generating values.

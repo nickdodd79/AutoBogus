@@ -112,7 +112,56 @@ namespace AutoBogus.Tests
       }
     }
 
-    public class WithSkip
+    public class WithSkip_Type
+      : AutoConfigBuilderFixture
+    {
+      [Fact]
+      public void Should_Not_Add_Type_If_Already_Added()
+      {
+        var type = typeof(int);
+        _config.SkipTypes.Add(type);
+
+        _builder.WithSkip<ITestBuilder, int>(null);
+
+        _config.SkipTypes.Should().ContainSingle();
+      }
+
+      [Fact]
+      public void Should_Add_Generic_Type_To_Skip()
+      {
+        var type1 = typeof(int);
+        var type2 = typeof(string);
+
+        _config.SkipTypes.Add(type1);
+
+        _builder.WithSkip<ITestBuilder, string>(null);
+
+        _config.SkipTypes.Should().BeEquivalentTo(new[]
+        {
+          type1,
+          type2
+        });
+      }
+
+      [Fact]
+      public void Should_Add_Type_To_Skip()
+      {
+        var type1 = typeof(int);
+        var type2 = typeof(string);
+
+        _config.SkipTypes.Add(type1);
+
+        _builder.WithSkip<ITestBuilder>(type2, null);
+
+        _config.SkipTypes.Should().BeEquivalentTo(new[]
+        {
+          type1,
+          type2
+        });
+      }
+    }
+
+    public class WithSkip_Path
       : AutoConfigBuilderFixture
     {
       private sealed class TestSkip
@@ -127,7 +176,7 @@ namespace AutoBogus.Tests
 
         _builder.WithSkip<ITestBuilder, TestSkip>(member, null);
 
-        _config.Skips.Should().BeEmpty();
+        _config.SkipPaths.Should().BeEmpty();
       }
 
       [Fact]
@@ -135,18 +184,18 @@ namespace AutoBogus.Tests
       {
         _builder.WithSkip<ITestBuilder, TestSkip>(s => s.GetType(), null);
 
-        _config.Skips.Should().BeEmpty();
+        _config.SkipPaths.Should().BeEmpty();
       }
 
       [Fact]
       public void Should_Not_Add_Member_If_Already_Added()
       {
         var type = typeof(TestSkip);
-        _config.Skips.Add($"{type.FullName}.Value");
+        _config.SkipPaths.Add($"{type.FullName}.Value");
 
         _builder.WithSkip<ITestBuilder, TestSkip>(s => s.Value, null);
 
-        _config.Skips.Should().ContainSingle();
+        _config.SkipPaths.Should().ContainSingle();
       }
 
       [Fact]
@@ -155,11 +204,11 @@ namespace AutoBogus.Tests
         var type = typeof(TestSkip);
         var path = _faker.Random.String();
 
-        _config.Skips.Add(path);
+        _config.SkipPaths.Add(path);
 
         _builder.WithSkip<ITestBuilder, TestSkip>(s => s.Value, null);
 
-        _config.Skips.Should().BeEquivalentTo(new[]
+        _config.SkipPaths.Should().BeEquivalentTo(new[]
         {
           path,
           $"{type.FullName}.Value"
@@ -172,11 +221,11 @@ namespace AutoBogus.Tests
         var type = typeof(TestSkip);
         var path = _faker.Random.String();
 
-        _config.Skips.Add(path);
+        _config.SkipPaths.Add(path);
 
         _builder.WithSkip<ITestBuilder, TestSkip>("Value", null);
 
-        _config.Skips.Should().BeEquivalentTo(new[]
+        _config.SkipPaths.Should().BeEquivalentTo(new[]
         {
           path,
           $"{type.FullName}.Value"

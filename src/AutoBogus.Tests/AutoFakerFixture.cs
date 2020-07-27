@@ -315,6 +315,20 @@ namespace AutoBogus.Tests
       : AutoFakerFixture
     {
       [Fact]
+      public void Should_Skip_Configured_Types()
+      {
+        var instance = AutoFaker.Generate<Order>(builder =>
+        {
+          builder
+            .WithSkip<ICalculator>()
+            .WithSkip<Guid?>();
+        });
+
+        instance.Calculator.Should().BeNull();
+        instance.Code.Should().BeNull();
+      }
+
+      [Fact]
       public void Should_Skip_Configured_Members()
       {
         var instance = AutoFaker.Generate<Order>(builder =>

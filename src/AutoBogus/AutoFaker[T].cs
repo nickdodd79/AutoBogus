@@ -186,11 +186,11 @@ namespace AutoBogus
               if (memberNames.Contains(memberName))
               {
                 var path = $"{type.FullName}.{memberName}";
-                var existing = context.Config.Skips.Any(s => s == path);
+                var existing = context.Config.SkipPaths.Any(s => s == path);
 
                 if (!existing)
                 {
-                  context.Config.Skips.Add(path);
+                  context.Config.SkipPaths.Add(path);
                 }
               }
             }

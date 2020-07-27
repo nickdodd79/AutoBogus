@@ -15,6 +15,8 @@ namespace AutoBogus.Playground
     private class TestProduct
       : Product<int>
     {
+      public Exception Error { get; set; }
+
       public IEnumerable<string> GetNotes()
       {
         return Notes;
@@ -120,6 +122,17 @@ namespace AutoBogus.Playground
     {
       var product = AutoFaker.Generate<TestProduct>();
       product.GetNotes().Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public void Should_Not_Set_Product_Code()
+    {
+      var product = AutoFaker.Generate<TestProduct>(builder =>
+      {
+        builder.WithSkip<Exception>();
+      });
+
+      product.Error.Should().BeNull();
     }
 
     [Fact]

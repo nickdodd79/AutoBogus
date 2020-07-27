@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Bogus;
@@ -17,7 +18,8 @@ namespace AutoBogus
       RepeatCount = DefaultRepeatCount;
       RecursiveDepth = DefaultRecursiveCount;
       Binder = new AutoBinder();
-      Skips = new List<string>();
+      SkipTypes = new List<Type>();
+      SkipPaths = new List<string>();
       Overrides = new List<AutoGeneratorOverride>();
     }
 
@@ -28,7 +30,8 @@ namespace AutoBogus
       RecursiveDepth = config.RecursiveDepth;
       Binder = config.Binder;
       FakerHub = config.FakerHub;
-      Skips = config.Skips.ToList();
+      SkipTypes = config.SkipTypes.ToList();
+      SkipPaths = config.SkipPaths.ToList();
       Overrides = config.Overrides.ToList();
     }
 
@@ -37,7 +40,8 @@ namespace AutoBogus
     internal int RecursiveDepth { get; set; }
     internal IAutoBinder Binder { get; set; }
     internal Faker FakerHub { get; set; }
-    internal IList<string> Skips { get; set; }
+    internal IList<Type> SkipTypes { get; set; }
+    internal IList<string> SkipPaths { get; set; }
     internal IList<AutoGeneratorOverride> Overrides { get; set; }
   }
 }
