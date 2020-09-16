@@ -2,11 +2,11 @@ using AutoBogus.Generators;
 using AutoBogus.Tests.Models.Simple;
 using AutoBogus.Util;
 using Bogus;
-using FakeItEasy.Sdk;
 using FluentAssertions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using Xunit;
 
@@ -64,6 +64,42 @@ namespace AutoBogus.Tests
         {
           g.Key
         });
+      }
+    }
+
+    public class ExpandoObjectGenerator
+      : AutoGeneratorsFixture
+    {
+      [Fact]
+      public void Generate_Should_Return_Value()
+      {
+        var type = typeof(ExpandoObject);
+        var generator = new Generators.ExpandoObjectGenerator();
+
+        dynamic instance = new ExpandoObject();
+        dynamic child = new ExpandoObject();
+
+        instance.Property = string.Empty;
+        instance.Child = child;
+
+        child.Property = 0;
+
+        InvokeGenerator(type, generator, instance);
+
+        string property = instance.Property;
+        int childProperty = instance.Child.Property;
+
+        property.Should().NotBeEmpty();
+        childProperty.Should().NotBe(0);
+      }
+
+      [Fact]
+      public void GetGenerator_Should_Return_NullableGenerator()
+      {
+        var type = typeof(ExpandoObject);
+        var context = CreateContext(type);
+
+        AutoGeneratorFactory.GetGenerator(context).Should().BeOfType<Generators.ExpandoObjectGenerator>();
       }
     }
 
@@ -380,9 +416,11 @@ namespace AutoBogus.Tests
       }
     }
 
-    private object InvokeGenerator(Type type, IAutoGenerator generator)
+    private object InvokeGenerator(Type type, IAutoGenerator generator, object instance = null)
     {
       var context = CreateContext(type);
+      context.Instance = instance;
+
       return generator.Generate(context);
     }
 

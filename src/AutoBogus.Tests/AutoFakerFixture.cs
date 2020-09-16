@@ -7,6 +7,7 @@ using NSubstitute;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using Xunit;
@@ -210,6 +211,28 @@ namespace AutoBogus.Tests
       public void Should_Generate_Type()
       {
         _faker.Generate().Should().BeGeneratedWithoutMocks();
+      }
+
+      [Fact]
+      public void Should_Populate_ExpandoObject()
+      {
+        var faker = new AutoFaker<dynamic>();
+
+        dynamic instance = new ExpandoObject();
+        dynamic child = new ExpandoObject();
+
+        instance.Property = string.Empty;
+        instance.Child = child;
+
+        child.Property = 0;
+
+        faker.Populate(instance);
+
+        string property = instance.Property;
+        int childProperty = instance.Child.Property;
+
+        property.Should().NotBeEmpty();
+        childProperty.Should().NotBe(0);
       }
 
       [Fact]
