@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+#if !NETSTANDARD1_3
+using System.Dynamic;
+#endif
+
 namespace AutoBogus
 {
   /// <summary>
@@ -120,7 +124,6 @@ namespace AutoBogus
     public override void Populate(TType instance, string ruleSets = null)
     {
       var context = CreateContext(ruleSets);
-
       PrepareFinish(context);
 
       base.Populate(instance, ruleSets);
@@ -217,6 +220,30 @@ namespace AutoBogus
         // Add an internal finish to auto populate any remaining values
         FinishWith((faker, instance) =>
         {
+#if !NETSTANDARD1_3
+          // If dynamic objects are supported, populate as a dictionary
+          if (instance is ExpandoObject obj)
+          {
+            // Need to copy the target dictionary to avoid mutations during population
+            var target = obj as IDictionary<string, object>;
+            var source = new Dictionary<string, object>(target);
+            var properties = source.Where(pair => pair.Value != null);
+
+            foreach (var property in properties)
+            {
+              // Configure the context
+              context.GenerateName = property.Key;
+              context.GenerateType = property.Value.GetType();
+
+              // Generate the property values
+              var generator = AutoGeneratorFactory.GetGenerator(context);
+              target[property.Key] = generator.Generate(context);
+            }
+
+            return;
+          }
+#endif
+          // Otherwise continue with a standard populate
           // Extract the unpopulated member infos
           var members = new List<MemberInfo>();
           var memberNames = GetRuleSetsMemberNames(context);
