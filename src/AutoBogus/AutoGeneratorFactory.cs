@@ -55,6 +55,13 @@ namespace AutoBogus
         type = type.GetElementType();
       }
 
+      // Check if an expando object needs to generator
+      // This actually means an existing dictionary needs to be populated
+      if (ReflectionHelper.IsExpandoObject(type))
+      {
+        return new ExpandoObjectGenerator();
+      }
+
       // Do some type -> generator mapping
       if (type.IsArray)
       {

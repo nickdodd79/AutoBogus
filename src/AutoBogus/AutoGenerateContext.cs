@@ -19,12 +19,15 @@ namespace AutoBogus
       Faker = faker ?? new Faker(config.Locale);
       Config = config;
 
-      RuleSets = Enumerable.Empty<string>();
-
       TypesStack = new Stack<Type>();
+
+      RuleSets = Enumerable.Empty<string>();
     }
 
     internal AutoConfig Config { get; }
+    internal Stack<Type> TypesStack { get; }
+
+    internal object Instance { get; set; }
 
     /// <summary>
     /// The type associated with the current generate request.
@@ -45,8 +48,6 @@ namespace AutoBogus
     /// The requested rule sets provided for the generate request.
     /// </summary>
     public IEnumerable<string> RuleSets { get; internal set; }
-
-    internal Stack<Type> TypesStack { get; }
 
     internal IAutoBinder Binder => Config.Binder;
     internal IEnumerable<AutoGeneratorOverride> Overrides => Config.Overrides;

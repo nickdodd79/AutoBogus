@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+#if !NETSTANDARD1_3
+using System.Dynamic;
+#endif
+
 namespace AutoBogus.Util
 {
   internal static class ReflectionHelper
@@ -44,6 +48,15 @@ namespace AutoBogus.Util
 #else
       var typeInfo = type.GetTypeInfo();
       return typeInfo.IsGenericType;
+#endif
+    }
+
+    internal static bool IsExpandoObject(Type type)
+    {
+#if NETSTANDARD1_3
+      return false;
+#else
+      return type == typeof(ExpandoObject);
 #endif
     }
 

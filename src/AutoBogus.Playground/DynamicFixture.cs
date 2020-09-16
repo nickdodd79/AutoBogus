@@ -10,27 +10,26 @@ namespace AutoBogus.Playground
     public void Should_Populate_Dynamic()
     {
       dynamic obj1 = new ExpandoObject();
-      obj1.Property1 = "";
-      obj1.Property2 = 0;
+      dynamic obj2 = new ExpandoObject();
 
-      var obj2 = new
-      {
-        Property3 = ""
-      };
+      obj1.StringProperty = "";
+      obj1.IntProperty = 0;
+
+      obj2.NestedIntProp = 0;
+
+      obj1.NestedProp = obj2;
 
       var faker1 = new AutoFaker<dynamic>();
-      var faker2 = new AutoFaker<object>();
 
       faker1.Populate(obj1);
-      faker2.Populate(obj2);
 
-      string prop1 = obj1.Property1;
-      int prop2 = obj1.Property2;
-      string prop3 = obj2.Property3;
+      string stringProp = obj1.StringProperty;
+      int intProperty = obj1.IntProperty;
+      int nestedIntProp = obj1.NestedProp.NestedIntProp;
 
-      prop1.Should().NotBeEmpty();
-      prop2.Should().NotBe(0);
-      prop3.Should().BeEmpty();
+      stringProp.Should().NotBeEmpty();
+      intProperty.Should().NotBe(0);
+      nestedIntProp.Should().NotBe(0);
     }
   }
 }

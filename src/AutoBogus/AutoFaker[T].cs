@@ -1,12 +1,9 @@
+using AutoBogus.Util;
 using Bogus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
-#if !NETSTANDARD1_3
-using System.Dynamic;
-#endif
 
 namespace AutoBogus
 {
@@ -222,23 +219,20 @@ namespace AutoBogus
         {
 #if !NETSTANDARD1_3
           // If dynamic objects are supported, populate as a dictionary
-          if (instance is ExpandoObject obj)
+          var type = instance?.GetType();
+
+          if (ReflectionHelper.IsExpandoObject(type))
           {
-            // Need to copy the target dictionary to avoid mutations during population
-            var target = obj as IDictionary<string, object>;
-            var source = new Dictionary<string, object>(target);
-            var properties = source.Where(pair => pair.Value != null);
+            // Configure the context
+            context.GenerateType = type;
+            context.Instance = instance;
 
-            foreach (var property in properties)
-            {
-              // Configure the context
-              context.GenerateName = property.Key;
-              context.GenerateType = property.Value.GetType();
+            // Get the expando generator and populate the instance
+            var generator = AutoGeneratorFactory.GetGenerator(context);
+            generator.Generate(context);
 
-              // Generate the property values
-              var generator = AutoGeneratorFactory.GetGenerator(context);
-              target[property.Key] = generator.Generate(context);
-            }
+            // Clear the context instance
+            context.Instance = null;
 
             return;
           }
