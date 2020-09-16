@@ -7,7 +7,7 @@
     <Product>AutoBogus</Product>
     <Description>A C# library complementing the Bogus generator by adding auto creation and population capabilities. This package includes generator options for common conventions.</Description>
     <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
-    <Version>2.10.0</Version>
+    <Version>2.11.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <LangVersion>latest</LangVersion>
     <RepositoryUrl>https://github.com/nickdodd79/AutoBogus</RepositoryUrl>
