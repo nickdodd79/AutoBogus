@@ -82,6 +82,18 @@ namespace AutoBogus
     private bool FinishInitialized { get; set; }
     private Func<Faker, TType> DefaultCreateAction { get; set; }
 
+    public AutoFaker<TType> Configure(Action<IAutoGenerateConfigBuilder> configure)
+    {
+      var config = new AutoConfig(AutoFaker.DefaultConfig);
+      var builder = new AutoConfigBuilder(config);
+
+      configure?.Invoke(builder);
+
+      Config = config;
+
+      return this;
+    }
+
     /// <summary>
     /// Generates an instance of type <typeparamref name="TType"/>.
     /// </summary>
