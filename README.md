@@ -47,6 +47,12 @@ faker.Generate<TType, TFaker>(builder => ...);
 
 AutoFaker.Generate<TType>(builder => ...);
 AutoFaker.Generate<TType, TFaker>(builder => ...);
+
+// Configure an AutoFaker<T> 
+var personFaker = new AutoFaker<Person>()
+  .Configure(builder => ...)
+  .RuleFor(fake => fake.Id, fake => fake.Random.Int())
+  .Generate();
 ```
 
 The `Generate<TType, TFaker>()` methods also include `WithArgs()` so constructor arguments can be defined for the `TFaker` instance.
