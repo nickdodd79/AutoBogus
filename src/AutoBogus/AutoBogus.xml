@@ -281,6 +281,11 @@
             A class for overriding generate requests.
             </summary>
         </member>
+        <member name="P:AutoBogus.AutoGeneratorOverride.Preinitialize">
+            <summary>
+            Gets whether a pre-initialized instance is required. Defaults to true.
+            </summary>
+        </member>
         <member name="M:AutoBogus.AutoGeneratorOverride.CanOverride(AutoBogus.AutoGenerateContext)">
             <summary>
             Determines whether a generate request can be overridden.

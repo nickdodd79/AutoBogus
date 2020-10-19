@@ -6,6 +6,14 @@ namespace AutoBogus
   public abstract class AutoGeneratorOverride
   {
     /// <summary>
+    /// Gets whether a pre-initialized instance is required. Defaults to true.
+    /// </summary>
+    public virtual bool Preinitialize
+    {
+      get => true;
+    }
+
+    /// <summary>
     /// Determines whether a generate request can be overridden.
     /// </summary>
     /// <param name="context">The <see cref="AutoGenerateContext"/> instance for the current generate request.</param>

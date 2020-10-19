@@ -16,15 +16,17 @@ namespace AutoBogus
 
     object IAutoGenerator.Generate(AutoGenerateContext context)
     {
-      // Create the override context and generate an initial instance
-      var overrideContext = new AutoGenerateOverrideContext(context)
-      {
-        Instance = Generator.Generate(context)
-      };
+      var overrideContext = new AutoGenerateOverrideContext(context);
 
-      // Then allow each override to alter the intial instance
       foreach (var generatorOverride in Overrides)
       {
+        // Check if an initialized instance is needed
+        if (generatorOverride.Preinitialize && overrideContext.Instance == null)
+        {
+          overrideContext.Instance = Generator.Generate(context);
+        }
+
+        // Let each override apply updates to the instance
         generatorOverride.Generate(overrideContext);
       }      
 
