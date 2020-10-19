@@ -86,8 +86,10 @@ namespace AutoBogus.Tests
       [MemberData(nameof(GetTypes))]
       public void Should_Generate_Many_Types(Type type)
       {
+        var count = AutoConfig.DefaultRepeatCount.Invoke(null);
         var configure = CreateConfigure<IAutoGenerateConfigBuilder>(_config);
-        AssertGenerateMany(type, _generateMany, _faker, AutoConfig.DefaultRepeatCount, configure);
+
+        AssertGenerateMany(type, _generateMany, _faker, count, configure);
       }
 
       [Fact]
@@ -100,8 +102,9 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Generate_Many_Complex_Types()
       {
+        var count = AutoConfig.DefaultRepeatCount.Invoke(null);
         var configure = CreateConfigure<IAutoGenerateConfigBuilder>(_config);
-        var instances = _faker.Generate<Order>(AutoConfig.DefaultRepeatCount, configure);
+        var instances = _faker.Generate<Order>(count, configure);
 
         AssertGenerateMany(instances);
       }
@@ -131,8 +134,9 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Generate_Many_Complex_Types()
       {
+        var count = AutoConfig.DefaultRepeatCount.Invoke(null);
         var configure = CreateConfigure<IAutoFakerConfigBuilder>(AutoFaker.DefaultConfig);
-        var instances = _faker.Generate<Order, TestFaker>(AutoConfig.DefaultRepeatCount, configure);
+        var instances = _faker.Generate<Order, TestFaker>(count, configure);
 
         AssertGenerateMany(instances);
       }
@@ -156,8 +160,10 @@ namespace AutoBogus.Tests
       [MemberData(nameof(GetTypes))]
       public void Should_Generate_Many_Types(Type type)
       {
+        var count = AutoConfig.DefaultRepeatCount.Invoke(null);
         var configure = CreateConfigure<IAutoGenerateConfigBuilder>(AutoFaker.DefaultConfig);
-        AssertGenerateMany(type, _generateMany, null, AutoConfig.DefaultRepeatCount, configure);
+
+        AssertGenerateMany(type, _generateMany, null, count, configure);
       }
 
       [Fact]
@@ -170,8 +176,9 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Generate_Many_Complex_Types()
       {
+        var count = AutoConfig.DefaultRepeatCount.Invoke(null);
         var configure = CreateConfigure<IAutoGenerateConfigBuilder>(AutoFaker.DefaultConfig);
-        var instances = AutoFaker.Generate<Order>(AutoConfig.DefaultRepeatCount, configure);
+        var instances = AutoFaker.Generate<Order>(count, configure);
 
         AssertGenerateMany(instances);
       }
@@ -190,8 +197,9 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Generate_Many_Complex_Types()
       {
+        var count = AutoConfig.DefaultRepeatCount.Invoke(null);
         var configure = CreateConfigure<IAutoFakerConfigBuilder>(AutoFaker.DefaultConfig);
-        var instances = AutoFaker.Generate<Order, TestFaker>(AutoConfig.DefaultRepeatCount, configure);
+        var instances = AutoFaker.Generate<Order, TestFaker>(count, configure);
 
         AssertGenerateMany(instances);
       }
@@ -474,7 +482,9 @@ namespace AutoBogus.Tests
         [Fact]
         public void Should_Generate_Many_Complex_Types()
         {
-          var instances = _faker.Generate<Order, TestFaker>(AutoConfig.DefaultRepeatCount, new object[0]);
+          var count = AutoConfig.DefaultRepeatCount.Invoke(null);
+          var instances = _faker.Generate<Order, TestFaker>(count, new object[0]);
+
           AssertGenerateMany(instances);
         }
       }
@@ -556,7 +566,8 @@ namespace AutoBogus.Tests
         [MemberData(nameof(GetTypes))]
         public void Should_Generate_Many_Types(Type type)
         {
-          AssertGenerateMany(type, _generateMany, null, AutoConfig.DefaultRepeatCount, AutoConfig.DefaultLocale);
+          var count = AutoConfig.DefaultRepeatCount.Invoke(null);
+          AssertGenerateMany(type, _generateMany, null, count, AutoConfig.DefaultLocale);
         }
 
         [Fact]
@@ -568,7 +579,8 @@ namespace AutoBogus.Tests
         [Fact]
         public void Should_Generate_Many_Complex_Types()
         {
-          var instances = AutoFaker.Generate<Order>(AutoConfig.DefaultRepeatCount, AutoConfig.DefaultLocale);
+          var count = AutoConfig.DefaultRepeatCount.Invoke(null);
+          var instances = AutoFaker.Generate<Order>(count, AutoConfig.DefaultLocale);
 
           AssertGenerateMany(instances);
         }
@@ -586,7 +598,9 @@ namespace AutoBogus.Tests
         [Fact]
         public void Should_Generate_Many_Complex_Types()
         {
-          var instances = AutoFaker.Generate<Order, TestFaker>(AutoConfig.DefaultRepeatCount, new object[0]);
+          var count = AutoConfig.DefaultRepeatCount.Invoke(null);
+          var instances = AutoFaker.Generate<Order, TestFaker>(count, new object[0]);
+
           AssertGenerateMany(instances);
         }
       }
@@ -632,10 +646,11 @@ namespace AutoBogus.Tests
 
     public static void AssertGenerateMany(Type type, MethodInfo methodInfo, IAutoFaker faker, params object[] args)
     {
+      var count = AutoConfig.DefaultRepeatCount.Invoke(null);
       var method = methodInfo.MakeGenericMethod(type);
       var instances = method.Invoke(faker, args) as IEnumerable;
 
-      instances.Should().HaveCount(AutoConfig.DefaultRepeatCount);
+      instances.Should().HaveCount(count);
 
       foreach (var instance in instances)
       {
@@ -645,7 +660,9 @@ namespace AutoBogus.Tests
 
     public static void AssertGenerateMany(IEnumerable<Order> instances)
     {
-      instances.Should().HaveCount(AutoConfig.DefaultRepeatCount);
+      var count = AutoConfig.DefaultRepeatCount.Invoke(null);
+
+      instances.Should().HaveCount(count);
 
       foreach (var instance in instances)
       {

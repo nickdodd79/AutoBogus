@@ -82,6 +82,11 @@ namespace AutoBogus
     private bool FinishInitialized { get; set; }
     private Func<Faker, TType> DefaultCreateAction { get; set; }
 
+    /// <summary>
+    /// Configures the current faker instance.
+    /// </summary>
+    /// <param name="configure">A handler to build the faker configuration.</param>
+    /// <returns>The current faker instance.</returns>
     public AutoFaker<TType> Configure(Action<IAutoGenerateConfigBuilder> configure)
     {
       var config = new AutoConfig(AutoFaker.DefaultConfig);

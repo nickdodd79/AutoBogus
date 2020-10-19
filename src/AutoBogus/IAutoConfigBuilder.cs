@@ -25,11 +25,25 @@ namespace AutoBogus
     TBuilder WithRepeatCount(int count);
 
     /// <summary>
+    /// Registers the number of items to generate for a collection.
+    /// </summary>
+    /// <param name="count">The repeat count to use.</param>
+    /// <returns>The current configuration builder instance.</returns>
+    TBuilder WithRepeatCount(Func<AutoGenerateContext, int> count);
+
+    /// <summary>
     /// Registers the depth to recursively generate.
     /// </summary>
     /// <param name="depth">The recursive depth to use.</param>
     /// <returns>The current configuration builder instance.</returns>
     TBuilder WithRecursiveDepth(int depth);
+
+    /// <summary>
+    /// Registers the depth to recursively generate.
+    /// </summary>
+    /// <param name="depth">The recursive depth to use.</param>
+    /// <returns>The current configuration builder instance.</returns>
+    TBuilder WithRecursiveDepth(Func<AutoGenerateContext, int> depth);
 
     /// <summary>
     /// Registers a binder instance to use when generating values.

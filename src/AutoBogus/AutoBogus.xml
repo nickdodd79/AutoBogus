@@ -192,6 +192,13 @@
             <param name="locale">The locale to use for value generation.</param>
             <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use for the generation request.</param>
         </member>
+        <member name="M:AutoBogus.AutoFaker`1.Configure(System.Action{AutoBogus.IAutoGenerateConfigBuilder})">
+            <summary>
+            Configures the current faker instance.
+            </summary>
+            <param name="configure">A handler to build the faker configuration.</param>
+            <returns>The current faker instance.</returns>
+        </member>
         <member name="M:AutoBogus.AutoFaker`1.Generate(System.String)">
             <summary>
             Generates an instance of type <typeparamref name="TType"/>.
@@ -467,7 +474,21 @@
             <param name="count">The repeat count to use.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithRepeatCount(System.Func{AutoBogus.AutoGenerateContext,System.Int32})">
+            <summary>
+            Registers the number of items to generate for a collection.
+            </summary>
+            <param name="count">The repeat count to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
         <member name="M:AutoBogus.IAutoConfigBuilder`1.WithRecursiveDepth(System.Int32)">
+            <summary>
+            Registers the depth to recursively generate.
+            </summary>
+            <param name="depth">The recursive depth to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithRecursiveDepth(System.Func{AutoBogus.AutoGenerateContext,System.Int32})">
             <summary>
             Registers the depth to recursively generate.
             </summary>

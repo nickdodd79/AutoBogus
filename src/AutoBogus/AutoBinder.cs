@@ -124,7 +124,9 @@ namespace AutoBogus
 
       // Finally check if the recursive depth has been reached
       var count = context.TypesStack.Count(t => t == type);
-      return count >= context.Config.RecursiveDepth;
+      var depth = context.Config.RecursiveDepth.Invoke(context);
+
+      return count >= depth;
     }
 
     private ConstructorInfo GetConstructor<TType>()

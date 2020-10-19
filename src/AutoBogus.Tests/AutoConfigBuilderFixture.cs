@@ -54,9 +54,19 @@ namespace AutoBogus.Tests
       {
         var count = _faker.Random.Int();
 
-        _builder.WithRepeatCount<ITestBuilder>(count, null);
+        _builder.WithRepeatCount<ITestBuilder>(context => count, null);
 
-        _config.RepeatCount.Should().Be(count);
+        _config.RepeatCount.Invoke(null).Should().Be(count);
+      }
+
+      [Fact]
+      public void Should_Set_Config_RepeatCount_To_Default_If_Null()
+      {
+        var count = AutoConfig.DefaultRepeatCount.Invoke(null);
+
+        _builder.WithLocale<ITestBuilder>(null, null);
+
+        _config.RepeatCount.Invoke(null).Should().Be(count);
       }
     }
 
@@ -68,9 +78,19 @@ namespace AutoBogus.Tests
       {
         var depth = _faker.Random.Int();
 
-        _builder.WithRecursiveDepth<ITestBuilder>(depth, null);
+        _builder.WithRecursiveDepth<ITestBuilder>(context => depth, null);
 
-        _config.RecursiveDepth.Should().Be(depth);
+        _config.RecursiveDepth.Invoke(null).Should().Be(depth);
+      }
+
+      [Fact]
+      public void Should_Set_Config_RecursiveDepth_To_Default_If_Null()
+      {
+        var depth = AutoConfig.DefaultRecursiveDepth.Invoke(null);
+
+        _builder.WithLocale<ITestBuilder>(null, null);
+
+        _config.RecursiveDepth.Invoke(null).Should().Be(depth);
       }
     }
 

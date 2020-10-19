@@ -85,7 +85,11 @@ namespace AutoBogus
     internal static void GenerateMany<TType>(AutoGenerateContext context, int? count, List<TType> items, bool unique, int attempt = 1, Func<TType> generate = null)
     {
       // Apply any defaults
-      count = count ?? context.Config.RepeatCount;
+      if (count == null)
+      {
+        count = context.Config.RepeatCount.Invoke(context);
+      }
+
       generate = generate ?? (() => context.Generate<TType>());
 
       // Generate a list of items

@@ -42,7 +42,7 @@ namespace AutoBogus.Tests
         var count = _faker.Random.Int(3, 5);
         var expected = Enumerable.Range(0, count).Select(i => _value).ToList();
 
-        _config.RepeatCount = count;
+        _config.RepeatCount = context => count;
 
         AutoGenerateContextExtensions.GenerateMany(_context, null, _items, false, 1, () => _value);
 
