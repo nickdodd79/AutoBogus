@@ -27,6 +27,7 @@ namespace AutoBogus
     internal AutoConfig Config { get; }
     internal Stack<Type> TypesStack { get; }
 
+    internal Type ParentType { get; set; }
     internal object Instance { get; set; }
 
     /// <summary>

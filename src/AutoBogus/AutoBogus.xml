@@ -328,6 +328,57 @@
             <param name="builder">The current configuration builder instance.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
+        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithSkip``1(AutoBogus.IAutoFakerDefaultConfigBuilder)">
+            <summary>
+            Registers a type to skip when generating values.
+            </summary>
+            <typeparam name="TType">The type to skip.</typeparam>
+            <param name="builder">The current configuration builder instance.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithSkip``1(AutoBogus.IAutoGenerateConfigBuilder)">
+            <summary>
+            Registers a type to skip when generating values.
+            </summary>
+            <typeparam name="TType">The type to skip.</typeparam>
+            <param name="builder">The current configuration builder instance.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithSkip``1(AutoBogus.IAutoFakerConfigBuilder)">
+            <summary>
+            Registers a type to skip when generating values.
+            </summary>
+            <typeparam name="TType">The type to skip.</typeparam>
+            <param name="builder">The current configuration builder instance.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithSkip``1(AutoBogus.IAutoFakerDefaultConfigBuilder,System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+            Registers a member to skip for a given type when generating values.
+            </summary>
+            <typeparam name="TType">The parent type containing the member.</typeparam>
+            <param name="builder">The current configuration builder instance.</param>
+            <param name="member">The member to skip.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithSkip``1(AutoBogus.IAutoGenerateConfigBuilder,System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+            Registers a member to skip for a given type when generating values.
+            </summary>
+            <typeparam name="TType">The parent type containing the member.</typeparam>
+            <param name="builder">The current configuration builder instance.</param>
+            <param name="member">The member to skip.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithSkip``1(AutoBogus.IAutoFakerConfigBuilder,System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>
+            Registers a member to skip for a given type when generating values.
+            </summary>
+            <typeparam name="TType">The parent type containing the member.</typeparam>
+            <param name="builder">The current configuration builder instance.</param>
+            <param name="member">The member to skip.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
         <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithOverride``1(AutoBogus.IAutoFakerDefaultConfigBuilder,System.Func{AutoBogus.AutoGenerateOverrideContext,``0})">
             <summary>
             Registers an override instance to use when generating values.
@@ -352,6 +403,39 @@
             </summary>
             <typeparam name="TType">The type of instance to override.</typeparam>
             <param name="builder">The current configuration builder instance.</param>
+            <param name="generator">A handler used to generate the override.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithOverride``2(AutoBogus.IAutoFakerDefaultConfigBuilder,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Func{AutoBogus.AutoGenerateOverrideContext,``1})">
+            <summary>
+            Registers an override instance to use when generating values.
+            </summary>
+            <typeparam name="TType">The type of instance to override.</typeparam>
+            <typeparam name="TValue">The member type to override.</typeparam>
+            <param name="builder">The current configuration builder instance.</param>
+            <param name="member">The member to override.</param>
+            <param name="generator">A handler used to generate the override.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithOverride``2(AutoBogus.IAutoGenerateConfigBuilder,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Func{AutoBogus.AutoGenerateOverrideContext,``1})">
+            <summary>
+            Registers an override instance to use when generating values.
+            </summary>
+            <typeparam name="TType">The type of instance to override.</typeparam>
+            <typeparam name="TValue">The member type to override.</typeparam>
+            <param name="builder">The current configuration builder instance.</param>
+            <param name="member">The member to override.</param>
+            <param name="generator">A handler used to generate the override.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.AutoConfigBuilderExtensions.WithOverride``2(AutoBogus.IAutoFakerConfigBuilder,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Func{AutoBogus.AutoGenerateOverrideContext,``1})">
+            <summary>
+            Registers an override instance to use when generating values.
+            </summary>
+            <typeparam name="TType">The type of instance to override.</typeparam>
+            <typeparam name="TValue">The member type to override.</typeparam>
+            <param name="builder">The current configuration builder instance.</param>
+            <param name="member">The member to override.</param>
             <param name="generator">A handler used to generate the override.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
@@ -521,27 +605,12 @@
             <param name="type">The type to skip.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
-        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithSkip``1">
-            <summary>
-            Registers a type to skip when generating values.
-            </summary>
-            <typeparam name="TType">The type to skip.</typeparam>
-            <returns>The current configuration builder instance.</returns>
-        </member>
         <member name="M:AutoBogus.IAutoConfigBuilder`1.WithSkip``1(System.String)">
             <summary>
             Registers a member to skip for a given type when generating values.
             </summary>
             <typeparam name="TType">The parent type containing the member.</typeparam>
             <param name="memberName">The name of the member to skip.</param>
-            <returns>The current configuration builder instance.</returns>
-        </member>
-        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithSkip``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
-            <summary>
-            Registers a member to skip for a given type when generating values.
-            </summary>
-            <typeparam name="TType">The parent type containing the member.</typeparam>
-            <param name="member">The member to skip.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
         <member name="M:AutoBogus.IAutoConfigBuilder`1.WithOverride(AutoBogus.AutoGeneratorOverride)">

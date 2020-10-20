@@ -1,8 +1,6 @@
-using AutoBogus.Util;
 using Bogus;
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace AutoBogus
 {
@@ -26,9 +24,7 @@ namespace AutoBogus
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithBinder(IAutoBinder binder) => WithBinder<IAutoFakerDefaultConfigBuilder>(binder, this);
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithFakerHub(Faker fakerHub) => WithFakerHub<IAutoFakerDefaultConfigBuilder>(fakerHub, this);
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithSkip(Type type) => WithSkip<IAutoFakerDefaultConfigBuilder>(type, this);
-    IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithSkip<TType>() => WithSkip<IAutoFakerDefaultConfigBuilder, TType>(this);
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithSkip<TType>(string memberName) => WithSkip<IAutoFakerDefaultConfigBuilder, TType>(memberName, this);
-    IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithSkip<TType>(Expression<Func<TType, object>> member) => WithSkip<IAutoFakerDefaultConfigBuilder, TType>(member, this);
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithOverride(AutoGeneratorOverride generatorOverride) => WithOverride<IAutoFakerDefaultConfigBuilder>(generatorOverride, this);
     
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithLocale(string locale) => WithLocale<IAutoGenerateConfigBuilder>(locale, this);
@@ -39,9 +35,7 @@ namespace AutoBogus
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithBinder(IAutoBinder binder) => WithBinder<IAutoGenerateConfigBuilder>(binder, this);
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithFakerHub(Faker fakerHub) => WithFakerHub<IAutoGenerateConfigBuilder>(fakerHub, this);
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithSkip(Type type) => WithSkip<IAutoGenerateConfigBuilder>(type, this);
-    IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithSkip<TType>() => WithSkip<IAutoGenerateConfigBuilder, TType>(this);
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithSkip<TType>(string memberName) => WithSkip<IAutoGenerateConfigBuilder, TType>(memberName, this);
-    IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithSkip<TType>(Expression<Func<TType, object>> member) => WithSkip<IAutoGenerateConfigBuilder, TType>(member, this);
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithOverride(AutoGeneratorOverride generatorOverride) => WithOverride<IAutoGenerateConfigBuilder>(generatorOverride, this);
     
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithLocale(string locale) => WithLocale<IAutoFakerConfigBuilder>(locale, this);
@@ -52,9 +46,7 @@ namespace AutoBogus
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithBinder(IAutoBinder binder) => WithBinder<IAutoFakerConfigBuilder>(binder, this);
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithFakerHub(Faker fakerHub) => WithFakerHub<IAutoFakerConfigBuilder>(fakerHub, this);
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithSkip(Type type) => WithSkip<IAutoFakerConfigBuilder>(type, this);
-    IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithSkip<TType>() => WithSkip<IAutoFakerConfigBuilder, TType>(this);
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithSkip<TType>(string memberName) => WithSkip<IAutoFakerConfigBuilder, TType>(memberName, this);
-    IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithSkip<TType>(Expression<Func<TType, object>> member) => WithSkip<IAutoFakerConfigBuilder, TType>(member, this);
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithOverride(AutoGeneratorOverride generatorOverride) => WithOverride<IAutoFakerConfigBuilder>(generatorOverride, this);
     IAutoFakerConfigBuilder IAutoFakerConfigBuilder.WithArgs(params object[] args) => WithArgs<IAutoFakerConfigBuilder>(args, this);
 
@@ -100,18 +92,6 @@ namespace AutoBogus
       return builder;
     }
 
-    internal TBuilder WithSkip<TBuilder, TType>(TBuilder builder)
-    {
-      var type = typeof(TType);
-      return WithSkip(type, builder);
-    }
-
-    internal TBuilder WithSkip<TBuilder, TType>(Expression<Func<TType, object>> member, TBuilder builder)
-    {
-      var memberName = GetMemberName(member);
-      return WithSkip<TBuilder, TType>(memberName, builder);
-    }
-
     internal TBuilder WithSkip<TBuilder, TType>(string memberName, TBuilder builder)
     { 
       var type = typeof(TType);
@@ -149,35 +129,6 @@ namespace AutoBogus
     {
       Args = args;
       return builder;
-    }
-
-    private string GetMemberName<TType>(Expression<Func<TType, object>> member)
-    {
-      if (member != null)
-      {
-        MemberExpression expression;
-
-        if (member.Body is UnaryExpression unary)
-        {
-          expression = unary.Operand as MemberExpression;
-        }
-        else
-        {
-          expression = member.Body as MemberExpression;
-        }
-
-        if (expression != null)
-        {
-          var memberInfo = expression.Member;
-
-          if (ReflectionHelper.IsField(memberInfo) || ReflectionHelper.IsProperty(memberInfo))
-          {
-            return memberInfo.Name;
-          }
-        }
-      }
-
-      return null;     
     }
   }
 }

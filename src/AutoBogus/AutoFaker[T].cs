@@ -192,6 +192,7 @@ namespace AutoBogus
             var type = typeof(TType);
 
             // Set the current type being generated
+            context.ParentType = null;
             context.GenerateType = type;
             context.GenerateName = null;
 
@@ -241,7 +242,10 @@ namespace AutoBogus
           if (ReflectionHelper.IsExpandoObject(type))
           {
             // Configure the context
+            context.ParentType = null;
             context.GenerateType = type;
+            context.GenerateName = null;
+
             context.Instance = instance;
 
             // Get the expando generator and populate the instance

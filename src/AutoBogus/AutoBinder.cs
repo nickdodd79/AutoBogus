@@ -24,13 +24,14 @@ namespace AutoBogus
     {
       if (context != null)
       {
+        var type = typeof(TType);
         var constructor = GetConstructor<TType>();
 
         if (constructor != null)
         {
           // If a constructor is found generate values for each of the parameters
           var parameters = (from p in constructor.GetParameters()
-                            let g = GetParameterGenerator(p, context)
+                            let g = GetParameterGenerator(type, p, context)
                             select g.Generate(context)).ToArray();
 
           return (TType)constructor.Invoke(parameters);
@@ -75,6 +76,7 @@ namespace AutoBogus
             continue;
           }
 
+          context.ParentType = type;
           context.GenerateType = member.Type;
           context.GenerateName = member.Name;
 
@@ -168,8 +170,9 @@ namespace AutoBogus
               select c).SingleOrDefault();
     }
 
-    private IAutoGenerator GetParameterGenerator(ParameterInfo parameter, AutoGenerateContext context)
+    private IAutoGenerator GetParameterGenerator(Type type, ParameterInfo parameter, AutoGenerateContext context)
     {
+      context.ParentType = type;
       context.GenerateType = parameter.ParameterType;
       context.GenerateName = parameter.Name;
 

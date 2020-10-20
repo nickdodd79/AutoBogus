@@ -67,27 +67,12 @@ namespace AutoBogus
     TBuilder WithSkip(Type type);
 
     /// <summary>
-    /// Registers a type to skip when generating values.
-    /// </summary>
-    /// <typeparam name="TType">The type to skip.</typeparam>
-    /// <returns>The current configuration builder instance.</returns>
-    TBuilder WithSkip<TType>();
-
-    /// <summary>
     /// Registers a member to skip for a given type when generating values.
     /// </summary>
     /// <typeparam name="TType">The parent type containing the member.</typeparam>
     /// <param name="memberName">The name of the member to skip.</param>
     /// <returns>The current configuration builder instance.</returns>
     TBuilder WithSkip<TType>(string memberName);
-
-    /// <summary>
-    /// Registers a member to skip for a given type when generating values.
-    /// </summary>
-    /// <typeparam name="TType">The parent type containing the member.</typeparam>
-    /// <param name="member">The member to skip.</param>
-    /// <returns>The current configuration builder instance.</returns>
-    TBuilder WithSkip<TType>(Expression<Func<TType, object>> member);
 
     /// <summary>
     /// Registers an override instance to use when generating values.

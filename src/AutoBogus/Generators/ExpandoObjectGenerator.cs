@@ -22,8 +22,9 @@ namespace AutoBogus.Generators
         // Configure the context
         var type = property.Value.GetType();
 
-        context.GenerateName = property.Key;
+        context.ParentType = context.GenerateType;
         context.GenerateType = type;
+        context.GenerateName = property.Key;
 
         if (ReflectionHelper.IsExpandoObject(type))
         {

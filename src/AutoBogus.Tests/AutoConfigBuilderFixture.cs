@@ -138,29 +138,14 @@ namespace AutoBogus.Tests
       [Fact]
       public void Should_Not_Add_Type_If_Already_Added()
       {
-        var type = typeof(int);
-        _config.SkipTypes.Add(type);
-
-        _builder.WithSkip<ITestBuilder, int>(null);
-
-        _config.SkipTypes.Should().ContainSingle();
-      }
-
-      [Fact]
-      public void Should_Add_Generic_Type_To_Skip()
-      {
         var type1 = typeof(int);
-        var type2 = typeof(string);
+        var type2 = typeof(int);
 
         _config.SkipTypes.Add(type1);
 
-        _builder.WithSkip<ITestBuilder, string>(null);
+        _builder.WithSkip<ITestBuilder>(type2, null);
 
-        _config.SkipTypes.Should().BeEquivalentTo(new[]
-        {
-          type1,
-          type2
-        });
+        _config.SkipTypes.Should().ContainSingle();
       }
 
       [Fact]
@@ -190,49 +175,16 @@ namespace AutoBogus.Tests
       }
 
       [Fact]
-      public void Should_Not_Add_Null_Expression()
-      {
-        Expression<Func<TestSkip, object>> member = null;
-
-        _builder.WithSkip<ITestBuilder, TestSkip>(member, null);
-
-        _config.SkipPaths.Should().BeEmpty();
-      }
-
-      [Fact]
-      public void Should_Not_Add_Method_Expression()
-      {
-        _builder.WithSkip<ITestBuilder, TestSkip>(s => s.GetType(), null);
-
-        _config.SkipPaths.Should().BeEmpty();
-      }
-
-      [Fact]
       public void Should_Not_Add_Member_If_Already_Added()
       {
         var type = typeof(TestSkip);
-        _config.SkipPaths.Add($"{type.FullName}.Value");
+        var member = $"{type.FullName}.Value";
 
-        _builder.WithSkip<ITestBuilder, TestSkip>(s => s.Value, null);
+        _config.SkipPaths.Add(member);
+
+        _builder.WithSkip<ITestBuilder, TestSkip>("Value", null);
 
         _config.SkipPaths.Should().ContainSingle();
-      }
-
-      [Fact]
-      public void Should_Add_Member_To_Skip()
-      {
-        var type = typeof(TestSkip);
-        var path = _faker.Random.String();
-
-        _config.SkipPaths.Add(path);
-
-        _builder.WithSkip<ITestBuilder, TestSkip>(s => s.Value, null);
-
-        _config.SkipPaths.Should().BeEquivalentTo(new[]
-        {
-          path,
-          $"{type.FullName}.Value"
-        });
       }
 
       [Fact]
