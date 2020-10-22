@@ -649,6 +649,30 @@ namespace AutoBogus.Conventions.Generators
     }
   }
 
+  // Commerce.ProductDescription
+  internal sealed class ProductDescriptionByNameGenerator
+    : IAutoConventionGenerator
+  {  
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
+    {
+      return config.ProductDescription.Enabled &&
+             config.ProductDescription.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(System.String);
+    }
+
+    object IAutoConventionGenerator.Generate(AutoConventionContext context)
+    {
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.ProductDescription.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.Commerce.ProductDescription();
+      }
+
+      return context.Instance;
+    }
+  }
+
   // Commerce.ProductMaterial
   internal sealed class ProductMaterialByNameGenerator
     : IAutoConventionGenerator
@@ -1129,6 +1153,30 @@ namespace AutoBogus.Conventions.Generators
     }
   }
 
+  // Finance.LitecoinAddress
+  internal sealed class LitecoinAddressByNameGenerator
+    : IAutoConventionGenerator
+  {  
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
+    {
+      return config.LitecoinAddress.Enabled &&
+             config.LitecoinAddress.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(System.String);
+    }
+
+    object IAutoConventionGenerator.Generate(AutoConventionContext context)
+    {
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.LitecoinAddress.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.Finance.LitecoinAddress();
+      }
+
+      return context.Instance;
+    }
+  }
+
   // Finance.RoutingNumber
   internal sealed class RoutingNumberByNameGenerator
     : IAutoConventionGenerator
@@ -1345,6 +1393,54 @@ namespace AutoBogus.Conventions.Generators
     }
   }
 
+  // Internet.IpAddress
+  internal sealed class IpAddressByNameGenerator
+    : IAutoConventionGenerator
+  {  
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
+    {
+      return config.IpAddress.Enabled &&
+             config.IpAddress.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(System.Net.IPAddress);
+    }
+
+    object IAutoConventionGenerator.Generate(AutoConventionContext context)
+    {
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.IpAddress.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.Internet.IpAddress();
+      }
+
+      return context.Instance;
+    }
+  }
+
+  // Internet.IpEndPoint
+  internal sealed class IpEndPointByNameGenerator
+    : IAutoConventionGenerator
+  {  
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
+    {
+      return config.IpEndPoint.Enabled &&
+             config.IpEndPoint.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(System.Net.IPEndPoint);
+    }
+
+    object IAutoConventionGenerator.Generate(AutoConventionContext context)
+    {
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.IpEndPoint.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.Internet.IpEndPoint();
+      }
+
+      return context.Instance;
+    }
+  }
+
   // Internet.Ipv6
   internal sealed class Ipv6ByNameGenerator
     : IAutoConventionGenerator
@@ -1363,6 +1459,54 @@ namespace AutoBogus.Conventions.Generators
       if (context.Instance == null || alwaysGenerate)
       {
         return context.OverrideContext.Faker.Internet.Ipv6();
+      }
+
+      return context.Instance;
+    }
+  }
+
+  // Internet.Ipv6Address
+  internal sealed class Ipv6AddressByNameGenerator
+    : IAutoConventionGenerator
+  {  
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
+    {
+      return config.Ipv6Address.Enabled &&
+             config.Ipv6Address.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(System.Net.IPAddress);
+    }
+
+    object IAutoConventionGenerator.Generate(AutoConventionContext context)
+    {
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.Ipv6Address.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.Internet.Ipv6Address();
+      }
+
+      return context.Instance;
+    }
+  }
+
+  // Internet.Ipv6EndPoint
+  internal sealed class Ipv6EndPointByNameGenerator
+    : IAutoConventionGenerator
+  {  
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
+    {
+      return config.Ipv6EndPoint.Enabled &&
+             config.Ipv6EndPoint.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(System.Net.IPEndPoint);
+    }
+
+    object IAutoConventionGenerator.Generate(AutoConventionContext context)
+    {
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.Ipv6EndPoint.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.Internet.Ipv6EndPoint();
       }
 
       return context.Instance;
@@ -1465,6 +1609,30 @@ namespace AutoBogus.Conventions.Generators
     }
   }
 
+  // Internet.UrlRootedPath
+  internal sealed class UrlRootedPathByNameGenerator
+    : IAutoConventionGenerator
+  {  
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
+    {
+      return config.UrlRootedPath.Enabled &&
+             config.UrlRootedPath.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(System.String);
+    }
+
+    object IAutoConventionGenerator.Generate(AutoConventionContext context)
+    {
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.UrlRootedPath.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.Internet.UrlRootedPath();
+      }
+
+      return context.Instance;
+    }
+  }
+
   // Internet.UrlWithPath
   internal sealed class UrlWithPathByNameGenerator
     : IAutoConventionGenerator
@@ -1531,6 +1699,54 @@ namespace AutoBogus.Conventions.Generators
       if (context.Instance == null || alwaysGenerate)
       {
         return context.OverrideContext.Faker.Internet.UserName();
+      }
+
+      return context.Instance;
+    }
+  }
+
+  // Internet.UserNameUnicode
+  internal sealed class UserNameUnicodeByNameGenerator
+    : IAutoConventionGenerator
+  {  
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
+    {
+      return config.UserNameUnicode.Enabled &&
+             config.UserNameUnicode.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(System.String);
+    }
+
+    object IAutoConventionGenerator.Generate(AutoConventionContext context)
+    {
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.UserNameUnicode.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.Internet.UserNameUnicode();
+      }
+
+      return context.Instance;
+    }
+  }
+
+  // Music.Genre
+  internal sealed class GenreByNameGenerator
+    : IAutoConventionGenerator
+  {  
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
+    {
+      return config.Genre.Enabled &&
+             config.Genre.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(System.String);
+    }
+
+    object IAutoConventionGenerator.Generate(AutoConventionContext context)
+    {
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.Genre.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.Music.Genre();
       }
 
       return context.Instance;
@@ -2185,6 +2401,102 @@ namespace AutoBogus.Conventions.Generators
     }
   }
 
+  // Vehicle.Fuel
+  internal sealed class FuelByNameGenerator
+    : IAutoConventionGenerator
+  {  
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
+    {
+      return config.Fuel.Enabled &&
+             config.Fuel.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(System.String);
+    }
+
+    object IAutoConventionGenerator.Generate(AutoConventionContext context)
+    {
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.Fuel.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.Vehicle.Fuel();
+      }
+
+      return context.Instance;
+    }
+  }
+
+  // Vehicle.Manufacturer
+  internal sealed class ManufacturerByNameGenerator
+    : IAutoConventionGenerator
+  {  
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
+    {
+      return config.Manufacturer.Enabled &&
+             config.Manufacturer.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(System.String);
+    }
+
+    object IAutoConventionGenerator.Generate(AutoConventionContext context)
+    {
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.Manufacturer.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.Vehicle.Manufacturer();
+      }
+
+      return context.Instance;
+    }
+  }
+
+  // Vehicle.Model
+  internal sealed class ModelByNameGenerator
+    : IAutoConventionGenerator
+  {  
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
+    {
+      return config.Model.Enabled &&
+             config.Model.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(System.String);
+    }
+
+    object IAutoConventionGenerator.Generate(AutoConventionContext context)
+    {
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.Model.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.Vehicle.Model();
+      }
+
+      return context.Instance;
+    }
+  }
+
+  // Vehicle.Vin
+  internal sealed class VinByNameGenerator
+    : IAutoConventionGenerator
+  {  
+    bool IAutoConventionGenerator.CanGenerate(AutoConventionConfig config, AutoGenerateContext context)
+    {
+      return config.Vin.Enabled &&
+             config.Vin.HasAlias(context.GenerateName) &&
+             context.GenerateType == typeof(System.String);
+    }
+
+    object IAutoConventionGenerator.Generate(AutoConventionContext context)
+    {
+      var alwaysGenerate = context.Config.AlwaysGenerate && context.Config.Vin.AlwaysGenerate;
+
+      if (context.Instance == null || alwaysGenerate)
+      {
+        return context.OverrideContext.Faker.Vehicle.Vin();
+      }
+
+      return context.Instance;
+    }
+  }
+
   internal static class ByNameGeneratorRegistry
   {
     internal static System.Collections.Generic.IList<IAutoConventionGenerator> Generators = new System.Collections.Generic.List<IAutoConventionGenerator>
@@ -2216,6 +2528,7 @@ namespace AutoBogus.Conventions.Generators
       new PriceByNameGenerator(),
       new ProductByNameGenerator(),
       new ProductAdjectiveByNameGenerator(),
+      new ProductDescriptionByNameGenerator(),
       new ProductMaterialByNameGenerator(),
       new ProductNameByNameGenerator(),
       new BsByNameGenerator(),
@@ -2236,6 +2549,7 @@ namespace AutoBogus.Conventions.Generators
       new CurrencyByNameGenerator(),
       new EthereumAddressByNameGenerator(),
       new IbanByNameGenerator(),
+      new LitecoinAddressByNameGenerator(),
       new RoutingNumberByNameGenerator(),
       new TransactionTypeByNameGenerator(),
       new AvatarByNameGenerator(),
@@ -2245,14 +2559,21 @@ namespace AutoBogus.Conventions.Generators
       new EmailByNameGenerator(),
       new ExampleEmailByNameGenerator(),
       new IpByNameGenerator(),
+      new IpAddressByNameGenerator(),
+      new IpEndPointByNameGenerator(),
       new Ipv6ByNameGenerator(),
+      new Ipv6AddressByNameGenerator(),
+      new Ipv6EndPointByNameGenerator(),
       new MacByNameGenerator(),
       new PasswordByNameGenerator(),
       new ProtocolByNameGenerator(),
       new UrlByNameGenerator(),
+      new UrlRootedPathByNameGenerator(),
       new UrlWithPathByNameGenerator(),
       new UserAgentByNameGenerator(),
       new UserNameByNameGenerator(),
+      new UserNameUnicodeByNameGenerator(),
+      new GenreByNameGenerator(),
       new FindNameByNameGenerator(),
       new FirstNameByNameGenerator(),
       new FullNameByNameGenerator(),
@@ -2280,6 +2601,10 @@ namespace AutoBogus.Conventions.Generators
       new MimeTypeByNameGenerator(),
       new SemverByNameGenerator(),
       new VersionByNameGenerator(),
+      new FuelByNameGenerator(),
+      new ManufacturerByNameGenerator(),
+      new ModelByNameGenerator(),
+      new VinByNameGenerator(),
    
     };
   }
@@ -2426,6 +2751,11 @@ namespace AutoBogus.Conventions
     public AutoConventionGeneratorConfig ProductAdjective { get; } = new AutoConventionGeneratorConfig("ProductAdjective");
 
     /// <summary>
+    /// Configures the ProductDescription convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig ProductDescription { get; } = new AutoConventionGeneratorConfig("ProductDescription");
+
+    /// <summary>
     /// Configures the ProductMaterial convention generator.
     /// </summary>
     public AutoConventionGeneratorConfig ProductMaterial { get; } = new AutoConventionGeneratorConfig("ProductMaterial");
@@ -2526,6 +2856,11 @@ namespace AutoBogus.Conventions
     public AutoConventionGeneratorConfig Iban { get; } = new AutoConventionGeneratorConfig("Iban");
 
     /// <summary>
+    /// Configures the LitecoinAddress convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig LitecoinAddress { get; } = new AutoConventionGeneratorConfig("LitecoinAddress");
+
+    /// <summary>
     /// Configures the RoutingNumber convention generator.
     /// </summary>
     public AutoConventionGeneratorConfig RoutingNumber { get; } = new AutoConventionGeneratorConfig("RoutingNumber");
@@ -2571,9 +2906,29 @@ namespace AutoBogus.Conventions
     public AutoConventionGeneratorConfig Ip { get; } = new AutoConventionGeneratorConfig("Ip");
 
     /// <summary>
+    /// Configures the IpAddress convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig IpAddress { get; } = new AutoConventionGeneratorConfig("IpAddress");
+
+    /// <summary>
+    /// Configures the IpEndPoint convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig IpEndPoint { get; } = new AutoConventionGeneratorConfig("IpEndPoint");
+
+    /// <summary>
     /// Configures the Ipv6 convention generator.
     /// </summary>
     public AutoConventionGeneratorConfig Ipv6 { get; } = new AutoConventionGeneratorConfig("Ipv6");
+
+    /// <summary>
+    /// Configures the Ipv6Address convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig Ipv6Address { get; } = new AutoConventionGeneratorConfig("Ipv6Address");
+
+    /// <summary>
+    /// Configures the Ipv6EndPoint convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig Ipv6EndPoint { get; } = new AutoConventionGeneratorConfig("Ipv6EndPoint");
 
     /// <summary>
     /// Configures the Mac convention generator.
@@ -2596,6 +2951,11 @@ namespace AutoBogus.Conventions
     public AutoConventionGeneratorConfig Url { get; } = new AutoConventionGeneratorConfig("Url");
 
     /// <summary>
+    /// Configures the UrlRootedPath convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig UrlRootedPath { get; } = new AutoConventionGeneratorConfig("UrlRootedPath");
+
+    /// <summary>
     /// Configures the UrlWithPath convention generator.
     /// </summary>
     public AutoConventionGeneratorConfig UrlWithPath { get; } = new AutoConventionGeneratorConfig("UrlWithPath");
@@ -2609,6 +2969,16 @@ namespace AutoBogus.Conventions
     /// Configures the UserName convention generator.
     /// </summary>
     public AutoConventionGeneratorConfig UserName { get; } = new AutoConventionGeneratorConfig("UserName");
+
+    /// <summary>
+    /// Configures the UserNameUnicode convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig UserNameUnicode { get; } = new AutoConventionGeneratorConfig("UserNameUnicode");
+
+    /// <summary>
+    /// Configures the Genre convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig Genre { get; } = new AutoConventionGeneratorConfig("Genre");
 
     /// <summary>
     /// Configures the FindName convention generator.
@@ -2744,6 +3114,26 @@ namespace AutoBogus.Conventions
     /// Configures the Version convention generator.
     /// </summary>
     public AutoConventionGeneratorConfig Version { get; } = new AutoConventionGeneratorConfig("Version");
+
+    /// <summary>
+    /// Configures the Fuel convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig Fuel { get; } = new AutoConventionGeneratorConfig("Fuel");
+
+    /// <summary>
+    /// Configures the Manufacturer convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig Manufacturer { get; } = new AutoConventionGeneratorConfig("Manufacturer");
+
+    /// <summary>
+    /// Configures the Model convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig Model { get; } = new AutoConventionGeneratorConfig("Model");
+
+    /// <summary>
+    /// Configures the Vin convention generator.
+    /// </summary>
+    public AutoConventionGeneratorConfig Vin { get; } = new AutoConventionGeneratorConfig("Vin");
 
   }
 }
