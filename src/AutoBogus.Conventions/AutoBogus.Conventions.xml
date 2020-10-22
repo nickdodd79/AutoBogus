@@ -178,6 +178,11 @@
             Configures the ProductAdjective convention generator.
             </summary>
         </member>
+        <member name="P:AutoBogus.Conventions.AutoConventionConfig.ProductDescription">
+            <summary>
+            Configures the ProductDescription convention generator.
+            </summary>
+        </member>
         <member name="P:AutoBogus.Conventions.AutoConventionConfig.ProductMaterial">
             <summary>
             Configures the ProductMaterial convention generator.
@@ -278,6 +283,11 @@
             Configures the Iban convention generator.
             </summary>
         </member>
+        <member name="P:AutoBogus.Conventions.AutoConventionConfig.LitecoinAddress">
+            <summary>
+            Configures the LitecoinAddress convention generator.
+            </summary>
+        </member>
         <member name="P:AutoBogus.Conventions.AutoConventionConfig.RoutingNumber">
             <summary>
             Configures the RoutingNumber convention generator.
@@ -323,9 +333,29 @@
             Configures the Ip convention generator.
             </summary>
         </member>
+        <member name="P:AutoBogus.Conventions.AutoConventionConfig.IpAddress">
+            <summary>
+            Configures the IpAddress convention generator.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.Conventions.AutoConventionConfig.IpEndPoint">
+            <summary>
+            Configures the IpEndPoint convention generator.
+            </summary>
+        </member>
         <member name="P:AutoBogus.Conventions.AutoConventionConfig.Ipv6">
             <summary>
             Configures the Ipv6 convention generator.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.Conventions.AutoConventionConfig.Ipv6Address">
+            <summary>
+            Configures the Ipv6Address convention generator.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.Conventions.AutoConventionConfig.Ipv6EndPoint">
+            <summary>
+            Configures the Ipv6EndPoint convention generator.
             </summary>
         </member>
         <member name="P:AutoBogus.Conventions.AutoConventionConfig.Mac">
@@ -348,6 +378,11 @@
             Configures the Url convention generator.
             </summary>
         </member>
+        <member name="P:AutoBogus.Conventions.AutoConventionConfig.UrlRootedPath">
+            <summary>
+            Configures the UrlRootedPath convention generator.
+            </summary>
+        </member>
         <member name="P:AutoBogus.Conventions.AutoConventionConfig.UrlWithPath">
             <summary>
             Configures the UrlWithPath convention generator.
@@ -361,6 +396,16 @@
         <member name="P:AutoBogus.Conventions.AutoConventionConfig.UserName">
             <summary>
             Configures the UserName convention generator.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.Conventions.AutoConventionConfig.UserNameUnicode">
+            <summary>
+            Configures the UserNameUnicode convention generator.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.Conventions.AutoConventionConfig.Genre">
+            <summary>
+            Configures the Genre convention generator.
             </summary>
         </member>
         <member name="P:AutoBogus.Conventions.AutoConventionConfig.FindName">
@@ -496,6 +541,26 @@
         <member name="P:AutoBogus.Conventions.AutoConventionConfig.Version">
             <summary>
             Configures the Version convention generator.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.Conventions.AutoConventionConfig.Fuel">
+            <summary>
+            Configures the Fuel convention generator.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.Conventions.AutoConventionConfig.Manufacturer">
+            <summary>
+            Configures the Manufacturer convention generator.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.Conventions.AutoConventionConfig.Model">
+            <summary>
+            Configures the Model convention generator.
+            </summary>
+        </member>
+        <member name="P:AutoBogus.Conventions.AutoConventionConfig.Vin">
+            <summary>
+            Configures the Vin convention generator.
             </summary>
         </member>
         <member name="T:AutoBogus.Conventions.AutoConventionGeneratorConfig">

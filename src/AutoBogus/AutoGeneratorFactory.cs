@@ -3,6 +3,7 @@ using AutoBogus.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace AutoBogus
 {
@@ -20,6 +21,7 @@ namespace AutoBogus
       {typeof(float), new FloatGenerator()},
       {typeof(Guid), new GuidGenerator()},
       {typeof(int), new IntGenerator()},
+      {typeof(IPAddress), new IPAddressGenerator()},
       {typeof(long), new LongGenerator()},
       {typeof(sbyte), new SByteGenerator()},
       {typeof(short), new ShortGenerator()},

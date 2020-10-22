@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net40;netstandard1.3;netstandard2.0</TargetFrameworks>
@@ -46,14 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="ConventionByNameGenerators.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ConventionByNameGenerators.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="../../logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -63,6 +55,14 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ConventionByNameGenerators.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ConventionByNameGenerators.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

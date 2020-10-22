@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 
 namespace AutoBogus.Tests.Models
@@ -34,6 +35,7 @@ namespace AutoBogus.Tests.Models
       Assertions.Add(IsFloat, AssertFloat);
       Assertions.Add(IsGuid, AssertGuid);
       Assertions.Add(IsInt, AssertInt);
+      Assertions.Add(IsIPAddress, AssertIPAddress);
       Assertions.Add(IsLong, AssertLong);
       Assertions.Add(IsSByte, AssertSByte);
       Assertions.Add(IsShort, AssertShort);
@@ -169,6 +171,7 @@ namespace AutoBogus.Tests.Models
     private static bool IsFloat(Type type) => type == typeof(float);
     private static bool IsGuid(Type type) => type == typeof(Guid);
     private static bool IsInt(Type type) => type == typeof(int);
+    private static bool IsIPAddress(Type type) => type == typeof(IPAddress);
     private static bool IsLong(Type type) => type == typeof(long);
     private static bool IsSByte(Type type) => type == typeof(sbyte);
     private static bool IsShort(Type type) => type == typeof(short);
@@ -195,6 +198,7 @@ namespace AutoBogus.Tests.Models
     private static string AssertFloat(string path, Type type, object value) => value != null && float.TryParse(value.ToString(), out float result) && result != default(float) ? null : GetAssertionMessage(path, type, value);
     private static string AssertGuid(string path, Type type, object value) => value != null && Guid.TryParse(value.ToString(), out Guid result) && result != default(Guid) ? null : GetAssertionMessage(path, type, value);
     private static string AssertInt(string path, Type type, object value) => value != null && int.TryParse(value.ToString(), out int result) && result != default(int) ? null : GetAssertionMessage(path, type, value);
+    private static string AssertIPAddress(string path, Type type, object value) => value != null && IPAddress.TryParse(value.ToString(), out IPAddress result) && result != default(IPAddress) ? null : GetAssertionMessage(path, type, value);
     private static string AssertLong(string path, Type type, object value) => value != null && long.TryParse(value.ToString(), out long result) && result != default(long) ? null : GetAssertionMessage(path, type, value);
     private static string AssertSByte(string path, Type type, object value) => value != null && sbyte.TryParse(value.ToString(), out sbyte result) ? null : GetAssertionMessage(path, type, value);
     private static string AssertShort(string path, Type type, object value) => value != null && short.TryParse(value.ToString(), out short result) && result != default(short) ? null : GetAssertionMessage(path, type, value);

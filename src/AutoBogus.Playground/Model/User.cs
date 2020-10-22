@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace AutoBogus.Playground.Model
 {
   public sealed class User
@@ -5,5 +7,6 @@ namespace AutoBogus.Playground.Model
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
+    public IPAddress Location { get; set; }
   }
 }
