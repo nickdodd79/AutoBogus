@@ -21,10 +21,12 @@ namespace AutoBogus.Conventions.Generators
     "Database",
     "Finance",
     "Internet",
+    "Music",
     "Name",
     "Person",
     "Phone",
-    "System"
+    "System",
+    "Vehicle"
   };
 
   foreach (var fakerProperty in fakerProperties.OrderBy(p => p.Name))
