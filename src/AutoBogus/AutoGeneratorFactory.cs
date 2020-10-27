@@ -69,6 +69,18 @@ namespace AutoBogus
         return CreateGenericGenerator(typeof(ArrayGenerator<>), type);
       }
 
+#if !NETSTANDARD1_3
+      if (DataTableGenerator.TryCreateGenerator(type, out var dataTableGenerator))
+      {
+        return dataTableGenerator;
+      }
+
+      if (DataSetGenerator.TryCreateGenerator(type, out var dataSetGenerator))
+      {
+        return dataSetGenerator;
+      }
+#endif
+
       if (ReflectionHelper.IsEnum(type))
       {
         return CreateGenericGenerator(typeof(EnumGenerator<>), type);
