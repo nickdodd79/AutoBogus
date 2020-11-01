@@ -207,9 +207,9 @@ namespace AutoBogus
               }
             }
 
-            // Get the type generator
-            var generator = AutoGeneratorFactory.GetGenerator(context);
-            return (TType)generator.Generate(context);
+            // Create a blank instance. It will be populated in the FinalizeAction registered
+            // by PrepareFinish (context.Binder.PopulateInstance<TType>).
+            return context.Binder.CreateInstance<TType>(context);
           }
 
           return DefaultCreateAction.Invoke(faker);

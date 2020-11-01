@@ -299,6 +299,29 @@ namespace AutoBogus.Tests
         order.Should().BeGeneratedWithoutMocks();
         instance.Should().Be(order);
       }
+
+      [Fact]
+      public void Should_Not_Initialize_Properties_Twice()
+      {
+        // Arrange
+        var random1 = new Randomizer(12345);
+        var random2 = new Randomizer(12345);
+
+        var faker = new Faker() { Random = random1 };
+
+        var autoFaker = new AutoFaker<TestClassWithSingleProperty<int>>();
+
+        autoFaker.Configure(
+          builder => builder.WithFakerHub(faker));
+
+        // Act
+        var instance = autoFaker.Generate(); // Should pull one int from random1
+
+        var expectedValue = random2.Int();
+
+        // Assert
+        instance.Value.Should().Be(expectedValue);
+      }
     }
 
     public class AutoFaker_WithFakerHub
