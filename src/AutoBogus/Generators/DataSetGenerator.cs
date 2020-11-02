@@ -1,10 +1,10 @@
+#if !NETSTANDARD1_3
 using System;
 using System.Data;
 using System.Linq;
 
 namespace AutoBogus.Generators
 {
-#if !NETSTANDARD1_3
   internal abstract class DataSetGenerator
     : IAutoGenerator
   {
@@ -63,5 +63,5 @@ namespace AutoBogus.Generators
       }
     }
   }
-#endif
 }
+#endif

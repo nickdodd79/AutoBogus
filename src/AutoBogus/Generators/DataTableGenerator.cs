@@ -1,3 +1,4 @@
+#if !NETSTANDARD1_3
 using System;
 using System.Data;
 using System.Linq;
@@ -5,7 +6,6 @@ using System.Threading;
 
 namespace AutoBogus.Generators
 {
-#if !NETSTANDARD1_3
   internal abstract class DataTableGenerator
     : IAutoGenerator
   {
@@ -154,5 +154,5 @@ namespace AutoBogus.Generators
         => new TTable();
     }
   }
-#endif
 }
+#endif
