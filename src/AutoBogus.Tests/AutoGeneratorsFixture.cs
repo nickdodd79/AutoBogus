@@ -65,6 +65,29 @@ namespace AutoBogus.Tests
           g.Key
         });
       }
+
+      [Theory]
+      [MemberData(nameof(GetDataSetAndDataTableTypes))]
+      public void GetGenerator_Should_Return_Generator_For_DataSets_And_DataTables(Type dataType, Type generatorType)
+      {
+        // Arrange
+        var context = CreateContext(dataType);
+
+        // Act
+        var generator = AutoGeneratorFactory.GetGenerator(context);
+
+        // Assert
+        generator.Should().BeAssignableTo(generatorType);
+      }
+
+      public static IEnumerable<object[]> GetDataSetAndDataTableTypes()
+      {
+        yield return new object[] { typeof(System.Data.DataSet), typeof(DataSetGenerator) };
+        yield return new object[] { typeof(DataSetGeneratorFacet.TypedDataSet), typeof(DataSetGenerator) };
+        yield return new object[] { typeof(System.Data.DataTable), typeof(DataTableGenerator) };
+        yield return new object[] { typeof(DataTableGeneratorFacet.TypedDataTable1), typeof(DataTableGenerator) };
+        yield return new object[] { typeof(DataTableGeneratorFacet.TypedDataTable2), typeof(DataTableGenerator) };
+      }
     }
 
     public class ExpandoObjectGenerator
