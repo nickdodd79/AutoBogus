@@ -64,7 +64,7 @@ namespace AutoBogus.Tests
       {
         var count = AutoConfig.DefaultRepeatCount.Invoke(null);
 
-        _builder.WithLocale<ITestBuilder>(null, null);
+        _builder.WithRepeatCount<ITestBuilder>(null, null);
 
         _config.RepeatCount.Invoke(null).Should().Be(count);
       }
@@ -88,7 +88,7 @@ namespace AutoBogus.Tests
       {
         var depth = AutoConfig.DefaultRecursiveDepth.Invoke(null);
 
-        _builder.WithLocale<ITestBuilder>(null, null);
+        _builder.WithRecursiveDepth<ITestBuilder>(null, null);
 
         _config.RecursiveDepth.Invoke(null).Should().Be(depth);
       }
