@@ -47,6 +47,8 @@ namespace AutoBogus.Generators
     {
       var table = CreateTable(context);
 
+      context.Instance = table;
+
       PopulateRows(table, context);
 
       return table;
@@ -54,7 +56,15 @@ namespace AutoBogus.Generators
 
     public void PopulateRows(DataTable table, AutoGenerateContext context)
     {
-      for (int rowCount = context.Faker.Random.Number(1, 20); rowCount > 0; rowCount--)
+      int rowCount = -1;
+
+      if (context.Config.DataTableRowCount != null)
+        rowCount = context.Config.DataTableRowCount(context);
+
+      if (rowCount < 0)
+        rowCount = context.Faker.Random.Number(1, 20);
+
+      while (rowCount > 0)
       {
         object[] columnValues = new object[table.Columns.Count];
 
@@ -62,6 +72,8 @@ namespace AutoBogus.Generators
           columnValues[i] = GenerateColumnValue(table.Columns[i], context);
 
         table.Rows.Add(columnValues);
+
+        rowCount--;
       }
     }
 

@@ -56,6 +56,8 @@ namespace AutoBogus.Generators
           if (!DataTableGenerator.TryCreateGenerator(table.GetType(), out var tableGenerator))
             throw new Exception($"Couldn't create generator for typed table type {table.GetType()}");
 
+          context.Instance = table;
+
           tableGenerator.PopulateRows(table, context);
         }
 

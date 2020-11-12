@@ -72,6 +72,52 @@ namespace AutoBogus.Tests
         }
       }
 
+      [SkippableTheory]
+      [MemberData(nameof(GetGenerateTestCases))]
+      public void Generate_Should_Return_DataSet_With_Specified_DataTable_Row_Counts(Type dataSetType)
+      {
+        // Arrange
+        var rowCountByTable = new Dictionary<DataTable, int>();
+
+        Func<AutoGenerateContext, int> rowCountFunctor =
+          (AutoGenerateContext ctx) =>
+          {
+            var dataTable = (DataTable)ctx.Instance;
+
+            if (!rowCountByTable.TryGetValue(dataTable, out var count))
+            {
+              count = (rowCountByTable.Count + 1) * 10;
+
+              rowCountByTable[dataTable] = count;
+            }
+
+            return count;
+          };
+
+        var context = CreateContext(dataSetType, dataTableRowCountFunctor: rowCountFunctor);
+
+        bool success = DataSetGenerator.TryCreateGenerator(context.GenerateType, out var generator);
+
+        Skip.IfNot(success, $"couldn't create generator for {dataSetType.Name}");
+
+        // Act
+        var result = generator.Generate(context);
+
+        // Assert
+        result.Should().BeOfType(dataSetType);
+
+        var dataSet = (DataSet)result;
+
+        dataSet.Tables.Should().NotBeEmpty();
+
+        foreach (var table in dataSet.Tables.OfType<DataTable>())
+        {
+          table.Columns.Should().NotBeEmpty();
+
+          table.Rows.Should().HaveCount(rowCountByTable[table]);
+        }
+      }
+
       internal class TypedDataSet : DataSet
       {
         public TypedDataSet()
@@ -140,6 +186,33 @@ namespace AutoBogus.Tests
         dataTable.Rows.Should().NotBeEmpty();
       }
 
+      [SkippableTheory]
+      [MemberData(nameof(GetGenerateTestCases))]
+      public void Generate_Should_Return_DataTable_With_Specified_Row_Count(Type dataTableType)
+      {
+        // Arrange
+        const int RowCount = 100;
+
+        Func<AutoGenerateContext, int> rowCountFunctor =
+          _ => RowCount;
+
+        var context = CreateContext(dataTableType, dataTableRowCountFunctor: rowCountFunctor);
+
+        bool success = DataTableGenerator.TryCreateGenerator(context.GenerateType, out var generator);
+
+        Skip.IfNot(success, $"couldn't create generator for {dataTableType.Name}");
+
+        // Act
+        var result = generator.Generate(context);
+
+        // Assert
+        result.Should().BeOfType(dataTableType);
+
+        var dataTable = (DataTable)result;
+
+        dataTable.Columns.Should().NotBeEmpty();
+        dataTable.Rows.Should().HaveCount(RowCount);
+      }
       internal class TypedDataTable1 : TypedTableBase<TypedDataRow1>
       {
         public TypedDataTable1()

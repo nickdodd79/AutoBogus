@@ -32,6 +32,20 @@ namespace AutoBogus
     TBuilder WithRepeatCount(Func<AutoGenerateContext, int> count);
 
     /// <summary>
+    /// Registers the number of rows to generate in a <see cref="System.Data.DataTable"/>.
+    /// </summary>
+    /// <param name="count">The row count to use.</param>
+    /// <returns>The current configuration builder instance.</returns>
+    TBuilder WithDataTableRowCount(int count);
+
+    /// <summary>
+    /// Registers the number of rows to generate in a <see cref="System.Data.DataTable"/>.
+    /// </summary>
+    /// <param name="count">The row count to use.</param>
+    /// <returns>The current configuration builder instance.</returns>
+    TBuilder WithDataTableRowCount(Func<AutoGenerateContext, int> count);
+
+    /// <summary>
     /// Registers the depth to recursively generate.
     /// </summary>
     /// <param name="depth">The recursive depth to use.</param>
