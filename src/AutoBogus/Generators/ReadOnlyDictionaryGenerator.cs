@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+
+using AutoBogus.Util;
 
 namespace AutoBogus.Generators
 {
@@ -10,13 +12,18 @@ namespace AutoBogus.Generators
     {
       IAutoGenerator generator = new DictionaryGenerator<TKey, TValue>();
 
+      Type generateType = context.GenerateType;
+
+      if (ReflectionHelper.IsInterface(generateType))
+        generateType = typeof(Dictionary<TKey, TValue>);
+
       // Generate a standard dictionary and create the read only dictionary
       var items = generator.Generate(context) as IDictionary<TKey, TValue>;
 
 #if NET40
       return null;
 #else
-      return new ReadOnlyDictionary<TKey, TValue>(items);
+      return Activator.CreateInstance(generateType, new[] { items });
 #endif
     }
   }
