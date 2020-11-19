@@ -181,6 +181,7 @@ namespace AutoBogus.Tests
           Columns.Add(new DataColumn("DoubleColumn", typeof(double)));
           Columns.Add(new DataColumn("DecimalColumn", typeof(decimal)));
           Columns.Add(new DataColumn("DateTimeColumn", typeof(DateTime)));
+          Columns.Add(new DataColumn("DateTimeOffsetColumn", typeof(DateTimeOffset)));
           Columns.Add(new DataColumn("TimeSpanColumn", typeof(TimeSpan)));
           Columns.Add(new DataColumn("StringColumn", typeof(string)));
         }
