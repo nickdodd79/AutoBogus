@@ -613,6 +613,14 @@
             <param name="memberName">The name of the member to skip.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithSkip(System.Type,System.String)">
+            <summary>
+            Registers a member to skip for a given type when generating values.
+            </summary>
+            <param name="type">The parent type containing the member.</param>
+            <param name="memberName">The name of the member to skip.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
         <member name="M:AutoBogus.IAutoConfigBuilder`1.WithOverride(AutoBogus.AutoGeneratorOverride)">
             <summary>
             Registers an override instance to use when generating values.
