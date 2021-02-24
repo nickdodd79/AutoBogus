@@ -577,11 +577,25 @@
             <param name="depth">The recursive depth to use.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithTreeDepth(System.Nullable{System.Int32})">
+            <summary>
+            Registers the depth of the object tree to generate
+            </summary>
+            <param name="depth">The depth to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
         <member name="M:AutoBogus.IAutoConfigBuilder`1.WithRecursiveDepth(System.Func{AutoBogus.AutoGenerateContext,System.Int32})">
             <summary>
             Registers the depth to recursively generate.
             </summary>
             <param name="depth">The recursive depth to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithTreeDepth(System.Func{AutoBogus.AutoGenerateContext,System.Nullable{System.Int32}})">
+            <summary>
+            Registers the depth to generate the object tree
+            </summary>
+            <param name="depth">The depth to use.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
         <member name="M:AutoBogus.IAutoConfigBuilder`1.WithBinder(AutoBogus.IAutoBinder)">

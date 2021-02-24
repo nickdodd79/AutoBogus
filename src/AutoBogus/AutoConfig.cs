@@ -12,12 +12,14 @@ namespace AutoBogus
 
     internal static readonly Func<AutoGenerateContext, int> DefaultRepeatCount = context => 3;
     internal static readonly Func<AutoGenerateContext, int> DefaultRecursiveDepth = context => 2;
+    internal static readonly Func<AutoGenerateContext, int?> DefaultTreeDepth = context => null;
 
     internal AutoConfig()
     {
       Locale = DefaultLocale;
       RepeatCount = DefaultRepeatCount;
       RecursiveDepth = DefaultRecursiveDepth;
+      TreeDepth = DefaultTreeDepth;
       Binder = new AutoBinder();
       SkipTypes = new List<Type>();
       SkipPaths = new List<string>();
@@ -29,6 +31,7 @@ namespace AutoBogus
       Locale = config.Locale;
       RepeatCount = config.RepeatCount;
       RecursiveDepth = config.RecursiveDepth;
+      TreeDepth = config.TreeDepth;
       Binder = config.Binder;
       FakerHub = config.FakerHub;
       SkipTypes = config.SkipTypes.ToList();
@@ -44,5 +47,6 @@ namespace AutoBogus
     internal IList<Type> SkipTypes { get; set; }
     internal IList<string> SkipPaths { get; set; }
     internal IList<AutoGeneratorOverride> Overrides { get; set; }
+    public Func<AutoGenerateContext, int?> TreeDepth { get; set; }
   }
 }

@@ -94,6 +94,31 @@ namespace AutoBogus.Tests
       }
     }
 
+    
+    public class WithTreeDepth
+      : AutoConfigBuilderFixture
+    {
+      [Fact]
+      public void Should_Set_Config_TreeDepth()
+      {
+        var depth = _faker.Random.Int();
+
+        _builder.WithTreeDepth<ITestBuilder>(context => depth, null);
+
+        _config.TreeDepth.Invoke(null).Should().Be(depth);
+      }
+
+      [Fact]
+      public void Should_Set_Config_TreeDepth_To_Default_If_Null()
+      {
+        var depth = AutoConfig.DefaultTreeDepth.Invoke(null);
+
+        _builder.WithTreeDepth<ITestBuilder>(null, null);
+
+        _config.TreeDepth.Invoke(null).Should().Be(depth);
+      }
+    }
+
     public class WithBinder
       : AutoConfigBuilderFixture
     {
