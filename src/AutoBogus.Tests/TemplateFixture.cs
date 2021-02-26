@@ -154,5 +154,128 @@ namespace AutoBogus.Tests
       result.Should().OnlyContain(r => r.Child != null);
     }
 
+    [Fact]
+    public void Should_AutoNumber_If_Specified()
+    {
+      var testData =
+        " StringField  \r\n" +
+        " value1       \r\n" +
+        " value2       \r\n" +
+        " value3       \r\n" +
+        "";
+
+      var faker = new AutoFaker<Parent>();
+      faker.Identity(p => p.Id);
+
+      var result = faker.GenerateWithTemplate(testData);
+
+      result.Should().HaveCount(3);
+      result[0].Id.Should().Be(0);
+      result[1].Id.Should().Be(1);
+      result[2].Id.Should().Be(2);
+      
+    }
+
+    [Fact]
+    public void Should_Ignore_If_Specified()
+    {
+      var testData =
+        " IntField  \r\n" +
+        " 10       \r\n" +
+        " 11       \r\n" +
+        " 12       \r\n" +
+        "";
+
+      var faker = new AutoFaker<Parent>();
+      faker.Ignore(p => p.StringField);
+
+      var result = faker.GenerateWithTemplate(testData);
+
+      result.Should().HaveCount(3);
+      result.Should().OnlyContain(r => r.StringField == null);
+      result[0].IntField.Should().Be(10);
+      result[1].IntField.Should().Be(11);
+      result[2].IntField.Should().Be(12);
+        
+    }
+
+    [Fact]
+    public void Should_Use_Type_Converter_If_Specified()
+    {
+      var testData =
+        " Child  \r\n" +
+        " Child1 \r\n" +
+        " Child2 \r\n" +
+        "        \r\n" +
+        "";
+
+      var binder = new TemplateBinder()
+        .SetTypeConverter(ChildConverter());
+
+      var faker = new AutoFaker<Parent>(binder);
+
+      var result = faker.GenerateWithTemplate(testData);
+
+      result.Should().HaveCount(3);
+      result[0].Child.Name.Should().Be("child1");
+      result[1].Child.Name.Should().NotBe("child1"); //noting that in the converted for child2 we'd use a new faker instance
+      result[1].Child.Name.Should().NotBeNull();
+      result[2].Child.Should().BeNull();
+
+    }
+
+    [Fact]
+    public void Should_Treat_Missing_As_Empty_If_Specified()
+    {
+      var testData =
+        " StringField  \r\n" +
+        "        \r\n" +
+        "";
+
+      var binder = new TemplateBinder()
+        .TreatMissingAsEmpty()
+        .SetTypeConverter(ChildConverter());
+
+      var faker = new AutoFaker<Parent>(binder);
+
+      var result = faker.GenerateWithTemplate(testData);
+
+      result.Should().HaveCount(1);
+      result[0].StringField.Should().BeEmpty();
+
+    }
+
+
+    private static Func<Type, string, (bool handled, object result)> ChildConverter()
+    {
+      return (type, value) =>
+      {
+        if (type == typeof(Child))
+        {
+
+          if (string.IsNullOrEmpty(value))
+            return (true, null);
+
+          //use a specific type of generation for this value
+          Child instance;
+          if (value == "Child1")
+          {
+            var faker = new AutoFaker<Child>()
+              .RuleFor(p =>p.Name, f => "child1");
+            instance = faker.Generate();
+          }
+          else
+          {
+            //use std generation
+            instance = AutoFaker.Generate<Child>();
+          }
+
+          return (true, instance);
+        }
+
+        return (false, null);
+      };
+    }
+
   }
 }

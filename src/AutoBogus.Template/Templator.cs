@@ -14,9 +14,9 @@ namespace AutoBogus.Template
   internal class Templator<T> where T : class
   {
     private readonly AutoFaker<T> autoFaker;
-    private readonly List<Func<Type, string, object>> typeConverters = new List<Func<Type, string, object>>();
+    private List<Func<Type, string, (bool handled, object result)>>? typeConverters = new List<Func<Type, string, (bool handled, object result)>>();
 
-    private string? outputDatesAsStringFormat = null;
+    private bool isConfigured = false;
     //if false will treat missing as empty
     private bool treatMissingAsNull = true;
       
@@ -30,44 +30,23 @@ namespace AutoBogus.Template
     /// </summary>
     public string? PropertyNameSpaceDelimiter { get; set; }
 
-    //public TemplateExtensions.DataGenerator SetTypeConverter(Func<Type, string, object> typeConverter)
-    //{
-    //  typeConverters.Add(typeConverter);
-    //  return this;
-    //}
-
     /// <summary>
-    /// override the default date format used by methods that translate dates back to string/object (currently GetRowsObjectArray)
+    /// Configure the templator from the binder
     /// </summary>
-    /// <param name="format"></param>
-    /// <returns></returns>
-    //public TemplateExtensions.DataGenerator SetOutputDatesAsStringWithFormat(string format)
-    //{
-    //  outputDatesAsStringFormat = format;
-    //  return this;
-    //}
+    private void ConfigureTemplator()
+    {
+      if (!isConfigured)
+      {
+        if (autoFaker.Binder is TemplateBinder templateBinder)
+        {
+          typeConverters = templateBinder.TypeConverters;
+          treatMissingAsNull = templateBinder.TreatMissingAsNull;
+        }
 
-    /// <summary>
-    /// With ExpectedFieldsBehaviour enabled any string properties that start with Expected will be set to DataGenerator.UnspecifiedStringValue 
-    /// </summary>
-    /// <returns></returns>
-    //public TemplateExtensions.DataGenerator ExpectedFieldsBehaviour(bool enable = true)
-    //{
-    //  enabledExpectedFields = enable;
+        isConfigured = true;
+      }
 
-    //  return this;
-    //}
-
-    /// <summary>
-    /// With treatMissingAsNull enabled any empty string values in the input will be set to null in the output
-    /// </summary>
-    /// <returns></returns>
-    //public TemplateExtensions.DataGenerator SetTreatMissingAsNull(bool enable = true)
-    //{
-    //  treatMissingAsNull = enable;
-
-    //  return this;
-    //}
+    }
 
     //public TemplateExtensions.DataGenerator SetPropertyNameSpaceDelimiter(string delimiter)
     //{
@@ -125,6 +104,7 @@ namespace AutoBogus.Template
     /// <returns></returns>
     public List<T> GenerateFromTemplate(string template)
     {
+      ConfigureTemplator();
       var allRows = ParseTemplate(template);
 
       //Faker.GlobalUniqueIndex = -1;
@@ -217,21 +197,20 @@ namespace AutoBogus.Template
       {
         //see if we have custom converts specified for this type
         var handled = false;
-        if (typeConverters.Any())
+        if (typeConverters!.Any())
         {
-          foreach (var typeConvert in typeConverters)
+          foreach (var typeConvert in typeConverters!)
           {
-            var converted = typeConvert(concretePropertyType, value);
-            if (converted != null)
+            var result = typeConvert(concretePropertyType, value);
+            if (result.handled)
             {
-              prop.SetValue(transaction, converted, null);
+              prop.SetValue(transaction, result.result, null);
               handled = true;
             }
           }
         }
 
-
-        //pretty much has to be a string
+        //pretty much has to be a string if not then we may have a complex type with no converter
         if (!handled)
         {
           if (value == TemplateValues.NullToken)
@@ -283,78 +262,10 @@ namespace AutoBogus.Template
       return allRows;
     }
 
-
-
     public static TCast Cast<TCast>(object o)
     {
       return (TCast)o;
     }
 
-
-
-    /// <summary>
-    /// Gets the property value but allows types to be translated as strings (e.g. dates)
-    /// </summary>
-    /// <param name="src"></param>
-    /// <param name="propName"></param>
-    /// <returns></returns>
-    public object? GetPropValueWithTranslate(object src, string propName)
-    {
-      if (outputDatesAsStringFormat == null)
-      {
-        return ReflectionHelper.GetPropValue(src, propName);
-      }
-
-      var propertyInfo = src.GetType().GetProperty(propName);
-      if (propertyInfo?.PropertyType != typeof(DateTime) && propertyInfo?.PropertyType != typeof(DateTime?))
-      {
-        return ReflectionHelper.GetPropValue(src, propName);
-      }
-
-      var value = propertyInfo.GetValue(src, null);
-      if (value == null)
-        return null;
-
-      var dateValue = (DateTime) value;
-
-      return dateValue.ToString(outputDatesAsStringFormat);
-    }
-
-    
-
-    /// <summary>
-    /// Returns the proeprties in T as a list
-    /// </summary>
-    /// <returns></returns>
-    public List<string> GetFieldList()
-    {
-      var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance).ToDictionary(k => 
-        PropertyNameSpaceDelimiter != null ? k.Name.Replace(PropertyNameSpaceDelimiter, " "): k.Name
-      );
-
-      return properties.Keys.ToList();
-    }
-
-    public List<object?[]> GetRowsObjectArrays(List<T> items, List<string> fieldList)
-    {
-      var output = new List<object?[]>();
-      foreach (var item in items)
-      {
-        var row = new object?[fieldList.Count];
-        for (int i = 0; i < fieldList.Count; i++)
-        {
-          var propName = fieldList[i];
-          if (PropertyNameSpaceDelimiter != null)
-          {
-            propName = propName.Replace(" ", PropertyNameSpaceDelimiter);
-          }
-
-          row[i] = GetPropValueWithTranslate(item, propName);
-        }
-        output.Add(row);
-      }
-
-      return output;
-    }
   }
 }

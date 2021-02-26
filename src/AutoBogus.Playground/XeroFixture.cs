@@ -15,12 +15,11 @@ namespace AutoBogus.Playground
       public void TestAutoFakerXeroInvoice()
       {
         //previously this took > 45 seconds unless a lot of types were skipped
-        AutoFaker.Configure(builder =>
+        var fake = new AutoFaker<Invoice>()
+          .Configure(builder =>
         {
           builder.WithTreeDepth(1);
         });
-
-        var fake = new AutoFaker<Invoice>();
         var created = fake.Generate();
 
         created.Should().NotBeNull();

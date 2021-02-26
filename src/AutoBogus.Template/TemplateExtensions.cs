@@ -43,7 +43,7 @@ namespace AutoBogus.Template
           var genericType = typeof(TProperty);
           //var specificType = genericType.MakeGenericType(typeof(TProperty), property);
           var castMethod = typeof(TemplateExtensions).GetMethod("Cast")!.MakeGenericMethod(new Type[] { genericType });
-          var castedObject = castMethod.Invoke(null, new object[] { f.UniqueIndex });
+          var castedObject = castMethod.Invoke(null, new object[] { f.IndexFaker });
           return (TProperty)castedObject!;
         }
       };
