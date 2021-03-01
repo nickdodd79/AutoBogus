@@ -235,27 +235,35 @@ namespace AutoBogus.Template
     private static List<Dictionary<string, string>> ParseTemplate(string testData)
     {
       //split on | and new line
-      string[] lines = testData.Split(new string[] {"\n", "\r\n"}, StringSplitOptions.RemoveEmptyEntries);
+      var stringReader = new StringReader(testData);
 
-      if (lines.Length == 0)
-        throw new ArgumentException($"{nameof(testData)} must contain a header line and 1 or more data lines");
+      var headers = stringReader.ReadLine()!.Split('|');;
 
-      //read line 0 - headers
-      var headers = lines[0]!.Split('|');
       var allRows = new List<Dictionary<string, string>>();
 
-      for (int i = 1; i < lines.Length; i++)
+      string? line = null;
+      do
       {
-        var thisRowDict = new Dictionary<string, string>();
-        var thisLine = lines[i].Split('|');
+        line = stringReader.ReadLine();
 
-        for (int index = 0; index < headers.Length; index++)
+        if (line != null)
         {
-          var value = thisLine[index]!.Trim();
-          thisRowDict[headers[index].Trim()] = value;
+          var thisRowDict = new Dictionary<string, string>();
+          var thisLine = line.Split('|');
+
+          //ignore lines of wrong length
+          if (headers.Length != thisLine.Length) continue;
+
+          for (int index = 0; index < headers.Length; index++)
+          {
+            
+            var value = thisLine[index]!.Trim();
+            thisRowDict[headers[index].Trim()] = value;
+          }
+
+          allRows.Add(thisRowDict);
         }
-        allRows.Add(thisRowDict);
-      }
+      } while (line != null);
 
       return allRows;
     }

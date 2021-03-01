@@ -26,6 +26,7 @@ namespace AutoBogus.Tests
       public Child Child { get; set; }
       public TestEnum TestEnum { get; set; }
       public string Space_Field { get; set; }
+      public DateTime? Date_Space_Field { get; set; }
     }
 
     private enum TestEnum
@@ -243,15 +244,14 @@ namespace AutoBogus.Tests
       result[0].StringField.Should().BeEmpty();
 
     }
-
     
     [Fact]
     public void Should_Translate_Space_In_Field_If_Specified()
     {
       var testData =
-        " Space Field  \r\n" +
-        " test  \r\n" +
-        "   \r\n" +
+        " Space Field  | Date Space Field\r\n" +
+        " test |  \r\n" +
+        "   | 2002-09-08\r\n" +
         "";
 
       var binder = new TemplateBinder()
@@ -263,8 +263,29 @@ namespace AutoBogus.Tests
 
       result.Should().HaveCount(2);
       result[0].Space_Field.Should().Be("test");
+      result[0].Date_Space_Field.Should().BeNull();
       result[1].Space_Field.Should().BeNull();
+      result[1].Date_Space_Field.Should().Be(DateTime.Parse("2002-09-08"));
 
+    }
+    
+    [Fact]
+    public void Should_Handle_Space_After_NewLine()
+    {
+      var testData =
+        " Id | StringField | \r\n " +
+        " 1  | test        | \r\n " +
+        "";
+
+      var binder = new TemplateBinder()
+        .SetPropertyNameSpaceDelimiter("_");
+
+      var faker = new AutoFaker<Parent>(binder);
+
+      var result = faker.GenerateWithTemplate(testData);
+
+      result.Should().HaveCount(1);
+      result[0].StringField.Should().Be("test");
     }
 
 

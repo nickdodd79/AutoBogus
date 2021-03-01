@@ -8,7 +8,7 @@
     <Description>A C# library complementing the Bogus generator by adding auto creation and population capabilities.</Description>
     <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
     <Version>2.13.4-template</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <LangVersion>latest</LangVersion>
     <RepositoryUrl>https://github.com/nickdodd79/AutoBogus</RepositoryUrl>
     <PackageIcon>logo.png</PackageIcon>
