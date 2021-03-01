@@ -53,7 +53,8 @@ namespace AutoBogus.Template
 
 
     /// <summary>
-    /// Creates a set of test data with number of rows matching testItems and using the fields direct from testItems
+    /// Creates a set of test data with number of rows matching testItems but only using the headers in the headers list in the template
+    /// Properties not in the headers list will use AutoFaker rules
     /// </summary>
     /// <param name="headers">List of headers matching testItems. Defines what properties in testItems we will set the value for</param>
     /// <param name="testItems"></param>

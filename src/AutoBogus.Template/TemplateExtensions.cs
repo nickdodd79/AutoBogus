@@ -10,7 +10,7 @@ namespace AutoBogus.Template
   public static class TemplateExtensions
   {
     /// <summary>
-    /// Generate 
+    /// Generate data using data values in template and AutoFaker for other values
     /// </summary>
     /// <typeparam name="TType"></typeparam>
     /// <param name=""></param>
@@ -21,6 +21,24 @@ namespace AutoBogus.Template
       var templator = new Templator<TType>(src);
 
       var result = templator.GenerateFromTemplate(template);
+
+      return result;
+
+    }
+
+    /// <summary>
+    /// Generate data using the supplied rows but only those proprties who appear in headers list
+    /// Properties not in the headers list will use AutoFaker rules
+    /// </summary>
+    /// <typeparam name="TType"></typeparam>
+    /// <param name=""></param>
+    /// <param name="template"></param>
+    /// <returns></returns>
+    public static List<TType> GenerateWithTemplate<TType>(this AutoFaker<TType> src, List<string> headers, List<TType> rows) where TType : class
+    {
+      var templator = new Templator<TType>(src);
+
+      var result = templator.GenerateFromTemplate(headers, rows);
 
       return result;
 
