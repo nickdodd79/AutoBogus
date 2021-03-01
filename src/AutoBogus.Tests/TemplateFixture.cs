@@ -25,8 +25,7 @@ namespace AutoBogus.Tests
       public DateTime? NullableDateTimeField { get; set; }
       public Child Child { get; set; }
       public TestEnum TestEnum { get; set; }
-
-
+      public string Space_Field { get; set; }
     }
 
     private enum TestEnum
@@ -242,6 +241,29 @@ namespace AutoBogus.Tests
 
       result.Should().HaveCount(1);
       result[0].StringField.Should().BeEmpty();
+
+    }
+
+    
+    [Fact]
+    public void Should_Translate_Space_In_Field_If_Specified()
+    {
+      var testData =
+        " Space Field  \r\n" +
+        " test  \r\n" +
+        "   \r\n" +
+        "";
+
+      var binder = new TemplateBinder()
+        .SetPropertyNameSpaceDelimiter("_");
+
+      var faker = new AutoFaker<Parent>(binder);
+
+      var result = faker.GenerateWithTemplate(testData);
+
+      result.Should().HaveCount(2);
+      result[0].Space_Field.Should().Be("test");
+      result[1].Space_Field.Should().BeNull();
 
     }
 

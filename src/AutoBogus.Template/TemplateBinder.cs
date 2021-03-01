@@ -13,6 +13,8 @@ namespace AutoBogus.Template
       new List<Func<Type, string, (bool handled, object result)>>();
 
     internal bool TreatMissingAsNull { get; set; } = true;
+    internal string? PropertyNameSpaceDelimiter { get; set; } = null;
+
 
     /// <summary>
     /// Will set missing values as empty string rather than null
@@ -31,6 +33,15 @@ namespace AutoBogus.Template
     public TemplateBinder SetTypeConverter(Func<Type, string, (bool handled, object result)> typeConverter)
     {
       TypeConverters.Add(typeConverter);
+      return this;
+    }
+
+    /// <summary>
+    /// If the field name in the header contains a space it will translate to the property name by inserting this delimiter.
+    /// </summary>
+    public TemplateBinder SetPropertyNameSpaceDelimiter(string? value)
+    {
+      PropertyNameSpaceDelimiter = value;
       return this;
     }
 

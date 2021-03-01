@@ -4,6 +4,23 @@
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
+    <Authors>Ian Cox</Authors>
+    <Company />
+    <Product>AutoBogus.Template</Product>
+    <Description>A C# library extending AutoBogus with templating for specifying specific data values.</Description>
+    <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
+    <Version>2.13.2-template</Version>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <LangVersion>latest</LangVersion>
+    <RepositoryUrl>https://github.com/ian1971/AutoBogus</RepositoryUrl>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageIconUrl />
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../autobogus.snk</AssemblyOriginatorKeyFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|AnyCPU'">
@@ -13,6 +30,17 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <NoWarn>$(NoWarn);8600;8601;8602;8603;8604;8618;8400</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\logo.png" Link="logo.png">
+      <PackagePath></PackagePath>
+      <Pack>True</Pack>
+    </None>
+    <None Include="LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AutoBogus\AutoBogus.csproj" />

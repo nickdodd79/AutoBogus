@@ -19,16 +19,12 @@ namespace AutoBogus.Template
     private bool isConfigured = false;
     //if false will treat missing as empty
     private bool treatMissingAsNull = true;
+    private string? propertyNameSpaceDelimiter = null;
       
     public Templator(AutoFaker<T> autoFaker)
     {
       this.autoFaker = autoFaker;
     }
-
-    /// <summary>
-    /// Set if we need to translate a string in the property name to space (e.g. AE_Date -> AE Date (tpp))
-    /// </summary>
-    public string? PropertyNameSpaceDelimiter { get; set; }
 
     /// <summary>
     /// Configure the templator from the binder
@@ -41,6 +37,7 @@ namespace AutoBogus.Template
         {
           typeConverters = templateBinder.TypeConverters;
           treatMissingAsNull = templateBinder.TreatMissingAsNull;
+          propertyNameSpaceDelimiter = templateBinder.PropertyNameSpaceDelimiter;
         }
 
         isConfigured = true;
@@ -123,9 +120,9 @@ namespace AutoBogus.Template
         {
           var fieldNameTrim = fieldName.Trim();
           var fieldNameWithDelim = fieldNameTrim;
-          if (PropertyNameSpaceDelimiter != null)
+          if (propertyNameSpaceDelimiter != null)
           {
-            fieldNameWithDelim = fieldNameTrim.Replace(" ", PropertyNameSpaceDelimiter);
+            fieldNameWithDelim = fieldNameTrim.Replace(" ", propertyNameSpaceDelimiter);
           }
 
           PropertyInfo? prop = transaction.GetType()
