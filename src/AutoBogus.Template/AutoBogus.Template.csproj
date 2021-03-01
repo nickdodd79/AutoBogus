@@ -9,7 +9,7 @@
     <Product>AutoBogus.Template</Product>
     <Description>A C# library extending AutoBogus with templating for specifying specific data values.</Description>
     <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
-    <Version>2.13.2-template</Version>
+    <Version>2.13.4-template</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <LangVersion>latest</LangVersion>
     <RepositoryUrl>https://github.com/ian1971/AutoBogus</RepositoryUrl>
