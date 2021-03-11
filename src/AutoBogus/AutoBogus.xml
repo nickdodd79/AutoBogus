@@ -570,20 +570,6 @@
             <param name="count">The repeat count to use.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
-        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithDataTableRowCount(System.Int32)">
-            <summary>
-            Registers the number of rows to generate in a <see cref="T:System.Data.DataTable"/>.
-            </summary>
-            <param name="count">The row count to use.</param>
-            <returns>The current configuration builder instance.</returns>
-        </member>
-        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithDataTableRowCount(System.Func{AutoBogus.AutoGenerateContext,System.Int32})">
-            <summary>
-            Registers the number of rows to generate in a <see cref="T:System.Data.DataTable"/>.
-            </summary>
-            <param name="count">The row count to use.</param>
-            <returns>The current configuration builder instance.</returns>
-        </member>
         <member name="M:AutoBogus.IAutoConfigBuilder`1.WithRecursiveDepth(System.Int32)">
             <summary>
             Registers the depth to recursively generate.
@@ -591,11 +577,25 @@
             <param name="depth">The recursive depth to use.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithTreeDepth(System.Nullable{System.Int32})">
+            <summary>
+            Registers the depth of the object tree to generate
+            </summary>
+            <param name="depth">The depth to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
         <member name="M:AutoBogus.IAutoConfigBuilder`1.WithRecursiveDepth(System.Func{AutoBogus.AutoGenerateContext,System.Int32})">
             <summary>
             Registers the depth to recursively generate.
             </summary>
             <param name="depth">The recursive depth to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithTreeDepth(System.Func{AutoBogus.AutoGenerateContext,System.Nullable{System.Int32}})">
+            <summary>
+            Registers the depth to generate the object tree
+            </summary>
+            <param name="depth">The depth to use.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
         <member name="M:AutoBogus.IAutoConfigBuilder`1.WithBinder(AutoBogus.IAutoBinder)">
@@ -624,14 +624,6 @@
             Registers a member to skip for a given type when generating values.
             </summary>
             <typeparam name="TType">The parent type containing the member.</typeparam>
-            <param name="memberName">The name of the member to skip.</param>
-            <returns>The current configuration builder instance.</returns>
-        </member>
-        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithSkip(System.Type,System.String)">
-            <summary>
-            Registers a member to skip for a given type when generating values.
-            </summary>
-            <param name="type">The parent type containing the member.</param>
             <param name="memberName">The name of the member to skip.</param>
             <returns>The current configuration builder instance.</returns>
         </member>

@@ -2,6 +2,7 @@ using AutoBogus.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Binder = Bogus.Binder;
@@ -124,11 +125,18 @@ namespace AutoBogus
         return true;
       }
 
-      // Finally check if the recursive depth has been reached
-      var count = context.TypesStack.Count(t => t == type);
-      var depth = context.Config.RecursiveDepth.Invoke(context);
+      //check if tree depth is reached
+      var treeDepth = context.Config.TreeDepth.Invoke(context);
 
-      return count >= depth;
+      if (treeDepth.HasValue && context.TypesStack.Count() >= treeDepth)
+        return true;
+
+      // Finally check if the recursive depth has been reached
+      
+      var count = context.TypesStack.Count(t => t == type);
+      var recursiveDepth = context.Config.RecursiveDepth.Invoke(context);
+
+      return count >= recursiveDepth;
     }
 
     private ConstructorInfo GetConstructor<TType>()

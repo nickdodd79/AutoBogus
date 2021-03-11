@@ -56,7 +56,7 @@ namespace AutoBogus
       CreateActions[currentRuleSet] = null;
     }
     
-    private IAutoBinder Binder { get; set; }
+    public IAutoBinder Binder { get; set; }
 
     internal AutoConfig Config
     {
