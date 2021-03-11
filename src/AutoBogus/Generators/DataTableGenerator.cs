@@ -1,5 +1,6 @@
 #if !NETSTANDARD1_3
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading;
@@ -54,22 +55,106 @@ namespace AutoBogus.Generators
       return table;
     }
 
+    class ConstrainedColumnInformation
+    {
+      public ForeignKeyConstraint Constraint;
+      public DataColumn RelatedColumn;
+    }
+
     public void PopulateRows(DataTable table, AutoGenerateContext context)
     {
+      bool rowCountIsSpecified = false;
+
       int rowCount = -1;
 
       if (context.Config.DataTableRowCount != null)
+      {
+        rowCountIsSpecified = true;
         rowCount = context.Config.DataTableRowCount(context);
+      }
 
       if (rowCount < 0)
         rowCount = context.Faker.Random.Number(1, 20);
 
+      var constrainedColumns = new Dictionary<DataColumn, ConstrainedColumnInformation>();
+      var constraintHasUniqueColumns = new HashSet<ForeignKeyConstraint>();
+      var referencedRowByConstraint = new Dictionary<ForeignKeyConstraint, DataRow>();
+
+      foreach (var foreignKey in table.Constraints.OfType<ForeignKeyConstraint>())
+      {
+        bool containsUniqueColumns = foreignKey.Columns.Any(col =>
+          col.Unique ||
+          table.Constraints.OfType<UniqueConstraint>().Any(constraint => constraint.Columns.Contains(col)));
+
+        for (int i = 0; i < foreignKey.Columns.Length; i++)
+        {
+          var column = foreignKey.Columns[i];
+          var relatedColumn = foreignKey.RelatedColumns[i];
+
+          if (constrainedColumns.ContainsKey(column))
+            throw new Exception($"Column is constrained in multiple foreign key relationships simultaneously: {column.ColumnName} in DataTable {table.TableName}");
+
+          constrainedColumns[column] =
+            new ConstrainedColumnInformation()
+            {
+              Constraint = foreignKey,
+              RelatedColumn = relatedColumn,
+            };
+        }
+
+        if ((foreignKey.RelatedTable == table)
+         && foreignKey.Columns.Any(col => !col.AllowDBNull))
+          throw new Exception($"Self-reference columns must be nullable so that at least one record can be added when the table is initially empty: DataTable {table.TableName}");
+
+        if (containsUniqueColumns)
+          constraintHasUniqueColumns.Add(foreignKey);
+
+        // Prepare a slot to be filled per-row.
+        referencedRowByConstraint[foreignKey] = default;
+
+        if (containsUniqueColumns
+         && (foreignKey.RelatedTable != table)
+         && (foreignKey.RelatedTable.Rows.Count < rowCount))
+        {
+          if (rowCountIsSpecified)
+          {
+            string remoteSubject = foreignKey.RelatedTable.TableName;
+
+            if (string.IsNullOrEmpty(remoteSubject))
+              remoteSubject = "another DataTable";
+
+            throw new ArgumentException($"Unable to satisfy the requested row count of {rowCount} because this table has a foreign key constraint on {remoteSubject} that must be unique, and that table only has {foreignKey.RelatedTable.Rows.Count} row(s).");
+          }
+
+          rowCount = foreignKey.RelatedTable.Rows.Count;
+        }
+      }
+
+      var allConstraints = referencedRowByConstraint.Keys.ToList();
+
       while (rowCount > 0)
       {
+        int rowIndex = table.Rows.Count;
+
+        foreach (var foreignKey in allConstraints)
+        {
+          referencedRowByConstraint[foreignKey] =
+            constraintHasUniqueColumns.Contains(foreignKey)
+            ? foreignKey.RelatedTable.Rows[rowIndex]
+            : (foreignKey.RelatedTable.Rows.Count == 0)
+              ? null
+              : foreignKey.RelatedTable.Rows[context.Faker.Random.Number(0, foreignKey.RelatedTable.Rows.Count - 1)];
+        }
+
         object[] columnValues = new object[table.Columns.Count];
 
         for (int i = 0; i < table.Columns.Count; i++)
-          columnValues[i] = GenerateColumnValue(table.Columns[i], context);
+        {
+          if (constrainedColumns.TryGetValue(table.Columns[i], out var constraintInfo))
+            columnValues[i] = referencedRowByConstraint[constraintInfo.Constraint]?[constraintInfo.RelatedColumn] ?? DBNull.Value;
+          else
+            columnValues[i] = GenerateColumnValue(table.Columns[i], context);
+        }
 
         table.Rows.Add(columnValues);
 

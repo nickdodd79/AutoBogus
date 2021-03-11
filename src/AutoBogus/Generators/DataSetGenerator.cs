@@ -1,5 +1,6 @@
 #if !NETSTANDARD1_3
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -51,14 +52,41 @@ namespace AutoBogus.Generators
       {
         var dataSet = (DataSet)Activator.CreateInstance(_dataSetType);
 
-        foreach (var table in dataSet.Tables.OfType<DataTable>())
+        var allTables = dataSet.Tables.OfType<DataTable>().ToList();
+        var populatedTables = new HashSet<DataTable>();
+
+        while (allTables.Count > 0)
         {
-          if (!DataTableGenerator.TryCreateGenerator(table.GetType(), out var tableGenerator))
-            throw new Exception($"Couldn't create generator for typed table type {table.GetType()}");
+          bool madeProgress = false;
 
-          context.Instance = table;
+          for (int i = 0; i < allTables.Count; i++)
+          {
+            var table = allTables[i];
 
-          tableGenerator.PopulateRows(table, context);
+            var referencedTables = table.Constraints
+              .OfType<ForeignKeyConstraint>()
+              .Select(constraint => constraint.RelatedTable);
+
+            if (!referencedTables.Where(referencedTable => referencedTable != table).All(populatedTables.Contains))
+              continue;
+
+            if (!DataTableGenerator.TryCreateGenerator(table.GetType(), out var tableGenerator))
+              throw new Exception($"Couldn't create generator for typed table type {table.GetType()}");
+
+            populatedTables.Add(table);
+
+            context.Instance = table;
+
+            tableGenerator.PopulateRows(table, context);
+
+            madeProgress = true;
+
+            allTables.RemoveAt(i);
+            i--;
+          }
+
+          if (!madeProgress)
+            throw new Exception("Couldn't generate data for all tables in data set because there are constraints that can't be satisfied");
         }
 
         return dataSet;
