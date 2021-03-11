@@ -124,9 +124,7 @@ namespace AutoBogus.Generators
       public abstract object Generate(AutoGenerateContext context);
     }
 
-    class Proxy<T>
-      : Proxy
-      where T : class
+    class Proxy<T> : Proxy
     {
       public override object Generate(AutoGenerateContext context)
         => context.Generate<T>();
