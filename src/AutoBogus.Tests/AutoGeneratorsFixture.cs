@@ -458,7 +458,7 @@ namespace AutoBogus.Tests
       return (IAutoGenerator)Activator.CreateInstance(type);
     }
 
-    private AutoGenerateContext CreateContext(Type type, IList<AutoGeneratorOverride> generatorOverrides = null)
+    private AutoGenerateContext CreateContext(Type type, IList<AutoGeneratorOverride> generatorOverrides = null, Func<AutoGenerateContext, int> dataTableRowCountFunctor = null)
     {
       var faker = new Faker();
       var config = new AutoConfig();
@@ -466,6 +466,11 @@ namespace AutoBogus.Tests
       if (generatorOverrides != null)
       {
         config.Overrides = generatorOverrides;
+      }
+
+      if (dataTableRowCountFunctor != null)
+      {
+        config.DataTableRowCount = dataTableRowCountFunctor;
       }
 
       return new AutoGenerateContext(faker, config)

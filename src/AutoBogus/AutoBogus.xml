@@ -570,6 +570,20 @@
             <param name="count">The repeat count to use.</param>
             <returns>The current configuration builder instance.</returns>
         </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithDataTableRowCount(System.Int32)">
+            <summary>
+            Registers the number of rows to generate in a <see cref="T:System.Data.DataTable"/>.
+            </summary>
+            <param name="count">The row count to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
+        <member name="M:AutoBogus.IAutoConfigBuilder`1.WithDataTableRowCount(System.Func{AutoBogus.AutoGenerateContext,System.Int32})">
+            <summary>
+            Registers the number of rows to generate in a <see cref="T:System.Data.DataTable"/>.
+            </summary>
+            <param name="count">The row count to use.</param>
+            <returns>The current configuration builder instance.</returns>
+        </member>
         <member name="M:AutoBogus.IAutoConfigBuilder`1.WithRecursiveDepth(System.Int32)">
             <summary>
             Registers the depth to recursively generate.
