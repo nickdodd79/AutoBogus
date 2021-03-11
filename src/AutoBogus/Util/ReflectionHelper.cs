@@ -100,6 +100,42 @@ namespace AutoBogus.Util
       return type.GetGenericTypeDefinition();
     }
 
+    internal static Type GetGenericCollectionType(Type type)
+    {
+      var interfaces = type.GetInterfaces().Where(ReflectionHelper.IsGenericType);
+
+      if (IsInterface(type))
+        interfaces = interfaces.Concat(new[] { type });
+
+      Type dictionaryType = null;
+      Type readOnlyDictionaryType = null;
+      Type listType = null;
+      Type setType = null;
+      Type collectionType = null;
+      Type enumerableType = null;
+
+      foreach (var interfaceType in interfaces.Where(IsGenericType))
+      {
+        if (IsDictionary(interfaceType))
+          dictionaryType = interfaceType;
+        if (IsReadOnlyDictionary(interfaceType))
+          readOnlyDictionaryType = interfaceType;
+        if (IsList(interfaceType))
+          listType = interfaceType;
+        if (IsSet(interfaceType))
+          setType = interfaceType;
+        if (IsCollection(interfaceType))
+          collectionType = interfaceType;
+        if (IsEnumerable(interfaceType))
+          enumerableType = interfaceType;
+      }
+
+      if ((dictionaryType != null) && (readOnlyDictionaryType != null) && IsReadOnlyDictionary(type))
+        dictionaryType = null;
+
+      return dictionaryType ?? readOnlyDictionaryType ?? listType ?? setType ?? collectionType ?? enumerableType;
+    }
+
     internal static bool IsDictionary(Type type)
     {
       var baseType = typeof(IDictionary<,>);
@@ -130,6 +166,12 @@ namespace AutoBogus.Util
     internal static bool IsSet(Type type)
     {
       var baseType = typeof(ISet<>);
+      return IsGenericTypeDefinition(baseType, type);
+    }
+
+    internal static bool IsList(Type type)
+    {
+      var baseType = typeof(IList<>);
       return IsGenericTypeDefinition(baseType, type);
     }
 

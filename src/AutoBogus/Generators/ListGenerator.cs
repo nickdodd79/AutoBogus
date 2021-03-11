@@ -3,30 +3,30 @@ using System.Collections.Generic;
 
 namespace AutoBogus.Generators
 {
-  internal sealed class SetGenerator<TType>
+  internal sealed class ListGenerator<TType>
     : IAutoGenerator
   {
     object IAutoGenerator.Generate(AutoGenerateContext context)
     {
-      ISet<TType> set;
+      IList<TType> list;
 
       try
       {
-        set = (ISet<TType>)Activator.CreateInstance(context.GenerateType);
+        list = (IList<TType>)Activator.CreateInstance(context.GenerateType);
       }
       catch
       {
-        set = new HashSet<TType>();
+        list = new List<TType>();
       }
 
       var items = context.GenerateMany<TType>();
 
       foreach (var item in items)
       {
-        set.Add(item);
+        list.Add(item);
       }
 
-      return set;
+      return list;
     }
   }
 }
