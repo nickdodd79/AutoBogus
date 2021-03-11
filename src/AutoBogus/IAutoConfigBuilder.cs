@@ -32,6 +32,20 @@ namespace AutoBogus
     TBuilder WithRepeatCount(Func<AutoGenerateContext, int> count);
 
     /// <summary>
+    /// Registers the number of rows to generate in a <see cref="System.Data.DataTable"/>.
+    /// </summary>
+    /// <param name="count">The row count to use.</param>
+    /// <returns>The current configuration builder instance.</returns>
+    TBuilder WithDataTableRowCount(int count);
+
+    /// <summary>
+    /// Registers the number of rows to generate in a <see cref="System.Data.DataTable"/>.
+    /// </summary>
+    /// <param name="count">The row count to use.</param>
+    /// <returns>The current configuration builder instance.</returns>
+    TBuilder WithDataTableRowCount(Func<AutoGenerateContext, int> count);
+
+    /// <summary>
     /// Registers the depth to recursively generate.
     /// </summary>
     /// <param name="depth">The recursive depth to use.</param>
@@ -87,6 +101,14 @@ namespace AutoBogus
     /// <param name="memberName">The name of the member to skip.</param>
     /// <returns>The current configuration builder instance.</returns>
     TBuilder WithSkip<TType>(string memberName);
+
+    /// <summary>
+    /// Registers a member to skip for a given type when generating values.
+    /// </summary>
+    /// <param name="type">The parent type containing the member.</param>
+    /// <param name="memberName">The name of the member to skip.</param>
+    /// <returns>The current configuration builder instance.</returns>
+    TBuilder WithSkip(Type type, string memberName);
 
     /// <summary>
     /// Registers an override instance to use when generating values.

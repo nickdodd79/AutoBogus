@@ -14,6 +14,219 @@ namespace AutoBogus.Tests
 {
   public partial class AutoGeneratorsFixture
   {
+    public class Factory
+    {
+      public class ReadOnlyDictionary
+      {
+        public class ReadOnlyDictionaryBase<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>
+        {
+          public ReadOnlyDictionaryBase(IEnumerable<KeyValuePair<TKey, TValue>> items)
+          {
+            foreach (var item in items)
+              _store[item.Key] = item.Value;
+          }
+
+          Dictionary<TKey, TValue> _store = new Dictionary<TKey, TValue>();
+
+          public TValue this[TKey key] => _store[key];
+          public IEnumerable<TKey> Keys => _store.Keys;
+          public IEnumerable<TValue> Values => _store.Values;
+          public int Count => _store.Count;
+
+          public bool ContainsKey(TKey key) => _store.ContainsKey(key);
+          public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => _store.GetEnumerator();
+          public bool TryGetValue(TKey key, out TValue value) => _store.TryGetValue(key, out value);
+          IEnumerator IEnumerable.GetEnumerator() => _store.GetEnumerator();
+        }
+
+        public class NonGeneric : ReadOnlyDictionaryBase<int, string>
+        {
+          public NonGeneric(IEnumerable<KeyValuePair<int, string>> items) : base(items)
+          {
+          }
+        }
+
+        public class OneArgument<T> : ReadOnlyDictionaryBase<T, string>
+        {
+          public OneArgument(IEnumerable<KeyValuePair<T, string>> items) : base(items)
+          {
+          }
+        }
+
+        public class TwoArgumentsThatAreDifferentFromBaseReadOnlyDictionaryClass<TValue, TKey> : ReadOnlyDictionaryBase<TKey, TValue>
+        {
+          public TwoArgumentsThatAreDifferentFromBaseReadOnlyDictionaryClass(IEnumerable<KeyValuePair<TKey, TValue>> items) : base(items)
+          {
+          }
+        }
+
+        public static IEnumerable<object[]> ListOfReadOnlyDictionaryTypes
+        {
+          get
+          {
+            yield return new[] { typeof(NonGeneric) };
+            yield return new[] { typeof(OneArgument<int>) };
+            yield return new[] { typeof(TwoArgumentsThatAreDifferentFromBaseReadOnlyDictionaryClass<string, int>) };
+          }
+        }
+
+        [Theory]
+        [MemberData(nameof(ListOfReadOnlyDictionaryTypes))]
+        public void Should_Handle_Subclasses(Type readOnlyDictionaryType)
+        {
+          // Arrange
+          var config = new AutoConfig();
+
+          var context = new AutoGenerateContext(config);
+
+          context.GenerateType = readOnlyDictionaryType;
+
+          // Act
+          var generator = AutoGeneratorFactory.ResolveGenerator(context);
+
+          var instance = generator.Generate(context);
+
+          // Arrange
+          generator.Should().BeOfType<ReadOnlyDictionaryGenerator<int, string>>();
+
+          instance.Should().BeOfType(readOnlyDictionaryType);
+        }
+      }
+
+      public class Dictionary
+      {
+        public class NonGeneric : Dictionary<int, string>
+        {
+        }
+
+        public class OneArgument<T> : Dictionary<T, string>
+        {
+        }
+
+        public class TwoArgumentsThatAreDifferentFromBaseDictionaryClass<TValue, TKey> : Dictionary<TKey, TValue>
+        {
+        }
+
+        public static IEnumerable<object[]> ListOfDictionaryTypes
+        {
+          get
+          {
+            yield return new[] { typeof(NonGeneric) };
+            yield return new[] { typeof(OneArgument<int>) };
+            yield return new[] { typeof(TwoArgumentsThatAreDifferentFromBaseDictionaryClass<string, int>) };
+          }
+        }
+
+        [Theory]
+        [MemberData(nameof(ListOfDictionaryTypes))]
+        public void Should_Handle_Subclasses(Type dictionaryType)
+        {
+          // Arrange
+          var config = new AutoConfig();
+
+          var context = new AutoGenerateContext(config);
+
+          context.GenerateType = dictionaryType;
+
+          // Act
+          var generator = AutoGeneratorFactory.ResolveGenerator(context);
+
+          var instance = generator.Generate(context);
+
+          // Arrange
+          generator.Should().BeOfType<DictionaryGenerator<int, string>>();
+
+          instance.Should().BeOfType(dictionaryType);
+        }
+      }
+
+      public class Set
+      {
+        public class NonGeneric : HashSet<int>
+        {
+        }
+
+        public class GenericWithDifferentType<TType> : HashSet<int>
+        {
+          public TType Property { get; set; }
+        }
+
+        public static IEnumerable<object[]> ListOfSetTypes
+        {
+          get
+          {
+            yield return new[] { typeof(NonGeneric) };
+            yield return new[] { typeof(GenericWithDifferentType<string>) };
+          }
+        }
+
+        [Theory]
+        [MemberData(nameof(ListOfSetTypes))]
+        public void Should_Handle_Subclasses(Type setType)
+        {
+          // Arrange
+          var config = new AutoConfig();
+
+          var context = new AutoGenerateContext(config);
+
+          context.GenerateType = setType;
+
+          // Act
+          var generator = AutoGeneratorFactory.ResolveGenerator(context);
+
+          var instance = generator.Generate(context);
+
+          // Arrange
+          generator.Should().BeOfType<SetGenerator<int>>();
+
+          instance.Should().BeOfType(setType);
+        }
+      }
+
+      public class List
+      {
+        public class NonGeneric : List<int>
+        {
+        }
+
+        public class GenericWithDifferentType<TType> : List<int>
+        {
+          public TType Property { get; set; }
+        }
+
+        public static IEnumerable<object[]> ListOfListTypes
+        {
+          get
+          {
+            yield return new[] { typeof(NonGeneric) };
+            yield return new[] { typeof(GenericWithDifferentType<string>) };
+          }
+        }
+
+        [Theory]
+        [MemberData(nameof(ListOfListTypes))]
+        public void Should_Handle_Subclasses(Type listType)
+        {
+          // Arrange
+          var config = new AutoConfig();
+
+          var context = new AutoGenerateContext(config);
+
+          context.GenerateType = listType;
+
+          // Act
+          var generator = AutoGeneratorFactory.ResolveGenerator(context);
+
+          var instance = generator.Generate(context);
+
+          // Arrange
+          generator.Should().BeOfType<ListGenerator<int>>();
+
+          instance.Should().BeOfType(listType);
+        }
+      }
+    }
+
     public class ReferenceTypes
       : AutoGeneratorsFixture
     {
@@ -232,6 +445,54 @@ namespace AutoBogus.Tests
       }
     }
 
+    public class ListGenerator
+      : AutoGeneratorsFixture
+    {
+      [Theory]
+      [InlineData(typeof(IList<TestEnum>))]
+      [InlineData(typeof(IList<TestStruct>))]
+      [InlineData(typeof(IList<TestClass>))]
+      [InlineData(typeof(IList<ITestInterface>))]
+      [InlineData(typeof(IList<TestAbstractClass>))]
+      [InlineData(typeof(ICollection<TestEnum>))]
+      [InlineData(typeof(ICollection<TestStruct>))]
+      [InlineData(typeof(ICollection<TestClass>))]
+      [InlineData(typeof(ICollection<ITestInterface>))]
+      [InlineData(typeof(ICollection<TestAbstractClass>))]
+      [InlineData(typeof(List<TestClass>))]
+      public void Generate_Should_Return_List(Type type)
+      {
+        var genericTypes = ReflectionHelper.GetGenericArguments(type);
+        var itemType = genericTypes.ElementAt(0);
+        var generator = CreateGenerator(typeof(ListGenerator<>), itemType);
+        var list = InvokeGenerator(type, generator) as IEnumerable;
+
+        list.Should().NotBeNull().And.NotContainNulls();
+      }
+
+      [Theory]
+      [InlineData(typeof(IList<TestEnum>))]
+      [InlineData(typeof(IList<TestStruct>))]
+      [InlineData(typeof(IList<TestClass>))]
+      [InlineData(typeof(IList<ITestInterface>))]
+      [InlineData(typeof(IList<TestAbstractClass>))]
+      [InlineData(typeof(ICollection<TestEnum>))]
+      [InlineData(typeof(ICollection<TestStruct>))]
+      [InlineData(typeof(ICollection<TestClass>))]
+      [InlineData(typeof(ICollection<ITestInterface>))]
+      [InlineData(typeof(ICollection<TestAbstractClass>))]
+      [InlineData(typeof(List<TestClass>))]
+      public void GetGenerator_Should_Return_ListGenerator(Type type)
+      {
+        var context = CreateContext(type);
+        var genericTypes = ReflectionHelper.GetGenericArguments(type);
+        var itemType = genericTypes.ElementAt(0);
+        var generatorType = GetGeneratorType(typeof(ListGenerator<>), itemType);
+
+        AutoGeneratorFactory.GetGenerator(context).Should().BeOfType(generatorType);
+      }
+    }
+
     public class SetGenerator
       : AutoGeneratorsFixture
     {
@@ -279,8 +540,6 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IEnumerable<TestClass>))]
       [InlineData(typeof(IEnumerable<ITestInterface>))]
       [InlineData(typeof(IEnumerable<TestAbstractClass>))]
-      [InlineData(typeof(ICollection<TestAbstractClass>))]
-      [InlineData(typeof(List<TestClass>))]
       public void Generate_Should_Return_Enumerable(Type type)
       {
         var genericTypes = ReflectionHelper.GetGenericArguments(type);
@@ -297,8 +556,6 @@ namespace AutoBogus.Tests
       [InlineData(typeof(IEnumerable<TestClass>))]
       [InlineData(typeof(IEnumerable<ITestInterface>))]
       [InlineData(typeof(IEnumerable<TestAbstractClass>))]
-      [InlineData(typeof(ICollection<TestAbstractClass>))]
-      [InlineData(typeof(List<TestClass>))]
       public void GetGenerator_Should_Return_EnumerableGenerator(Type type)
       {
         var context = CreateContext(type);
@@ -458,7 +715,7 @@ namespace AutoBogus.Tests
       return (IAutoGenerator)Activator.CreateInstance(type);
     }
 
-    private AutoGenerateContext CreateContext(Type type, IList<AutoGeneratorOverride> generatorOverrides = null)
+    private AutoGenerateContext CreateContext(Type type, IList<AutoGeneratorOverride> generatorOverrides = null, Func<AutoGenerateContext, int> dataTableRowCountFunctor = null)
     {
       var faker = new Faker();
       var config = new AutoConfig();
@@ -466,6 +723,11 @@ namespace AutoBogus.Tests
       if (generatorOverrides != null)
       {
         config.Overrides = generatorOverrides;
+      }
+
+      if (dataTableRowCountFunctor != null)
+      {
+        config.DataTableRowCount = dataTableRowCountFunctor;
       }
 
       return new AutoGenerateContext(faker, config)

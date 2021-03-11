@@ -191,6 +191,45 @@ namespace AutoBogus.Tests
       }
     }
 
+    public class WithSkip_TypePath
+      : AutoConfigBuilderFixture
+    {
+      private sealed class TestSkip
+      {
+        public string Value { get; set; }
+      }
+
+      [Fact]
+      public void Should_Not_Add_Member_If_Already_Added()
+      {
+        var type = typeof(TestSkip);
+        var member = $"{type.FullName}.Value";
+
+        _config.SkipPaths.Add(member);
+
+        _builder.WithSkip<ITestBuilder>(type, "Value", null);
+
+        _config.SkipPaths.Should().ContainSingle();
+      }
+
+      [Fact]
+      public void Should_Add_MemberName_To_Skip()
+      {
+        var type = typeof(TestSkip);
+        var path = _faker.Random.String();
+
+        _config.SkipPaths.Add(path);
+
+        _builder.WithSkip<ITestBuilder>(type, "Value", null);
+
+        _config.SkipPaths.Should().BeEquivalentTo(new[]
+        {
+          path,
+          $"{type.FullName}.Value"
+        });
+      }
+    }
+
     public class WithSkip_Path
       : AutoConfigBuilderFixture
     {

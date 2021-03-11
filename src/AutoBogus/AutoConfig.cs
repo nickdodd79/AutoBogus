@@ -11,6 +11,7 @@ namespace AutoBogus
     internal const int GenerateAttemptsThreshold = 3;
 
     internal static readonly Func<AutoGenerateContext, int> DefaultRepeatCount = context => 3;
+    internal static readonly Func<AutoGenerateContext, int> DefaultDataTableRowCount = context => 15;
     internal static readonly Func<AutoGenerateContext, int> DefaultRecursiveDepth = context => 2;
     internal static readonly Func<AutoGenerateContext, int?> DefaultTreeDepth = context => null;
 
@@ -18,6 +19,7 @@ namespace AutoBogus
     {
       Locale = DefaultLocale;
       RepeatCount = DefaultRepeatCount;
+      DataTableRowCount = DefaultDataTableRowCount;
       RecursiveDepth = DefaultRecursiveDepth;
       TreeDepth = DefaultTreeDepth;
       Binder = new AutoBinder();
@@ -30,6 +32,7 @@ namespace AutoBogus
     {
       Locale = config.Locale;
       RepeatCount = config.RepeatCount;
+      DataTableRowCount = config.DataTableRowCount;
       RecursiveDepth = config.RecursiveDepth;
       TreeDepth = config.TreeDepth;
       Binder = config.Binder;
@@ -41,6 +44,7 @@ namespace AutoBogus
 
     internal string Locale { get; set; }
     internal Func<AutoGenerateContext, int> RepeatCount { get; set; }
+    internal Func<AutoGenerateContext, int> DataTableRowCount { get; set; }
     internal Func<AutoGenerateContext, int> RecursiveDepth { get; set; }
     internal IAutoBinder Binder { get; set; }
     internal Faker FakerHub { get; set; }
