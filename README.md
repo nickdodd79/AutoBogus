@@ -153,6 +153,7 @@ AutoFaker.Configure(builder =>
   builder
     .WithSkip<Person>(person => person.Name); // Define using an expression for public members
     .WithSkip<Person>("Age");                 // Define using a string for protected, internal, etc. members
+    .WithSkip(typeof(Person), "Gender");      // Define using a string for protected, internal, etc. members
 });
 ```
 
