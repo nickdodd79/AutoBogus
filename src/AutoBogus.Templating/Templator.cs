@@ -234,7 +234,7 @@ namespace AutoBogus.Templating
     private static List<Dictionary<string, string>> ParseTemplate(string testData)
     {
       //split on | and new line
-      var stringReader = new StringReader(testData.Trim());
+      var stringReader = new StringReader(testData.TrimStart());
 
       var headers = stringReader.ReadLine()!.Split('|');
 
