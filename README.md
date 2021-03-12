@@ -182,6 +182,8 @@ public class PersonOverride : AutoGeneratorOverride
 AutoFaker.Configure(builder => builder.WithOverride(new PersonOverride()));
 ```
 
+Note that a virtual `Preinitialize` property is available to control whether an initial value should be generated. This defaults to true.
+
 ## Behaviors
 The following underlying behaviors are in place in **AutoBogus**:
 
