@@ -1,12 +1,6 @@
+using AutoBogus.Templating;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using AutoBogus.Template;
-using AutoBogus.Tests.Models;
-using AutoBogus.Tests.Models.Complex;
-using AutoBogus.Tests.Models.Simple;
 using FluentAssertions;
-using NSubstitute.Core;
 using Xunit;
 
 namespace AutoBogus.Tests

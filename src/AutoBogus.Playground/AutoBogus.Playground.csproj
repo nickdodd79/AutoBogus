@@ -31,6 +31,7 @@
     <ProjectReference Include="..\AutoBogus.FakeItEasy\AutoBogus.FakeItEasy.csproj" />
     <ProjectReference Include="..\AutoBogus.Moq\AutoBogus.Moq.csproj" />
     <ProjectReference Include="..\AutoBogus.NSubstitute\AutoBogus.NSubstitute.csproj" />
+    <ProjectReference Include="..\AutoBogus.Templating\AutoBogus.Templating.csproj" />
   </ItemGroup>
 
 </Project>

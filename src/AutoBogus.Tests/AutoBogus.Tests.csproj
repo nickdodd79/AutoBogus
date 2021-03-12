@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
@@ -28,7 +28,7 @@
     <ProjectReference Include="..\AutoBogus.FakeItEasy\AutoBogus.FakeItEasy.csproj" />
     <ProjectReference Include="..\AutoBogus.Moq\AutoBogus.Moq.csproj" />
     <ProjectReference Include="..\AutoBogus.NSubstitute\AutoBogus.NSubstitute.csproj" />
-    <ProjectReference Include="..\AutoBogus.Template\AutoBogus.Template.csproj" />
+    <ProjectReference Include="..\AutoBogus.Templating\AutoBogus.Templating.csproj" />
     <ProjectReference Include="..\AutoBogus.Tests.Models\AutoBogus.Tests.Models.csproj" />
     <ProjectReference Include="..\AutoBogus\AutoBogus.csproj" />
   </ItemGroup>
