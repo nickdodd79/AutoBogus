@@ -8,11 +8,8 @@
     <Version>2.13.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <LangVersion>latest</LangVersion>
-    <RepositoryUrl>https://github.com/nickdodd79/AutoBogus</RepositoryUrl>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../autobogus.snk</AssemblyOriginatorKeyFile>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>

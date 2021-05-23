@@ -5,5 +5,8 @@
     <Product>AutoBogus</Product>
     <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
     <PackageIcon>logo.png</PackageIcon>
+    <RepositoryUrl>https://github.com/nickdodd79/AutoBogus</RepositoryUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 </Project>
