@@ -55,7 +55,10 @@ namespace AutoBogus
       DefaultCreateAction = CreateActions[currentRuleSet];
       CreateActions[currentRuleSet] = null;
     }
-    
+
+    /// <summary>
+    /// The <see cref="IAutoBinder"/> instance to use for the generation request.
+    /// </summary>
     public IAutoBinder Binder { get; set; }
 
     internal AutoConfig Config
@@ -128,7 +131,7 @@ namespace AutoBogus
       PrepareFinish(context);
 
       return base.Generate(count, ruleSets);
-    }    
+    }
 
     /// <summary>
     /// Populates the provided instance with auto generated values.
@@ -142,7 +145,7 @@ namespace AutoBogus
 
       base.Populate(instance, ruleSets);
     }
-    
+
     private AutoGenerateContext CreateContext(string ruleSets)
     {
       var config = new AutoConfig(_config ?? AutoFaker.DefaultConfig);
@@ -151,7 +154,7 @@ namespace AutoBogus
       {
         config.Locale = Locale;
       }
-      
+
       if (Binder != null)
       {
         config.Binder = Binder;

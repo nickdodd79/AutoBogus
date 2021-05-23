@@ -192,6 +192,11 @@
             <param name="locale">The locale to use for value generation.</param>
             <param name="binder">The <see cref="T:AutoBogus.IAutoBinder"/> instance to use for the generation request.</param>
         </member>
+        <member name="P:AutoBogus.AutoFaker`1.Binder">
+            <summary>
+            The <see cref="T:AutoBogus.IAutoBinder"/> instance to use for the generation request.
+            </summary>
+        </member>
         <member name="M:AutoBogus.AutoFaker`1.Configure(System.Action{AutoBogus.IAutoGenerateConfigBuilder})">
             <summary>
             Configures the current faker instance.
