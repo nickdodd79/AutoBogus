@@ -2,9 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net45;net46;netstandard1.3;netstandard2.0</TargetFrameworks>
-    <Product>AutoBogus</Product>
     <Description>A C# library complementing the Bogus generator by adding auto creation and population capabilities. This package includes mocking options using NSubtitute.</Description>
-    <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
     <Version>2.13.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/nickdodd79/AutoBogus</RepositoryUrl>

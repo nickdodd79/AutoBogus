@@ -2,5 +2,7 @@
 <Project>
   <PropertyGroup>
     <Authors>Nick Dodd</Authors>
+    <Product>AutoBogus</Product>
+    <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
   </PropertyGroup>
 </Project>

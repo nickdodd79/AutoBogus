@@ -5,7 +5,6 @@
     <Authors>Ian Cox</Authors>
     <Product>AutoBogus.Templating</Product>
     <Description>A C# library extending AutoBogus with templating for specifying specific data values.</Description>
-    <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
     <Version>2.13.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <LangVersion>latest</LangVersion>
