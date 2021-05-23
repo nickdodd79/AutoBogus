@@ -5,7 +5,6 @@
     <Description>A C# library complementing the Bogus generator by adding auto creation and population capabilities. This package includes generator options for common conventions.</Description>
     <Version>2.13.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <LangVersion>latest</LangVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../autobogus.snk</AssemblyOriginatorKeyFile>
     <IncludeSymbols>true</IncludeSymbols>

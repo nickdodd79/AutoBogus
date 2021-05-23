@@ -7,7 +7,6 @@
     <Description>A C# library extending AutoBogus with templating for specifying specific data values.</Description>
     <Version>2.13.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <LangVersion>latest</LangVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../autobogus.snk</AssemblyOriginatorKeyFile>
     <IncludeSymbols>true</IncludeSymbols>

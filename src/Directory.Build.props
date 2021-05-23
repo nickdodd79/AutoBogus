@@ -8,5 +8,6 @@
     <RepositoryUrl>https://github.com/nickdodd79/AutoBogus</RepositoryUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 </Project>
