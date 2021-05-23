@@ -11,14 +11,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-  </ItemGroup>
-
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net40|AnyCPU'">
-    <DocumentationFile>$(MSBuildProjectDirectory)\AutoBogus.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <ItemGroup>
     <PackageReference Include="Bogus" Version="31.0.3" />
   </ItemGroup>
 

@@ -11,18 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-  </ItemGroup>
-
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
-    <DocumentationFile>AutoBogus.NSubstitute.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <ItemGroup>
     <PackageReference Include="NSubstitute" Version="4.2.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\AutoBogus\AutoBogus.csproj" />
   </ItemGroup>
 

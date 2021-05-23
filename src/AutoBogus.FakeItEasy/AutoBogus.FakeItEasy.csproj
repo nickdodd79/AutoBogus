@@ -11,18 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-  </ItemGroup>
-
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net40|AnyCPU'">
-    <DocumentationFile>AutoBogus.FakeItEasy.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="6.2.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\AutoBogus\AutoBogus.csproj" />
   </ItemGroup>
 

@@ -11,18 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-  </ItemGroup>
-
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
-    <DocumentationFile>AutoBogus.Moq.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <ItemGroup>
     <PackageReference Include="Moq" Version="4.14.7" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\AutoBogus\AutoBogus.csproj" />
   </ItemGroup>
 
