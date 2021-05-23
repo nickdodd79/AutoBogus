@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFrameworks>net40;net452;netstandard1.3;netstandard2.0</TargetFrameworks>
     <Authors>Nick Dodd</Authors>
-    <Company />
     <Product>AutoBogus</Product>
     <Description>A C# library complementing the Bogus generator by adding auto creation and population capabilities.</Description>
     <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
@@ -12,7 +11,6 @@
     <LangVersion>latest</LangVersion>
     <RepositoryUrl>https://github.com/nickdodd79/AutoBogus</RepositoryUrl>
     <PackageIcon>logo.png</PackageIcon>
-    <PackageIconUrl />
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../autobogus.snk</AssemblyOriginatorKeyFile>
