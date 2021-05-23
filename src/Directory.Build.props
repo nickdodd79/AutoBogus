@@ -4,5 +4,6 @@
     <Authors>Nick Dodd</Authors>
     <Product>AutoBogus</Product>
     <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
+    <PackageIcon>logo.png</PackageIcon>
   </PropertyGroup>
 </Project>
