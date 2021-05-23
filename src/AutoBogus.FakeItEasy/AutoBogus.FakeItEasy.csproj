@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>net40;net45;netstandard1.6;netstandard2.0</TargetFrameworks>
-    <Authors>Nick Dodd</Authors>
     <Product>AutoBogus</Product>
     <Description>A C# library complementing the Bogus generator by adding auto creation and population capabilities. This package includes mocking options using FakeItEasy.</Description>
     <PackageProjectUrl>https://github.com/nickdodd79/AutoBogus</PackageProjectUrl>
