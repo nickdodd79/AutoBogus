@@ -265,7 +265,7 @@ namespace AutoBogus.Tests
         binder.GetMembers(typeof(Order)).Returns(new Dictionary<string, MemberInfo>());
 
         var order = new AutoFaker<Order>(binder)
-          .CustomInstantiator(faker => new Order(default(int), default(ICalculator)))
+          .CustomInstantiator(faker => new Order(default, default))
           .Generate();
 
         binder.DidNotReceive().CreateInstance<Order>(Arg.Any<AutoGenerateContext>());
@@ -290,7 +290,7 @@ namespace AutoBogus.Tests
         {
           // No default constructor so ensure a create action is defined
           // Make the values default so the NotBeGenerated() check passes
-          rules.CustomInstantiator(f => new Order(default(int), default(ICalculator)));
+          rules.CustomInstantiator(f => new Order(default, default));
         });
 
         _faker.Generate("test").Should().NotBeGenerated();
@@ -303,7 +303,7 @@ namespace AutoBogus.Tests
         var order = new AutoFaker<Order>()
           .FinishWith((f, i) => instance = i)
           .Generate();
-        
+
         order.Should().BeGeneratedWithoutMocks();
         instance.Should().Be(order);
       }
