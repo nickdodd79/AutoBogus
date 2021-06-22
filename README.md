@@ -238,3 +238,11 @@ var persons = new AutoFaker<Person>().GenerateWithTemplate(@"
   2  | Bob       | Clark
 ");
 ```
+
+## Contributors
+
+<a href="https://github.com/nickdodd79/AutoBogus/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=nickdodd79/AutoBogus" />
+</a>
+
+Made with [contributors-img](https://contrib.rocks).
