@@ -27,8 +27,12 @@ namespace AutoBogus
     internal AutoConfig Config { get; }
     internal Stack<Type> TypesStack { get; }
 
-    internal Type ParentType { get; set; }
     internal object Instance { get; set; }
+
+    /// <summary>
+    /// The parent type of the type associated with the current generate request.
+    /// </summary>
+    public Type ParentType { get; set; }
 
     /// <summary>
     /// The type associated with the current generate request.
