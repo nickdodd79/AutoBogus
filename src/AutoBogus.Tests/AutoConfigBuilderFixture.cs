@@ -46,6 +46,27 @@ namespace AutoBogus.Tests
       }
     }
 
+    public class WithDateTimeKind
+      : AutoConfigBuilderFixture
+    {
+      [Fact]
+      public void Should_Set_Config_DateTimeKind()
+      {
+        var kind = DateTimeKind.Utc;
+
+        _builder.WithDateTimeKind<ITestBuilder>(context => kind, null);
+
+        _config.DateTimeKind.Should().Be(kind);
+      }
+
+      [Fact]
+      public void Should_Set_Config_DateTimeKind_To_Default_If_Null()
+      {
+        _builder.WithRepeatCount<ITestBuilder>(null, null);
+        _config.DateTimeKind.Invoke(null).Should().Be(DateTimeKind.Utc);
+      }
+    }
+
     public class WithRepeatCount
       : AutoConfigBuilderFixture
     {
@@ -94,7 +115,7 @@ namespace AutoBogus.Tests
       }
     }
 
-    
+
     public class WithTreeDepth
       : AutoConfigBuilderFixture
     {
