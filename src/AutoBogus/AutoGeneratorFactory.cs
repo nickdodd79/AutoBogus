@@ -14,6 +14,10 @@ namespace AutoBogus
       {typeof(bool), new BoolGenerator()},
       {typeof(byte), new ByteGenerator()},
       {typeof(char), new CharGenerator()},
+#if NET6_0
+      {typeof(DateOnly), new DateOnlyGenerator()},
+      {typeof(TimeOnly), new TimeOnlyGenerator()},
+#endif
       {typeof(DateTime), new DateTimeGenerator()},
       {typeof(DateTimeOffset), new DateTimeOffsetGenerator()},
       {typeof(decimal), new DecimalGenerator()},
