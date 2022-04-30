@@ -39,15 +39,15 @@ namespace AutoBogus.Playground
       var faker1 = new AutoFaker<MyEntity>().UseSeed(seed);
       var faker2 = new AutoFaker<MyEntity>().UseSeed(seed);
       var faker3 = new AutoFaker<MyEntity>();
-      var entity1 = faker1.Generate();            
+      var entity1 = faker1.Generate();
       var entity2 = faker2.Generate();
       var entity3 = faker3.Generate();
 
-      entity2.Name.Should().Be(entity1.Name); 
-      entity2.DeprecationDate.Should().BeCloseTo(entity1.DeprecationDate, 500);
+      entity2.Name.Should().Be(entity1.Name);
+      entity2.DeprecationDate.Should().BeCloseTo(entity1.DeprecationDate, TimeSpan.FromMilliseconds(500));
 
       entity3.Name.Should().NotBe(entity2.Name);
-      entity3.DeprecationDate.Should().NotBeCloseTo(entity2.DeprecationDate, 500);
+      entity3.DeprecationDate.Should().NotBeCloseTo(entity2.DeprecationDate, TimeSpan.FromMilliseconds(500));
     }
 
     [Fact]
