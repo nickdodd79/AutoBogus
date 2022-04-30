@@ -35,7 +35,7 @@ namespace AutoBogus.Playground
         },
         options => options
           .Using<string>(context => context.Subject.Should().NotBeNull())
-          .When(info => info.SelectedMemberPath == "Status")
+          .When(info => info.Path.Contains("Status"))
       );
     }
   }
