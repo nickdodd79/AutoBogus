@@ -10,6 +10,7 @@ namespace AutoBogus
     internal const string DefaultLocale = "en";
     internal const int GenerateAttemptsThreshold = 3;
 
+    internal static readonly Func<AutoGenerateContext, DateTimeKind> DefaultDateTimeKind = context => System.DateTimeKind.Local;
     internal static readonly Func<AutoGenerateContext, int> DefaultRepeatCount = context => 3;
     internal static readonly Func<AutoGenerateContext, int> DefaultDataTableRowCount = context => 15;
     internal static readonly Func<AutoGenerateContext, int> DefaultRecursiveDepth = context => 2;
@@ -18,6 +19,7 @@ namespace AutoBogus
     internal AutoConfig()
     {
       Locale = DefaultLocale;
+      DateTimeKind = DefaultDateTimeKind;
       RepeatCount = DefaultRepeatCount;
       DataTableRowCount = DefaultDataTableRowCount;
       RecursiveDepth = DefaultRecursiveDepth;
@@ -31,6 +33,7 @@ namespace AutoBogus
     internal AutoConfig(AutoConfig config)
     {
       Locale = config.Locale;
+      DateTimeKind = config.DateTimeKind;
       RepeatCount = config.RepeatCount;
       DataTableRowCount = config.DataTableRowCount;
       RecursiveDepth = config.RecursiveDepth;
@@ -43,6 +46,7 @@ namespace AutoBogus
     }
 
     internal string Locale { get; set; }
+    internal Func<AutoGenerateContext, DateTimeKind> DateTimeKind { get; set; }
     internal Func<AutoGenerateContext, int> RepeatCount { get; set; }
     internal Func<AutoGenerateContext, int> DataTableRowCount { get; set; }
     internal Func<AutoGenerateContext, int> RecursiveDepth { get; set; }

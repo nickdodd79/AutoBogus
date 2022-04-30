@@ -30,6 +30,7 @@ AutoFaker.Configure(builder =>
 {
   builder
     .WithLocale()         	// Configures the locale to use
+    .WithDateTimeKind()     // Configures the DateTimeKind to use when generating date and time values. Defaults to `DateTimeKind.Local`.
     .WithRepeatCount()    	// Configures the number of items in a collection
     .WithDataTableRowCount()	// Configures the number of data table rows to generate
     .WithRecursiveDepth() 	// Configures how deep nested types should recurse
