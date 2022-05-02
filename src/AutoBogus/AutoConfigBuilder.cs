@@ -17,6 +17,8 @@ namespace AutoBogus
     internal object[] Args { get; private set; }
 
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithLocale(string locale) => WithLocale<IAutoFakerDefaultConfigBuilder>(locale, this);
+    IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithDateTimeKind(Func<AutoGenerateContext, DateTimeKind> dateTimeKind) => WithDateTimeKind(dateTimeKind, this);
+    IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithDateTimeKind(DateTimeKind dateTimeKind) => WithDateTimeKind(_ => dateTimeKind, this);
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithRepeatCount(int count) => WithRepeatCount<IAutoFakerDefaultConfigBuilder>(context => count, this);
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithRepeatCount(Func<AutoGenerateContext, int> count) => WithRepeatCount<IAutoFakerDefaultConfigBuilder>(count, this);
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithDataTableRowCount(int count) => WithDataTableRowCount<IAutoFakerDefaultConfigBuilder>(context => count, this);
@@ -31,8 +33,10 @@ namespace AutoBogus
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithSkip(Type type, string memberName) => WithSkip<IAutoFakerDefaultConfigBuilder>(type, memberName, this);
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithSkip<TType>(string memberName) => WithSkip<IAutoFakerDefaultConfigBuilder, TType>(memberName, this);
     IAutoFakerDefaultConfigBuilder IAutoConfigBuilder<IAutoFakerDefaultConfigBuilder>.WithOverride(AutoGeneratorOverride generatorOverride) => WithOverride<IAutoFakerDefaultConfigBuilder>(generatorOverride, this);
-    
+
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithLocale(string locale) => WithLocale<IAutoGenerateConfigBuilder>(locale, this);
+    IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithDateTimeKind(Func<AutoGenerateContext, DateTimeKind> dateTimeKind) => WithDateTimeKind(dateTimeKind, this);
+    IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithDateTimeKind(DateTimeKind dateTimeKind) => WithDateTimeKind<IAutoGenerateConfigBuilder>(_ => dateTimeKind, this);
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithRepeatCount(int count) => WithRepeatCount<IAutoGenerateConfigBuilder>(context => count, this);
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithRepeatCount(Func<AutoGenerateContext, int> count) => WithRepeatCount<IAutoGenerateConfigBuilder>(count, this);
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithDataTableRowCount(int count) => WithDataTableRowCount<IAutoGenerateConfigBuilder>(context => count, this);
@@ -47,8 +51,10 @@ namespace AutoBogus
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithSkip(Type type, string memberName) => WithSkip<IAutoGenerateConfigBuilder>(type, memberName, this);
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithSkip<TType>(string memberName) => WithSkip<IAutoGenerateConfigBuilder, TType>(memberName, this);
     IAutoGenerateConfigBuilder IAutoConfigBuilder<IAutoGenerateConfigBuilder>.WithOverride(AutoGeneratorOverride generatorOverride) => WithOverride<IAutoGenerateConfigBuilder>(generatorOverride, this);
-    
+
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithLocale(string locale) => WithLocale<IAutoFakerConfigBuilder>(locale, this);
+    IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithDateTimeKind(Func<AutoGenerateContext, DateTimeKind> dateTimeKind) => WithDateTimeKind(dateTimeKind, this);
+    IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithDateTimeKind(DateTimeKind dateTimeKind) => WithDateTimeKind(_ => dateTimeKind, this);
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithRepeatCount(int count) => WithRepeatCount<IAutoFakerConfigBuilder>(context => count, this);
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithRepeatCount(Func<AutoGenerateContext, int> count) => WithRepeatCount<IAutoFakerConfigBuilder>(count, this);
     IAutoFakerConfigBuilder IAutoConfigBuilder<IAutoFakerConfigBuilder>.WithDataTableRowCount(int count) => WithDataTableRowCount<IAutoFakerConfigBuilder>(context => count, this);
@@ -68,6 +74,12 @@ namespace AutoBogus
     internal TBuilder WithLocale<TBuilder>(string locale, TBuilder builder)
     {
       Config.Locale = locale ?? AutoConfig.DefaultLocale;
+      return builder;
+    }
+
+    internal TBuilder WithDateTimeKind<TBuilder>(Func<AutoGenerateContext, DateTimeKind> kind, TBuilder builder)
+    {
+      Config.DateTimeKind = kind ?? AutoConfig.DefaultDateTimeKind;
       return builder;
     }
 

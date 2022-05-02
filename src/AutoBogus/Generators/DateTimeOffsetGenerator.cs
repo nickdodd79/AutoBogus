@@ -7,7 +7,9 @@ namespace AutoBogus.Generators
   {
     object IAutoGenerator.Generate(AutoGenerateContext context)
     {
-      var dateTime = context.Faker.Date.Recent();
+      var dateTime = context.Config.DateTimeKind.Invoke(context) == DateTimeKind.Utc
+        ? context.Faker.Date.Recent().ToUniversalTime()
+        : context.Faker.Date.Recent();
       return new DateTimeOffset(dateTime);
     }
   }
