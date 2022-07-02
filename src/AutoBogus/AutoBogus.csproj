@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageId>AutoBogusLifesupport</PackageId>
     <TargetFrameworks>net40;net452;netstandard1.3;netstandard2.0;net6.0</TargetFrameworks>
-    <Description>A C# library complementing the Bogus generator by adding auto creation and population capabilities.</Description>
-    <Version>2.13.1</Version>
+    <Description>A modified version of Autobogus by nickdodd79 to introduce some critical missing features around .NET 6.</Description>
+    <Version>2.14.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../autobogus.snk</AssemblyOriginatorKeyFile>
