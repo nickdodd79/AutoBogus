@@ -18,9 +18,12 @@ namespace AutoBogus.Generators
       {
         items = new Dictionary<TKey, TValue>();
       }
-      
+
+      // Use the configured IEqualityComparer to generate the unique keys
+      var comparer = items is Dictionary<TKey, TValue> dictionary ? dictionary.Comparer : null;
+
       // Get a list of keys
-      var keys = context.GenerateUniqueMany<TKey>();
+      var keys = context.GenerateUniqueMany<TKey>(comparer: comparer);
 
       foreach (var key in keys)
       {
