@@ -56,18 +56,18 @@ namespace AutoBogus
     /// <param name="context">The <see cref="AutoGenerateContext"/> instance for the current generate request.</param>
     /// <param name="count">The number of instances to generate.</param>
     /// <returns>The generated collection of unique instances.</returns>
-    public static List<TType> GenerateUniqueMany<TType>(this AutoGenerateContext context, int? count = null)
+    public static List<TType> GenerateUniqueMany<TType>(this AutoGenerateContext context, int? count = null, IEqualityComparer<TType> comparer = null)
     {
       var items = new List<TType>();
 
       if (context != null)
       {
-        GenerateMany(context, count, items, true);
+        GenerateMany(context, count, items, true, comparer: comparer);
       }
 
       return items;
     }
-    
+
     /// <summary>
     /// Populates the provided instance with generated values.
     /// </summary>
@@ -82,7 +82,7 @@ namespace AutoBogus
       }
     }
 
-    internal static void GenerateMany<TType>(AutoGenerateContext context, int? count, List<TType> items, bool unique, int attempt = 1, Func<TType> generate = null)
+    internal static void GenerateMany<TType>(AutoGenerateContext context, int? count, List<TType> items, bool unique, int attempt = 1, Func<TType> generate = null, IEqualityComparer<TType> comparer = null)
     {
       // Apply any defaults
       if (count == null)
@@ -109,7 +109,7 @@ namespace AutoBogus
       if (unique)
       {
         // Remove any duplicates and generate more to match the required count
-        var filtered = items.Distinct().ToList();
+        var filtered = items.Distinct(comparer ?? EqualityComparer<TType>.Default).ToList();
 
         if (filtered.Count < count)
         {
@@ -120,7 +120,7 @@ namespace AutoBogus
           // Only continue to generate more if the attempts threshold is not reached
           if (attempt < AutoConfig.GenerateAttemptsThreshold)
           {
-            GenerateMany(context, count, items, unique, attempt + 1, generate);
+            GenerateMany(context, count, items, unique, attempt + 1, generate, comparer);
           }
         }
       }
