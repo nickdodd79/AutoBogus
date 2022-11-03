@@ -395,6 +395,18 @@ namespace AutoBogus.Tests
         instance.Discounts.Should().BeNull();
         instance.Items.Should().OnlyContain(i => i.Discounts == null);
       }
+
+      [Fact]
+      public void Should_Skip_Configured_Members_Of_Interface()
+      {
+        var instance = AutoFaker.Generate<Order>(builder =>
+        {
+          builder
+            .WithSkip<IWithCode>(i => i.Code);
+        });
+
+        instance.Code.Should().BeNull();
+      }
     }
 
     public class Behaviors_Types
