@@ -90,6 +90,37 @@ namespace AutoBogus.Util
 #endif
     }
 
+    /// <summary>
+    /// Return true if the type is a primitive type, date, decimal, string, or GUID
+    /// </summary>
+    /// <param name="type">Type for which to check if it is a simple type</param>
+    internal static bool IsSimple(Type type)
+    {
+      if (type == null)
+        return false;
+
+      var typeInfo = type.GetTypeInfo();
+      if (typeInfo.IsGenericType && typeInfo.GetGenericTypeDefinition() == typeof(Nullable<>))
+      {
+        // nullable type, check if the nested type is simple.
+#if NETSTANDARD1_3
+        var genericArgs = type.GetTypeInfo().IsGenericTypeDefinition 
+          ? type.GetTypeInfo().GenericTypeParameters 
+          : type.GetTypeInfo().GenericTypeArguments;
+        return IsSimple(genericArgs[0]);
+#else
+        return IsSimple(typeInfo.GetGenericArguments()[0]);
+#endif
+      }
+      return typeInfo.IsPrimitive
+          || typeInfo.IsEnum
+          || type.Equals(typeof(string))
+          || type.Equals(typeof(decimal))
+          || type.Equals(typeof(Guid))
+          || type.Equals(typeof(DateTime))
+          || type.Equals(typeof(DateTimeOffset));
+    }
+
     internal static IEnumerable<Type> GetGenericArguments(Type type)
     {
       return type.GetGenericArguments();

@@ -119,6 +119,30 @@ namespace AutoBogus.Tests
       }
     }
 
+    public class WithOnlySimpleTypes
+      : AutoConfigBuilderFixture
+    {
+      [Fact]
+      public void Should_Set_Config_OnlySimpleTypes()
+      {
+        var onlySimpleTypes = _faker.Random.Bool();
+
+        _builder.WithOnlySimpleTypes<ITestBuilder>(context => onlySimpleTypes, null);
+
+        _config.OnlySimpleTypes.Invoke(null).Should().Be(onlySimpleTypes);
+      }
+
+      [Fact]
+      public void Should_Set_Config_OnlySimpleTypes_To_Default_If_Null()
+      {
+        var onlySimpleTypes = AutoConfig.DefaultOnlySimpleTypes.Invoke(null);
+
+        _builder.WithOnlySimpleTypes<ITestBuilder>(null, null);
+
+        _config.OnlySimpleTypes.Invoke(null).Should().Be(onlySimpleTypes);
+      }
+    }
+
     public class WithBinder
       : AutoConfigBuilderFixture
     {
