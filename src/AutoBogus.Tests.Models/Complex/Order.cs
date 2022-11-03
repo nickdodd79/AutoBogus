@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace AutoBogus.Tests.Models.Complex
 {
-  public sealed class Order
+  public sealed class Order : IWithCode
   {
     public DateTime Timestamp;
     

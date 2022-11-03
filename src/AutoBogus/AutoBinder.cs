@@ -72,7 +72,7 @@ namespace AutoBogus
         {
           // Check if the member has a skip config or the type has already been generated as a parent
           // If so skip this generation otherwise track it for use later in the object tree
-          if (ShouldSkip(member.Type, $"{type.FullName}.{member.Name}", context))
+          if (ShouldSkip(type, member, context))
           {
             continue;
           }
@@ -111,18 +111,25 @@ namespace AutoBogus
       }
     }
 
-    private bool ShouldSkip(Type type, string path, AutoGenerateContext context)
+    private bool ShouldSkip(Type type, AutoMember member, AutoGenerateContext context)
     {
-      // Skip if the type is found
-      if (context.Config.SkipTypes.Contains(type))
+      // Skip if the member type is found
+      if (context.Config.SkipTypes.Contains(member.Type))
       {
         return true;
       }
 
-      // Skip if the path is found
-      if (context.Config.SkipPaths.Contains(path))
+      // Skip if the path is found (both current type and its implemented interfaces)
+      if (context.Config.SkipPaths.Contains($"{type.FullName}.{member.Name}"))
       {
         return true;
+      }
+      foreach (var implementedInterfaceType in type.GetInterfaces())
+      {
+        if (context.Config.SkipPaths.Contains($"{implementedInterfaceType.FullName}.{member.Name}"))
+        {
+          return true;
+        }
       }
 
       //check if tree depth is reached
@@ -132,8 +139,8 @@ namespace AutoBogus
         return true;
 
       // Finally check if the recursive depth has been reached
-      
-      var count = context.TypesStack.Count(t => t == type);
+
+      var count = context.TypesStack.Count(t => t == member.Type);
       var recursiveDepth = context.Config.RecursiveDepth.Invoke(context);
 
       return count >= recursiveDepth;
