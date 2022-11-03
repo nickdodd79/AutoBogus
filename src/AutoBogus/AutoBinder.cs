@@ -194,13 +194,13 @@ namespace AutoBogus
       // If a list of members is provided, no others should be populated
       if (members != null)
       {
-        return members.Where(m => !onlySimpleTypes || (m is PropertyInfo info && ReflectionHelper.IsSimple((info).PropertyType)))
+        return members.Where(m => !onlySimpleTypes || (m is PropertyInfo info && ReflectionHelper.IsSimple(info.PropertyType)))
           .Select(member => new AutoMember(member));
       }
 
       // Get the baseline members resolved by Bogus
       var autoMembers = GetMembers(type)
-        .Where(m => !onlySimpleTypes || (m.Value is PropertyInfo info && ReflectionHelper.IsSimple((info).PropertyType)))
+        .Where(m => !onlySimpleTypes || (m.Value is PropertyInfo info && ReflectionHelper.IsSimple(info.PropertyType)))
         .Select(m => new AutoMember(m.Value)).ToList();
 
       foreach (var member in type.GetMembers(BindingFlags))
