@@ -74,6 +74,18 @@ namespace AutoBogus
     TBuilder WithTreeDepth(Func<AutoGenerateContext, int?> depth);
 
     /// <summary>
+    /// Registers if only simple type members should be populated with values
+    /// </summary>
+    /// <returns>The current configuration builder instance.</returns>
+    TBuilder WithOnlySimpleTypes(bool onlySimpleTypes);
+
+    /// <summary>
+    /// Registers if only simple type members should be populated with values
+    /// </summary>
+    /// <returns>The current configuration builder instance.</returns>
+    TBuilder WithOnlySimpleTypes(Func<AutoGenerateContext, bool> onlySimpleTypes);
+
+    /// <summary>
     /// Registers a binder instance to use when generating values.
     /// </summary>
     /// <param name="binder">The <see cref="IAutoBinder"/> instance to use.</param>

@@ -397,6 +397,29 @@ namespace AutoBogus.Tests
       }
     }
 
+    public class Behaviors_OnlySimpleTypes
+      : AutoFakerFixture
+    {
+      [Fact]
+      public void Should_Populate_Only_Simple_Types()
+      {
+        var instance = AutoFaker.Generate<Order>(builder =>
+        {
+          builder
+            .WithOnlySimpleTypes(true);
+        });
+
+        instance.Id.Should().NotBe(default);
+        instance.Code.Should().NotBeEmpty();
+        instance.DateCreated.Should().NotBe(default);
+
+        instance.Calculator.Should().BeNull();
+        instance.Discounts.Should().BeNull();
+        instance.Items.Should().BeNull();
+        instance.Comments.Should().BeNull();
+      }
+    }
+
     public class Behaviors_Types
       : AutoFakerFixture
     {

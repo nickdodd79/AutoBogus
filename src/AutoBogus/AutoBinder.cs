@@ -64,7 +64,7 @@ namespace AutoBogus
       }
 
       // Iterate the members and bind a generated value
-      var autoMembers = GetMembersToPopulate(type, members);
+      var autoMembers = GetMembersToPopulate(type, members, context);
 
       foreach (var member in autoMembers)
       {
@@ -187,17 +187,21 @@ namespace AutoBogus
       return AutoGeneratorFactory.GetGenerator(context);
     }
 
-    private IEnumerable<AutoMember> GetMembersToPopulate(Type type, IEnumerable<MemberInfo> members)
+    private IEnumerable<AutoMember> GetMembersToPopulate(Type type, IEnumerable<MemberInfo> members, AutoGenerateContext context)
     {
+      var onlySimpleTypes = context.Config.OnlySimpleTypes.Invoke(context);
+
       // If a list of members is provided, no others should be populated
       if (members != null)
       {
-        return members.Select(member => new AutoMember(member));
+        return members.Where(m => !onlySimpleTypes || (m is PropertyInfo info && ReflectionHelper.IsSimple(info.PropertyType)))
+          .Select(member => new AutoMember(member));
       }
 
       // Get the baseline members resolved by Bogus
-      var autoMembers = (from m in GetMembers(type)
-                         select new AutoMember(m.Value)).ToList();
+      var autoMembers = GetMembers(type)
+        .Where(m => !onlySimpleTypes || (m.Value is PropertyInfo info && ReflectionHelper.IsSimple(info.PropertyType)))
+        .Select(m => new AutoMember(m.Value)).ToList();
 
       foreach (var member in type.GetMembers(BindingFlags))
       {
